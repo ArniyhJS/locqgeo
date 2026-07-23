@@ -1,23 +1,25 @@
 {
   "name": "spottgeo-monorepo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.3.0",
-      "onFail": "download"
-    }
-  },
+  "private": true,
+  "description": "Unified TypeScript Monorepo for SpottGeo Labs",
   "type": "module",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:grid": "turbo run dev --filter=@spottgeo/grid-engine",
+    "dev:os": "turbo run dev --filter=@spottgeo/os",
+    "dev:drop": "turbo run dev --filter=@spottgeo/drop",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "check-types": "turbo run check-types",
+    "db:generate": "pnpm --filter @spottgeo/database db:generate",
+    "db:migrate": "pnpm --filter @spottgeo/database db:migrate",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
   "devDependencies": {
-    "turbo": "^2.10.6"
-  }
+    "turbo": "^2.10.6",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@11.17.0"
 }

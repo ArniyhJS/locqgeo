@@ -1,0 +1,10 @@
+{
+  "name": "@spottgeo/config",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./eslint.base.json": "./eslint.base.json"
+  }
+}
