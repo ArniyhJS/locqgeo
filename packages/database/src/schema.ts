@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, doublePrecision, numeric, timestamp, boolean, text, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, doublePrecision, numeric, timestamp, boolean, text, date, index, unique } from "drizzle-orm/pg-core";
 
 // Table: tenants (SpottOS Multi-Tenancy Isolation)
 export const tenants = pgTable("tenants", {
@@ -9,6 +9,35 @@ export const tenants = pgTable("tenants", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+// Table: tenant_users (Enterprise Dashboard Users & RBAC)
+export const tenantUsers = pgTable("tenant_users", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+  fullName: varchar("full_name", { length: 255 }).notNull(),
+  role: varchar("role", { length: 50 }).default("ADMIN").notNull(), // 'ADMIN' | 'MARKETER' | 'VIEWER'
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index("idx_tenant_users_tenant").on(table.tenantId),
+]);
+
+// Table: api_keys (B2B SDK Cryptographic Access)
+export const apiKeys = pgTable("api_keys", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
+  keyLabel: varchar("key_label", { length: 100 }).notNull(),
+  keyPrefix: varchar("key_prefix", { length: 12 }).notNull(), // e.g. "spott_live_"
+  apiKeyHash: varchar("api_key_hash", { length: 128 }).notNull().unique(),
+  isRevoked: boolean("is_revoked").default(false).notNull(),
+  lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index("idx_api_keys_tenant").on(table.tenantId),
+]);
 
 // Table: campaign_nodes (OOH / Physical Geofence Targets)
 export const campaignNodes = pgTable("campaign_nodes", {
@@ -57,8 +86,20 @@ export const rewardClaims = pgTable("reward_claims", {
   index("idx_reward_claims_node").on(table.nodeId),
 ]);
 
-// Existing fallback compatibility exports
-export const users = tenants;
+// Table: budget_resets_log (Daily Budget Tracking & Audit Trail)
+export const budgetResetsLog = pgTable("budget_resets_log", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  nodeId: uuid("node_id").references(() => campaignNodes.id, { onDelete: "cascade" }).notNull(),
+  tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
+  resetDate: date("reset_date").defaultNow().notNull(),
+  previousSpentNgn: numeric("previous_spent_ngn", { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  unique("unique_node_daily_reset").on(table.nodeId, table.resetDate),
+]);
+
+// Legacy alias compatibility
+export const users = tenantUsers;
 export const campaigns = campaignNodes;
 export const geofences = campaignNodes;
 export const claims = rewardClaims;

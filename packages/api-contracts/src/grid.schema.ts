@@ -17,6 +17,9 @@ export const PingRequestSchema = z.object({
   accuracy_meters: z
     .number()
     .min(0.0, "Accuracy cannot be negative"),
+  velocity_mps: z
+    .number()
+    .optional(),
   node_id: z
     .string()
     .uuid("node_id must be a valid UUID v4"),
