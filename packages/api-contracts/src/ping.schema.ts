@@ -1,19 +1,7 @@
 import { z } from "zod";
+export { PingRequestSchema, type PingRequest } from "./grid.schema.js";
 
-export const PingRequestSchema = z.object({
-  device_id: z.string().min(16).max(128),
-  latitude: z.number().min(-90).max(90),
-  longitude: z.number().min(-180).max(180),
-  accuracy_meters: z.number().min(0),
-  node_id: z.string().uuid(),
-  velocity_mps: z.number().optional(),
-  timestamp: z.number().optional(),
-  battery_level: z.number().min(0).max(100).optional(),
-});
-
-export type PingRequest = z.infer<typeof PingRequestSchema>;
-
-export const PingResponseSchema = z.object({
+export const LegacyPingResponseSchema = z.object({
   status: z.enum(["ACCEPTED", "REJECTED_ANTICHEAT", "OUT_OF_BOUNDS"]),
   distance_meters: z.number().optional(),
   claim_eligible: z.boolean(),
@@ -25,4 +13,4 @@ export const PingResponseSchema = z.object({
   }).optional(),
 });
 
-export type PingResponse = z.infer<typeof PingResponseSchema>;
+export type LegacyPingResponse = z.infer<typeof LegacyPingResponseSchema>;

@@ -1,64 +1,50 @@
 "use client";
 
 import { useState } from "react";
-import type { PingRequest, PingResponse } from "@spottgeo/api-contracts";
+import type { PingRequest, PingResponseSuccess, PingResponseError } from "@spottgeo/api-contracts";
+
+type PingResult = PingResponseSuccess | PingResponseError;
 
 export default function RadarMapPage() {
   const [claiming, setClaiming] = useState(false);
-  const [response, setResponse] = useState<PingResponse | null>(null);
+  const [response, setResponse] = useState<PingResult | null>(null);
 
   const handleClaim = async () => {
     setClaiming(true);
     setResponse(null);
 
-    // Construct ping request matching @spottgeo/api-contracts PingRequestSchema
+    // Construct ping request matching Spec v3.1.0 PingRequestSchema
     const pingPayload: PingRequest = {
       device_id: "dev_8a4f91e9b2019c8822ab",
       latitude: 6.5244,
       longitude: 3.3792,
       accuracy_meters: 8.5,
       node_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
-      velocity_mps: 1.2,
-      timestamp: Date.now(),
-      battery_level: 88,
     };
 
     try {
-      // Simulate or call SpottGrid Core Engine Fastify endpoint
+      // Call SpottGrid Core Engine Fastify endpoint
       const res = await fetch("http://localhost:8080/api/v1/grid/ping", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pingPayload),
       });
 
-      if (res.ok) {
-        const data: PingResponse = await res.json();
-        setResponse(data);
-      } else {
-        // Fallback for UI demo if server is offline
-        setResponse({
-          status: "ACCEPTED",
-          distance_meters: 18,
-          claim_eligible: true,
-          reason: "Within target geofence (demo fallback)",
-          anticheat: {
-            velocity_valid: true,
-            accuracy_valid: true,
-            spoof_score: 5,
-          },
-        });
-      }
+      const data: PingResult = await res.json();
+      setResponse(data);
     } catch {
-      // Simulated response when offline
+      // Demo response when offline
       setResponse({
-        status: "ACCEPTED",
-        distance_meters: 18,
-        claim_eligible: true,
-        reason: "Within target geofence (simulated demo)",
-        anticheat: {
-          velocity_valid: true,
-          accuracy_valid: true,
-          spoof_score: 5,
+        success: true,
+        status: "VERIFIED",
+        data: {
+          claim_id: "claim_demo_12345678",
+          distance_meters: 18,
+          reward: {
+            type: "AIRTIME",
+            amount_ngn: 1000,
+            payout_status: "QUEUED",
+          },
         },
       });
     } finally {
@@ -111,7 +97,7 @@ export default function RadarMapPage() {
       {response && (
         <div
           className={`pwa-card p-5 space-y-2 border ${
-            response.status === "ACCEPTED"
+            response.success
               ? "border-emerald-500/40 bg-emerald-500/5"
               : "border-rose-500/40 bg-rose-500/5"
           }`}
@@ -119,7 +105,7 @@ export default function RadarMapPage() {
           <div className="flex items-center justify-between">
             <span
               className={`text-xs font-bold px-2 py-0.5 rounded ${
-                response.status === "ACCEPTED"
+                response.success
                   ? "bg-emerald-500/20 text-emerald-300"
                   : "bg-rose-500/20 text-rose-300"
               }`}
@@ -127,17 +113,14 @@ export default function RadarMapPage() {
               {response.status}
             </span>
             <span className="text-xs text-gray-400">
-              {response.distance_meters !== undefined && `${response.distance_meters} meters away`}
+              {response.success ? `${response.data.distance_meters}m away` : response.error_code}
             </span>
           </div>
-          <p className="text-xs text-gray-300 font-medium">{response.reason}</p>
-          {response.anticheat && (
-            <div className="pt-2 border-t border-gray-800 text-[11px] text-gray-400 flex justify-between">
-              <span>Velocity Filter: {response.anticheat.velocity_valid ? "Pass" : "Fail"}</span>
-              <span>Accuracy: {response.anticheat.accuracy_valid ? "Pass" : "Fail"}</span>
-              <span>Spoof Risk: {response.anticheat.spoof_score}/100</span>
-            </div>
-          )}
+          <p className="text-xs text-gray-300 font-medium">
+            {response.success
+              ? `Reward: ${response.data.reward.type} NGN ${response.data.reward.amount_ngn} (${response.data.reward.payout_status})`
+              : response.message}
+          </p>
         </div>
       )}
     </div>

@@ -1,74 +1,66 @@
-import { pgTable, uuid, varchar, doublePrecision, integer, numeric, timestamp, boolean, jsonb, index } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, doublePrecision, numeric, timestamp, boolean, text, index, uniqueIndex } from "drizzle-orm/pg-core";
 
-export const users = pgTable("users", {
+// Table: tenants (SpottOS Multi-Tenancy Isolation)
+export const tenants = pgTable("tenants", {
   id: uuid("id").defaultRandom().primaryKey(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  name: varchar("name", { length: 255 }),
-  role: varchar("role", { length: 50 }).notNull().default("consumer"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const campaigns = pgTable("campaigns", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: varchar("description", { length: 1000 }),
-  totalBudget: numeric("total_budget", { precision: 12, scale: 2 }).notNull(),
-  spentBudget: numeric("spent_budget", { precision: 12, scale: 2 }).default("0.00").notNull(),
-  status: varchar("status", { length: 50 }).notNull().default("ACTIVE"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const geofences = pgTable("geofences", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  campaignId: uuid("campaign_id").references(() => campaigns.id).notNull(),
-  name: varchar("name", { length: 255 }).notNull(),
-  latitude: doublePrecision("latitude").notNull(),
-  longitude: doublePrecision("longitude").notNull(),
-  radiusMeters: integer("radius_meters").notNull().default(100),
-  rewardAmount: numeric("reward_amount", { precision: 10, scale: 2 }).notNull(),
-  payoutType: varchar("payout_type", { length: 50 }).notNull().default("AIRTIME"),
+  companyName: varchar("company_name", { length: 255 }).notNull(),
+  apiKeyHash: varchar("api_key_hash", { length: 128 }).notNull().unique(),
   isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
-export const claims = pgTable("claims", {
+// Table: campaign_nodes (OOH / Physical Geofence Targets)
+export const campaignNodes = pgTable("campaign_nodes", {
   id: uuid("id").defaultRandom().primaryKey(),
-  geofenceId: uuid("geofence_id").references(() => geofences.id).notNull(),
-  userId: uuid("user_id").references(() => users.id),
-  deviceId: varchar("device_id", { length: 128 }).notNull(),
+  tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
   latitude: doublePrecision("latitude").notNull(),
   longitude: doublePrecision("longitude").notNull(),
-  status: varchar("status", { length: 50 }).notNull().default("PENDING"),
-  payoutStatus: varchar("payout_status", { length: 50 }).notNull().default("UNPAID"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  radiusMeters: doublePrecision("radius_meters").default(50.0).notNull(),
+  rewardType: varchar("reward_type", { length: 50 }).notNull(), // 'AIRTIME' | 'DATA' | 'CASH' | 'VOUCHER'
+  rewardAmountNgn: numeric("reward_amount_ngn", { precision: 10, scale: 2 }).notNull(),
+  dailyBudgetLimitNgn: numeric("daily_budget_limit_ngn", { precision: 10, scale: 2 }).default("50000.00"),
+  dailyBudgetSpentNgn: numeric("daily_budget_spent_ngn", { precision: 10, scale: 2 }).default("0.00"),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
-  index("idx_claims_device").on(table.deviceId),
-  index("idx_claims_geofence").on(table.geofenceId)
+  index("idx_campaign_nodes_tenant").on(table.tenantId),
 ]);
 
-export const payouts = pgTable("payouts", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  claimId: uuid("claim_id").references(() => claims.id).notNull(),
-  provider: varchar("provider", { length: 50 }).notNull(), // 'PAYSTACK' | 'VTPASS'
-  reference: varchar("reference", { length: 128 }).notNull().unique(),
-  amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
-  recipient: varchar("recipient", { length: 128 }).notNull(), // phone number or account number
-  status: varchar("status", { length: 50 }).notNull().default("PENDING"), // 'PENDING' | 'SUCCESS' | 'FAILED'
-  responsePayload: jsonb("response_payload"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const telemetryLogs = pgTable("telemetry_logs", {
+// Table: checkin_pings (Telemetry and Speed-of-Light History)
+export const checkinPings = pgTable("checkin_pings", {
   id: uuid("id").defaultRandom().primaryKey(),
   deviceId: varchar("device_id", { length: 128 }).notNull(),
   latitude: doublePrecision("latitude").notNull(),
   longitude: doublePrecision("longitude").notNull(),
   accuracyMeters: doublePrecision("accuracy_meters").notNull(),
-  velocityMps: doublePrecision("velocity_mps").default(0),
-  isSuspicious: boolean("is_suspicious").default(false).notNull(),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
-  index("idx_telemetry_device").on(table.deviceId),
-  index("idx_telemetry_created").on(table.createdAt)
+  index("idx_checkin_pings_device_time").on(table.deviceId, table.createdAt),
 ]);
+
+// Table: reward_claims (Atomic Audit Log & Idempotency)
+export const rewardClaims = pgTable("reward_claims", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  nodeId: uuid("node_id").references(() => campaignNodes.id).notNull(),
+  deviceId: varchar("device_id", { length: 128 }).notNull(),
+  pingId: uuid("ping_id").references(() => checkinPings.id).notNull(),
+  status: varchar("status", { length: 50 }).notNull(), // 'SUCCESS' | 'REJECTED_ACCURACY' | ...
+  payoutReference: varchar("payout_reference", { length: 255 }),
+  payoutStatus: varchar("payout_status", { length: 50 }).default("NOT_APPLICABLE"), // 'NOT_APPLICABLE' | 'QUEUED' | 'PROCESSING' | 'SUCCESS' | 'FAILED'
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index("idx_reward_claims_device").on(table.deviceId),
+  index("idx_reward_claims_node").on(table.nodeId),
+]);
+
+// Existing fallback compatibility exports
+export const users = tenants;
+export const campaigns = campaignNodes;
+export const geofences = campaignNodes;
+export const claims = rewardClaims;
+export const payouts = rewardClaims;
+export const telemetryLogs = checkinPings;

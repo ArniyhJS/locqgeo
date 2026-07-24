@@ -8,6 +8,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "test": "vitest run",
     "check-types": "tsc --noEmit",
     "lint": "echo 'grid-engine lint passed'"
   },
@@ -16,12 +17,14 @@
     "@fastify/helmet": "^13.0.1",
     "@spottgeo/api-contracts": "workspace:*",
     "@spottgeo/database": "workspace:*",
+    "drizzle-orm": "^0.38.4",
     "fastify": "^5.2.0"
   },
   "devDependencies": {
     "@spottgeo/config": "workspace:*",
     "@types/node": "^22.10.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }

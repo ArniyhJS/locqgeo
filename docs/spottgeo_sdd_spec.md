@@ -1,7 +1,9 @@
 # SpottGeo Spec-Driven Development (SDD) Specification
 
-Document Version: 3.0.0
+Document Version: 3.1.0
 Status: APPROVED
+
+> **SpottGrid Core Engine Spec**: See [spottgrid_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgrid_sdd_spec.md) for full v3.1.0 mathematical invariants, DDL schema, and 4-step anti-cheat execution details.
 
 ## 1. System Overview & Architecture
 
