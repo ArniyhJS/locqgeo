@@ -1,14 +1,18 @@
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SpottDrop | Geofenced Reward Drops & Radar Map",
-  description: "Lightweight Consumer PWA for discovering nearby location-based drops and instant rewards.",
+  title: "SpottDrop | Proof-of-Location Consumer PWA",
+  description: "Scan physical billboards, verify your geofence location, and claim instant airtime & data rewards.",
   manifest: "/manifest.json",
 };
 
-export const viewport = {
-  themeColor: "#0d0f17",
+export const viewport: Viewport = {
+  themeColor: "#10b981",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -17,42 +21,54 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-[#0d0f17] text-gray-100 flex flex-col min-h-screen max-w-md mx-auto relative border-x border-gray-800/60 shadow-2xl">
-        {/* PWA Mobile Header */}
-        <header className="h-14 border-b border-gray-800/80 bg-[#121624]/80 px-5 flex items-center justify-between backdrop-blur-md sticky top-0 z-50">
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-xs text-white shadow-md shadow-cyan-500/30">
-              ⚡
+    <html lang="en" className="dark">
+      <body className="bg-[#080c14] text-gray-100 antialiased flex flex-col min-h-screen items-center justify-start">
+        {/* Mobile App Viewport Container */}
+        <div className="w-full max-w-md min-h-screen flex flex-col justify-between border-x border-gray-800/80 bg-[#0b101c]/90 shadow-2xl relative">
+          {/* Header Bar */}
+          <header className="h-14 border-b border-gray-800 bg-[#0d1322]/80 px-5 flex items-center justify-between backdrop-blur-md sticky top-0 z-40">
+            <div className="flex items-center gap-2.5">
+              <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center font-black text-xs text-black shadow-lg shadow-emerald-500/20">
+                SD
+              </div>
+              <span className="font-extrabold text-sm tracking-tight text-white">SpottDrop</span>
             </div>
-            <span className="font-bold text-base tracking-tight text-white">SpottDrop</span>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-              PWA Mode
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              PWA v1.0.0
             </span>
-          </div>
-        </header>
+          </header>
 
-        {/* Page Content */}
-        <main className="flex-1 p-5 pb-20">{children}</main>
+          {/* Main View Area */}
+          <main className="flex-1 p-5 overflow-y-auto pb-24">{children}</main>
 
-        {/* Mobile Navigation Tab Bar */}
-        <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto h-16 border-t border-gray-800/90 bg-[#121624]/90 backdrop-blur-xl flex items-center justify-around z-50 px-2">
-          <a href="/" className="flex flex-col items-center gap-1 text-cyan-400 font-medium text-xs">
-            <span className="text-lg">📡</span>
-            Radar Map
-          </a>
-          <a href="/scanner" className="flex flex-col items-center gap-1 text-gray-400 hover:text-cyan-400 font-medium text-xs transition-colors">
-            <span className="text-lg">📷</span>
-            QR Scanner
-          </a>
-          <a href="/wallet" className="flex flex-col items-center gap-1 text-gray-400 hover:text-cyan-400 font-medium text-xs transition-colors">
-            <span className="text-lg">💳</span>
-            Wallet
-          </a>
-        </nav>
+          {/* Bottom Tab Bar Navigation */}
+          <nav className="fixed bottom-0 w-full max-w-md border-t border-gray-800 bg-[#0d1322]/95 backdrop-blur-xl h-16 px-6 flex items-center justify-around z-40">
+            <a
+              href="/"
+              className="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-400 transition-colors"
+            >
+              <span className="text-lg">📡</span>
+              <span className="text-[10px] font-bold">Radar Map</span>
+            </a>
+            <a
+              href="/scan"
+              className="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-400 transition-colors"
+            >
+              <div className="h-10 w-10 -mt-5 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-black font-black text-lg shadow-lg shadow-emerald-500/40">
+                📷
+              </div>
+              <span className="text-[10px] font-bold text-emerald-400">Scan QR</span>
+            </a>
+            <a
+              href="/wallet"
+              className="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-400 transition-colors"
+            >
+              <span className="text-lg">👛</span>
+              <span className="text-[10px] font-bold">Wallet</span>
+            </a>
+          </nav>
+        </div>
       </body>
     </html>
   );
