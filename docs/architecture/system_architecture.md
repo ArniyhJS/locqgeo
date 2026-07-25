@@ -35,9 +35,9 @@
   Paystack/VTpass/Flutterwave                 Enterprise Webhooks                    SpottConsole Analytics
 ```
 
-## Microservices Overview
+## Related Architecture Documents
 
-- **`services/engine`**: Stateless Fastify API serving latency-critical location verification calls under 50ms.
-- **`services/payout-worker`**: Dedicated background service for executing queued payouts and wallet fallback credits.
-- **`services/webhook-dispatcher`**: Microservice for delivering signed outbound HMAC webhooks to enterprise tenants.
-- **`services/analytics-worker`**: Pre-aggregates daily verification trends and leaderboard rankings.
+- [Technical Stack Critique & Tradeoffs](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/tech_stack_critique_and_tradeoffs.md)
+- [Entity Relationship Diagram (ERD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/erd.md)
+- [Nationwide Campaign Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/nationwide_campaign_architecture.md)
+
