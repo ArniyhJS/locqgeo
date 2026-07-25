@@ -29,15 +29,15 @@ export function useOfflineQueue() {
     try {
       // Background Sync Transmission Loop
       for (const item of queue) {
-        await fetch("http://localhost:8080/api/v1/grid/ping", {
+        await fetch("http://localhost:8080/api/v1/engine/verify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            device_id: "offline_device",
+            device_id: "offline_device_0001",
             latitude: item.latitude,
             longitude: item.longitude,
             accuracy_meters: item.accuracy_meters,
-            node_id: item.node_id,
+            geofence_id: item.geofence_id,
           }),
         }).catch(() => null);
       }

@@ -20,7 +20,7 @@ Every React component, custom hook, service worker, and API client inside `apps/
 $$\text{device\_id} = \text{SHA256}(\text{canvas\_hash} \parallel \text{webgl\_vendor} \parallel \text{screen\_res} \parallel \text{user\_agent} \parallel \text{installation\_uuid})$$
 
 3. **Event-Driven Geolocation Polling**: Continuous background GPS polling is strictly prohibited to save battery and network data. GPS sampling MUST ONLY trigger upon explicit user interaction (e.g., clicking "Scan Node" or "Verify Proximity").
-4. **Client-Side Accuracy Filter**: The client app MUST inspect the GPS position accuracy returned by the `navigator.geolocation` API. If $\text{accuracy\_meters} > 50.0\text{m}$, the scanner MUST prompt the user to step into an open area before dispatching a ping to SpottGrid:
+4. **Client-Side Accuracy Filter**: The client app MUST inspect the GPS position accuracy returned by the `navigator.geolocation` API. If $\text{accuracy\_meters} > 50.0\text{m}$, the scanner MUST prompt the user to step into an open area before dispatching a ping to SpottEngine:
 
 $$\text{accuracy\_meters} \le 50.0 \implies \text{Proceed to Ping Dispatch}$$
 
@@ -158,7 +158,7 @@ export async function getOrCreateDeviceId(): Promise<string> {
       QR Parsed
                v
 +-----------------------------------------------------------------+
-| Dispatch POST /api/v1/grid/ping Payload to SpottGrid            |
+| Dispatch POST /api/v1/engine/verify Payload to SpottEngine            |
 | { device_id, latitude, longitude, accuracy_meters, node_id }    |
 +--------------+--------------------------------------------------+
                |
@@ -181,4 +181,4 @@ export async function getOrCreateDeviceId(): Promise<string> {
 
 ## 5. System Prompt Directive for AI Agents
 
-> "You are building the SpottDrop consumer PWA inside apps/drop following spottdrop_sdd_spec.md. Always capture GPS coordinates via HTML5 navigator.geolocation with enableHighAccuracy: true and enforce the $\le 50.0\text{m}$ accuracy filter on the client before calling SpottGrid. Read and write client device identifiers using getOrCreateDeviceId() from @/lib/fingerprint. Validate incoming QR code payloads using QrScanPayloadSchema from @spottgeo/api-contracts. Ensure all user UI screens load in under 1 second on 3G network connections by deferring Leaflet map rendering until explicitly toggled."
+> "You are building the SpottDrop consumer PWA inside apps/drop following spottdrop_sdd_spec.md. Always capture GPS coordinates via HTML5 navigator.geolocation with enableHighAccuracy: true and enforce the $\le 50.0\text{m}$ accuracy filter on the client before calling SpottEngine. Read and write client device identifiers using getOrCreateDeviceId() from @/lib/fingerprint. Validate incoming QR code payloads using QrScanPayloadSchema from @spottgeo/api-contracts. Ensure all user UI screens load in under 1 second on 3G network connections by deferring Leaflet map rendering until explicitly toggled."

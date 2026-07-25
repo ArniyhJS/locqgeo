@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS tenant_users (
 
 CREATE INDEX IF NOT EXISTS idx_tenant_users_tenant ON tenant_users(tenant_id);
 
--- Table: api_keys (B2B SDK Cryptographic Access)
+-- Table: api_keys (SDK/API Cryptographic Access)
 CREATE TABLE IF NOT EXISTS api_keys (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
@@ -30,10 +30,10 @@ CREATE INDEX IF NOT EXISTS idx_api_keys_lookup ON api_keys(api_key_hash) WHERE i
 -- Table: budget_resets_log (Daily Budget Tracking & Audit Trail)
 CREATE TABLE IF NOT EXISTS budget_resets_log (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    node_id UUID NOT NULL REFERENCES campaign_nodes(id) ON DELETE CASCADE,
+    geofence_id UUID NOT NULL REFERENCES geofences(id) ON DELETE CASCADE,
     tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
     reset_date DATE NOT NULL DEFAULT CURRENT_DATE,
-    previous_spent_ngn NUMERIC(10, 2) NOT NULL,
+    previous_spent NUMERIC(10, 2) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT unique_node_daily_reset UNIQUE(node_id, reset_date)
+    CONSTRAINT unique_geofence_daily_reset UNIQUE(geofence_id, reset_date)
 );

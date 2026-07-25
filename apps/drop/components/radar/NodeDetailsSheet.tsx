@@ -13,7 +13,7 @@ interface NodeItem {
 interface NodeDetailsSheetProps {
   node: NodeItem | null;
   onClose: () => void;
-  onScanClick: (nodeId: string) => void;
+  onScanClick: (geofenceId: string) => void;
 }
 
 export function NodeDetailsSheet({ node, onClose, onScanClick }: NodeDetailsSheetProps) {

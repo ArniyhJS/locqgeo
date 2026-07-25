@@ -1,7 +1,7 @@
 "use client";
 
 interface PayoutStatusPillProps {
-  status: "QUEUED" | "PROCESSING" | "COMPLETED" | "FAILED";
+  status: "NOT_APPLICABLE" | "QUEUED" | "PROCESSING" | "COMPLETED" | "FAILED";
 }
 
 export function PayoutStatusPill({ status }: PayoutStatusPillProps) {
@@ -10,6 +10,7 @@ export function PayoutStatusPill({ status }: PayoutStatusPillProps) {
     PROCESSING: "bg-blue-500/10 text-blue-400 border-blue-500/30",
     COMPLETED: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
     FAILED: "bg-rose-500/10 text-rose-400 border-rose-500/30",
+    NOT_APPLICABLE: "bg-gray-500/10 text-gray-400 border-gray-500/30",
   };
 
   return (

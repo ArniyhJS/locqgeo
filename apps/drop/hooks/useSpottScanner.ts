@@ -2,15 +2,15 @@
 
 import { useState, useCallback } from "react";
 import { getOrCreateDeviceId } from "@/lib/fingerprint";
-import { saveLocalClaim } from "@/lib/db-store";
-import type { PingResponseSuccess, PingResponseError, LocalClaimRecord } from "@spottgeo/api-contracts";
+import { saveLocalVerification } from "@/lib/db-store";
+import type { PingResponseSuccess, PingResponseError, LocalVerificationRecord } from "@spottgeo/api-contracts";
 
 export interface ScannerState {
   isLocating: boolean;
   isSubmitting: boolean;
   gpsError: string | null;
   scanError: string | null;
-  claimSuccessData: PingResponseSuccess["data"] | null;
+  verificationSuccessData: PingResponseSuccess["data"] | null;
   currentLocation: { latitude: number; longitude: number; accuracy: number } | null;
 }
 
@@ -20,11 +20,10 @@ export function useSpottScanner() {
     isSubmitting: false,
     gpsError: null,
     scanError: null,
-    claimSuccessData: null,
+    verificationSuccessData: null,
     currentLocation: null,
   });
 
-  // Step 1: Capture High-Accuracy Location
   const captureLocation = useCallback((): Promise<{ latitude: number; longitude: number; accuracy: number }> => {
     setState((prev) => ({ ...prev, isLocating: true, gpsError: null }));
 
@@ -62,17 +61,15 @@ export function useSpottScanner() {
     });
   }, []);
 
-  // Step 2: Execute Ping to SpottGrid Engine
-  const executeClaim = useCallback(
-    async (nodeId: string) => {
+  const executeVerification = useCallback(
+    async (geofenceId: string) => {
       setState((prev) => ({ ...prev, isSubmitting: true, scanError: null }));
 
       try {
         const location = state.currentLocation || (await captureLocation());
         const deviceId = await getOrCreateDeviceId();
 
-        // Target Fastify SpottGrid Engine endpoint (or Next.js API proxy)
-        const response = await fetch("http://localhost:8080/api/v1/grid/ping", {
+        const response = await fetch("http://localhost:8080/api/v1/engine/verify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -80,33 +77,38 @@ export function useSpottScanner() {
             latitude: location.latitude,
             longitude: location.longitude,
             accuracy_meters: location.accuracy,
-            node_id: nodeId,
+            geofence_id: geofenceId,
           }),
         }).catch(() => null);
 
-        // Fallback simulation for dev environment if engine server is offline
+        // Fallback simulation for dev environments when the engine is offline
         if (!response || !response.ok) {
-          const mockClaim: LocalClaimRecord = {
-            claim_id: `claim_${Date.now()}`,
-            node_id: nodeId,
-            node_title: "Physical Campaign Node Drop",
+          const mockRecord: LocalVerificationRecord = {
+            verification_id: `ver_${Date.now()}`,
+            geofence_id: geofenceId,
+            geofence_title: "Physical Presence Target",
+            action_type: "REWARD",
             reward_type: "AIRTIME",
-            reward_amount_ngn: 500,
-            claimed_at: new Date().toISOString(),
+            reward_amount: 500,
+            reward_currency: "NGN",
+            verified_at: new Date().toISOString(),
             payout_status: "COMPLETED",
             redemption_code: `SPT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
           };
-          await saveLocalClaim(mockClaim);
+          await saveLocalVerification(mockRecord);
 
           setState((prev) => ({
             ...prev,
             isSubmitting: false,
-            claimSuccessData: {
-              claim_id: mockClaim.claim_id,
+            verificationSuccessData: {
+              verification_id: mockRecord.verification_id,
+              geofence_id: geofenceId,
               distance_meters: 14.2,
+              action_type: "REWARD",
               reward: {
                 type: "AIRTIME",
-                amount_ngn: 500,
+                amount: 500,
+                currency: "NGN",
                 payout_status: "COMPLETED",
               },
             },
@@ -116,60 +118,44 @@ export function useSpottScanner() {
             navigator.vibrate([100, 50, 100]);
           }
 
-          return { success: true, data: mockClaim };
+          return { success: true, data: mockRecord };
         }
 
-        const result = await response.json();
+        const result = (await response.json()) as PingResponseSuccess | PingResponseError;
 
-        if (!result.success || !result.claim_eligible) {
-          const errMessage = result.reason || "Verification failed: Out of bounds or excessive speed.";
-          setState((prev) => ({
-            ...prev,
-            isSubmitting: false,
-            scanError: errMessage,
-          }));
+        if (!result.success) {
+          const errMessage = result.message || "Verification failed: out of bounds or excessive speed.";
+          setState((prev) => ({ ...prev, isSubmitting: false, scanError: errMessage }));
           return { success: false, error: errMessage };
         }
 
-        const mockSuccess: LocalClaimRecord = {
-          claim_id: result.ping_id || `claim_${Date.now()}`,
-          node_id: nodeId,
-          node_title: "Verified Billboard Drop",
-          reward_type: "AIRTIME",
-          reward_amount_ngn: 500,
-          claimed_at: new Date().toISOString(),
-          payout_status: "COMPLETED",
-          redemption_code: `SPT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        const data = result.data;
+        const localRecord: LocalVerificationRecord = {
+          verification_id: data.verification_id,
+          geofence_id: geofenceId,
+          geofence_title: "Verified Presence Target",
+          action_type: data.action_type,
+          reward_type: data.reward?.type,
+          reward_amount: data.reward?.amount,
+          reward_currency: data.reward?.currency,
+          verified_at: new Date().toISOString(),
+          payout_status: data.reward?.payout_status ?? "COMPLETED",
+          redemption_code: data.reward
+            ? `SPT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+            : undefined,
         };
-        await saveLocalClaim(mockSuccess);
+        await saveLocalVerification(localRecord);
 
-        setState((prev) => ({
-          ...prev,
-          isSubmitting: false,
-          claimSuccessData: {
-            claim_id: mockSuccess.claim_id,
-            distance_meters: result.distance_meters || 12.0,
-            reward: {
-              type: "AIRTIME",
-              amount_ngn: 500,
-              payout_status: "COMPLETED",
-            },
-          },
-        }));
+        setState((prev) => ({ ...prev, isSubmitting: false, verificationSuccessData: data }));
 
-        // Trigger mobile haptic bump
         if (typeof window !== "undefined" && "vibrate" in navigator) {
           navigator.vibrate([100, 50, 100]);
         }
 
-        return { success: true, data: mockSuccess };
+        return { success: true, data: localRecord };
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Network connection error.";
-        setState((prev) => ({
-          ...prev,
-          isSubmitting: false,
-          scanError: msg,
-        }));
+        setState((prev) => ({ ...prev, isSubmitting: false, scanError: msg }));
         return { success: false, error: msg };
       }
     },
@@ -179,6 +165,6 @@ export function useSpottScanner() {
   return {
     ...state,
     captureLocation,
-    executeClaim,
+    executeVerification,
   };
 }

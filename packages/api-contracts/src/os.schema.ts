@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { RewardTypeEnum, ActionTypeEnum } from "./grid.schema.js";
 
 // -----------------------------------------------------------------
-// 1. Campaign Node Builder Schemas
+// 1. Geofence Builder Schemas
 // -----------------------------------------------------------------
-export const CreateCampaignNodeSchema = z.object({
+export const CreateGeofenceSchema = z.object({
   title: z
     .string()
     .min(3, "Title must be at least 3 characters")
@@ -21,27 +22,28 @@ export const CreateCampaignNodeSchema = z.object({
     .min(10.0, "Minimum geofence radius is 10m")
     .max(500.0, "Maximum geofence radius is 500m")
     .default(50.0),
-  reward_type: z.enum(["AIRTIME", "DATA", "CASH", "VOUCHER"]),
-  reward_amount_ngn: z
+  action_type: ActionTypeEnum.default("REWARD"),
+  reward_type: RewardTypeEnum.optional(),
+  reward_amount: z.number().min(10.0).max(50000.0).optional(),
+  reward_currency: z.string().length(3).default("NGN"),
+  daily_budget_limit: z
     .number()
-    .min(10.0, "Minimum reward amount is NGN 10")
-    .max(50000.0, "Maximum reward amount is NGN 50,000"),
-  daily_budget_limit_ngn: z
-    .number()
-    .min(1000.0, "Minimum daily budget limit is NGN 1,000")
+    .min(1000.0, "Minimum daily budget limit is 1,000")
     .default(50000.0),
 });
 
-export type CreateCampaignNodeInput = z.infer<typeof CreateCampaignNodeSchema>;
+export type CreateGeofenceInput = z.input<typeof CreateGeofenceSchema>;
 
-export const BulkCampaignNodeCsvRowSchema = z.object({
+export const BulkGeofenceCsvRowSchema = z.object({
   title: z.string().min(1),
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),
   radius_meters: z.coerce.number().min(10).max(500).default(50),
-  reward_type: z.enum(["AIRTIME", "DATA", "CASH", "VOUCHER"]),
-  reward_amount_ngn: z.coerce.number().min(10).max(50000),
-  daily_budget_limit_ngn: z.coerce.number().min(1000).default(50000),
+  action_type: ActionTypeEnum.default("REWARD"),
+  reward_type: RewardTypeEnum.optional(),
+  reward_amount: z.coerce.number().min(10).max(50000).optional(),
+  reward_currency: z.string().length(3).default("NGN"),
+  daily_budget_limit: z.coerce.number().min(1000).default(50000),
 });
 
 // -----------------------------------------------------------------
@@ -49,7 +51,7 @@ export const BulkCampaignNodeCsvRowSchema = z.object({
 // -----------------------------------------------------------------
 export const TelemetryQuerySchema = z.object({
   tenant_id: z.string().uuid("tenant_id must be a valid UUID v4"),
-  node_id: z.string().uuid().optional(),
+  geofence_id: z.string().uuid().optional(),
   start_date: z.string().datetime().optional(),
   end_date: z.string().datetime().optional(),
 });
@@ -60,10 +62,10 @@ export const TelemetrySummaryResponseSchema = z.object({
   tenant_id: z.string().uuid(),
   summary: z.object({
     total_pings: z.number().int().min(0),
-    verified_claims: z.number().int().min(0),
+    verified_events: z.number().int().min(0),
     fraud_blocked: z.number().int().min(0),
     conversion_rate_pct: z.number().min(0).max(100),
-    total_spend_ngn: z.number().min(0),
+    total_spend: z.number().min(0),
   }),
   fraud_breakdown: z.object({
     rejected_accuracy: z.number().int().min(0),
@@ -75,7 +77,7 @@ export const TelemetrySummaryResponseSchema = z.object({
     z.object({
       timestamp_hour: z.string(),
       pings: z.number().int(),
-      verified_claims: z.number().int(),
+      verified_events: z.number().int(),
       blocked_fraud: z.number().int(),
     })
   ),

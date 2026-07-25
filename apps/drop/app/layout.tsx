@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "SpottDrop | Proof-of-Location Consumer PWA",
@@ -44,14 +45,14 @@ export default function RootLayout({
 
           {/* Bottom Tab Bar Navigation */}
           <nav className="fixed bottom-0 w-full max-w-md border-t border-gray-800 bg-[#0d1322]/95 backdrop-blur-xl h-16 px-6 flex items-center justify-around z-40">
-            <a
+            <Link
               href="/"
               className="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-400 transition-colors"
             >
               <span className="text-lg">📡</span>
               <span className="text-[10px] font-bold">Radar Map</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/scan"
               className="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-400 transition-colors"
             >
@@ -59,14 +60,14 @@ export default function RootLayout({
                 📷
               </div>
               <span className="text-[10px] font-bold text-emerald-400">Scan QR</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/wallet"
               className="flex flex-col items-center gap-1 text-gray-400 hover:text-emerald-400 transition-colors"
             >
               <span className="text-lg">👛</span>
               <span className="text-[10px] font-bold">Wallet</span>
-            </a>
+            </Link>
           </nav>
         </div>
       </body>

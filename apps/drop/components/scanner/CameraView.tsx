@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 
 interface CameraViewProps {
-  onScanSuccess: (nodeId: string) => void;
+  onScanSuccess: (geofenceId: string) => void;
 }
 
 export function CameraView({ onScanSuccess }: CameraViewProps) {
@@ -23,8 +23,8 @@ export function CameraView({ onScanSuccess }: CameraViewProps) {
             const text = result.getText();
             try {
               const json = JSON.parse(text);
-              if (json.node_id) {
-                onScanSuccess(json.node_id);
+              if (json.geofence_id) {
+                onScanSuccess(json.geofence_id);
                 return;
               }
             } catch {

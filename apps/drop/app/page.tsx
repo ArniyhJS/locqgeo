@@ -20,8 +20,8 @@ export default function RadarPage() {
   const { currentLocation, isLocating, gpsError, captureLocation } = useSpottScanner();
   const [selectedNode, setSelectedNode] = useState<NodeItem | null>(null);
 
-  const handleScanNode = (nodeId: string) => {
-    window.location.href = `/scan?node_id=${nodeId}`;
+  const handleScanNode = (geofenceId: string) => {
+    window.location.href = `/scan?geofence_id=${geofenceId}`;
   };
 
   return (
@@ -66,7 +66,7 @@ export default function RadarPage() {
       <NodeDetailsSheet
         node={selectedNode}
         onClose={() => setSelectedNode(null)}
-        onScanClick={(nodeId) => handleScanNode(nodeId)}
+        onScanClick={(geofenceId) => handleScanNode(geofenceId)}
       />
     </div>
   );

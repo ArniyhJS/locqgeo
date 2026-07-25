@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 // -----------------------------------------------------------------
-// 1. QR Payload & Node Scanner Schemas
+// 1. QR Payload & Geofence Scanner Schemas
 // -----------------------------------------------------------------
 export const QrScanPayloadSchema = z.object({
-  node_id: z.string().uuid("Invalid QR Code: node_id must be a valid UUID v4"),
+  geofence_id: z.string().uuid("Invalid QR Code: geofence_id must be a valid UUID v4"),
   tenant_id: z.string().uuid().optional(),
+  campaign_id: z.string().uuid().optional(),
   checksum: z.string().min(8).optional(),
 });
 
@@ -25,17 +26,21 @@ export const ClientLocationStateSchema = z.object({
 export type ClientLocationState = z.infer<typeof ClientLocationStateSchema>;
 
 // -----------------------------------------------------------------
-// 3. Local Wallet & Claim Storage Schema
+// 3. Local Wallet / Verification Storage Schema
 // -----------------------------------------------------------------
-export const LocalClaimRecordSchema = z.object({
-  claim_id: z.string().uuid(),
-  node_id: z.string().uuid(),
-  node_title: z.string(),
-  reward_type: z.enum(["AIRTIME", "DATA", "CASH", "VOUCHER"]),
-  reward_amount_ngn: z.number(),
-  claimed_at: z.string().datetime(),
-  payout_status: z.enum(["QUEUED", "PROCESSING", "COMPLETED", "FAILED"]),
+export const LocalVerificationRecordSchema = z.object({
+  verification_id: z.string().uuid(),
+  geofence_id: z.string().uuid(),
+  geofence_title: z.string(),
+  action_type: z.string(),
+  reward_type: z.enum(["AIRTIME", "DATA", "CASH", "VOUCHER"]).optional(),
+  reward_amount: z.number().optional(),
+  reward_currency: z.string().optional(),
+  verified_at: z.string().datetime(),
+  payout_status: z.enum(["NOT_APPLICABLE", "QUEUED", "PROCESSING", "COMPLETED", "FAILED"]),
   redemption_code: z.string().optional(),
+  campaign_id: z.string().uuid().optional(),
+  user_id: z.string().uuid().optional(),
 });
 
-export type LocalClaimRecord = z.infer<typeof LocalClaimRecordSchema>;
+export type LocalVerificationRecord = z.infer<typeof LocalVerificationRecordSchema>;

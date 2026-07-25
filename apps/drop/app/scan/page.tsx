@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSpottScanner } from "@/hooks/useSpottScanner";
 import { AccuracyBadge } from "@/components/scanner/AccuracyBadge";
@@ -8,25 +8,34 @@ import { CameraView } from "@/components/scanner/CameraView";
 
 function ScanContent() {
   const searchParams = useSearchParams();
-  const targetNodeId = searchParams.get("node_id") || "00000000-0000-0000-0000-000000000001";
-  const { currentLocation, isLocating, isSubmitting, gpsError, scanError, claimSuccessData, captureLocation, executeClaim } =
-    useSpottScanner();
+  const targetGeofenceId = searchParams.get("geofence_id") || "";
+  const {
+    currentLocation,
+    isLocating,
+    isSubmitting,
+    gpsError,
+    scanError,
+    verificationSuccessData,
+    captureLocation,
+    executeVerification,
+  } = useSpottScanner();
 
   useEffect(() => {
     captureLocation().catch(() => {});
   }, [captureLocation]);
 
-  const handleQrDecoded = async (scannedNodeId: string) => {
+  const handleQrDecoded = async (scannedGeofenceId: string) => {
     if (isSubmitting) return;
-    const finalNodeId = scannedNodeId.length === 36 ? scannedNodeId : targetNodeId;
-    await executeClaim(finalNodeId);
+    const finalGeofenceId = scannedGeofenceId.length === 36 ? scannedGeofenceId : targetGeofenceId;
+    if (!finalGeofenceId) return;
+    await executeVerification(finalGeofenceId);
   };
 
   return (
     <div className="space-y-6 max-w-sm mx-auto">
       <div className="text-center space-y-1">
-        <h1 className="text-xl font-extrabold text-white">Billboard QR Scanner</h1>
-        <p className="text-xs text-gray-400">Position physical QR code within camera reticle.</p>
+        <h1 className="text-xl font-extrabold text-white">QR Geofence Scanner</h1>
+        <p className="text-xs text-gray-400">Scan a target code and verify your physical presence.</p>
       </div>
 
       <div className="flex justify-center">
@@ -35,38 +44,41 @@ function ScanContent() {
 
       {gpsError && (
         <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium text-center">
-          ⚠️ {gpsError}
+          {gpsError}
         </div>
       )}
 
       {scanError && (
         <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium text-center">
-          ❌ {scanError}
+          {scanError}
         </div>
       )}
 
-      {claimSuccessData ? (
+      {verificationSuccessData ? (
         <div className="glass-card p-6 rounded-3xl text-center space-y-4 border border-emerald-500/40 shadow-2xl animate-in zoom-in-95">
           <div className="h-16 w-16 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-2xl">
-            🎉
+            Verified
           </div>
           <div className="space-y-1">
-            <h3 className="text-xl font-black text-emerald-400">Claim Verified!</h3>
-            <p className="text-xs text-gray-300">Geofence Proximity: {claimSuccessData.distance_meters}m</p>
+            <h3 className="text-xl font-black text-emerald-400">Presence Verified!</h3>
+            <p className="text-xs text-gray-300">Geofence Proximity: {verificationSuccessData.distance_meters}m</p>
+            <p className="text-xs text-gray-400 capitalize">Action: {verificationSuccessData.action_type.toLowerCase()}</p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-gray-900/80 border border-emerald-500/30 space-y-1">
-            <span className="text-[10px] text-gray-400 uppercase font-bold">Reward Granted</span>
-            <div className="text-2xl font-black text-white">
-              ₦ {claimSuccessData.reward.amount_ngn} {claimSuccessData.reward.type}
+          {verificationSuccessData.reward && (
+            <div className="p-4 rounded-2xl bg-gray-900/80 border border-emerald-500/30 space-y-1">
+              <span className="text-[10px] text-gray-400 uppercase font-bold">Reward Granted</span>
+              <div className="text-2xl font-black text-white">
+                {verificationSuccessData.reward.currency} {verificationSuccessData.reward.amount} {verificationSuccessData.reward.type}
+              </div>
             </div>
-          </div>
+          )}
 
           <a
             href="/wallet"
             className="w-full block glass-button py-3 rounded-2xl font-bold text-xs text-white"
           >
-            👛 View Reward in Local Wallet
+            View in Local Wallet
           </a>
         </div>
       ) : (
@@ -74,11 +86,11 @@ function ScanContent() {
           <CameraView onScanSuccess={handleQrDecoded} />
 
           <button
-            onClick={() => executeClaim(targetNodeId)}
-            disabled={isLocating || isSubmitting}
+            onClick={() => targetGeofenceId && executeVerification(targetGeofenceId)}
+            disabled={isLocating || isSubmitting || !targetGeofenceId}
             className="w-full glass-button py-3.5 rounded-2xl font-bold text-xs text-white disabled:opacity-50 cursor-pointer shadow-lg"
           >
-            {isSubmitting ? "Verifying Geofence Ping..." : "⚡ Manual Simulation Scan"}
+            {isSubmitting ? "Verifying Presence..." : "Manual Simulation Scan"}
           </button>
         </div>
       )}

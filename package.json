@@ -6,8 +6,6 @@
   "type": "module",
   "scripts": {
     "dev": "turbo run dev",
-    "dev:grid": "turbo run dev --filter=@spottgeo/grid-engine",
-    "dev:os": "turbo run dev --filter=@spottgeo/os",
     "dev:drop": "turbo run dev --filter=@spottgeo/drop",
     "build": "turbo run build",
     "lint": "turbo run lint",
@@ -15,7 +13,10 @@
     "check-types": "turbo run check-types",
     "db:generate": "pnpm --filter @spottgeo/database db:generate",
     "db:migrate": "pnpm --filter @spottgeo/database db:migrate",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "dev:console": "turbo run dev --filter=@spottgeo/console",
+    "dev:engine": "turbo run dev --filter=@spottgeo/engine",
+    "dev:verify": "turbo run dev --filter=@spottgeo/verify"
   },
   "devDependencies": {
     "turbo": "^2.10.6",

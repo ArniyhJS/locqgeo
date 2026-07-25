@@ -3,17 +3,17 @@
 Document Version: 3.1.0
 Status: APPROVED
 
-> **SpottGrid Core Engine Spec**: See [spottgrid_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgrid_sdd_spec.md) for full v3.1.0 mathematical invariants, DDL schema, and 4-step anti-cheat execution details.
+> **SpottEngine Core Engine Spec**: See [spottengine_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md) for full v3.1.0 mathematical invariants, DDL schema, and 4-step anti-cheat execution details.
 
 ## 1. System Overview & Architecture
 
 SpottGeo is a location-based rewards and telemetry platform architected as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**.
 
 ### Core Components
-- **`services/grid-engine`**: Node.js + Fastify core engine processing `POST /api/v1/grid/ping` under 50ms latency.
+- **`services/engine`**: Node.js + Fastify core engine processing `POST /api/v1/engine/verify` under 50ms latency.
 - **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM.
 - **`packages/api-contracts`**: Shared Zod schemas ensuring zero type drift between backend routes and frontend components.
-- **`apps/os`**: SpottOS Next.js Enterprise B2B Dashboard.
+- **`apps/console`**: SpottConsole Next.js Enterprise B2B Dashboard.
 - **`apps/drop`**: SpottDrop Next.js Consumer PWA for radar tracking & instant claim payouts.
 
 ---

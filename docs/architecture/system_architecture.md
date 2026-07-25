@@ -6,11 +6,11 @@
                        |       (SpottDrop Next.js PWA)     |
                        +-----------------+-----------------+
                                          |
-                                  HTTP POST /api/v1/grid/ping
+                                  HTTP POST /api/v1/engine/verify
                                          |
                                          v
                        +-----------------------------------+
-                       |    SpottGrid Core Engine          |
+                       |    SpottEngine Core Engine          |
                        |    (Fastify Service - Port 8080)  |
                        +-------+-------------------+-------+
                                |                   |
@@ -25,7 +25,7 @@
                                                    ^
                                                    |
                        +---------------------------+-------+
-                       |    SpottOS B2B Dashboard          |
+                       |    SpottConsole B2B Dashboard          |
                        |    (Next.js App Router - Port 3000)|
                        +-----------------------------------+
 ```

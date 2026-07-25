@@ -17,12 +17,14 @@ export const PingRequestSchema = z.object({
   accuracy_meters: z
     .number()
     .min(0.0, "Accuracy cannot be negative"),
-  velocity_mps: z
-    .number()
-    .optional(),
-  node_id: z
-    .string()
-    .uuid("node_id must be a valid UUID v4"),
+  // Optional client-provided velocity hint; the engine always recomputes server-side.
+  velocity_mps: z.number().optional(),
+  geofence_id: z.string().uuid("geofence_id must be a valid UUID v4"),
+  tenant_id: z.string().uuid("tenant_id must be a valid UUID v4").optional(),
+  // Optional registered user context for progressive identity.
+  user_id: z.string().uuid("user_id must be a valid UUID v4").optional(),
+  // Optional campaign context for billboard gamification.
+  campaign_id: z.string().uuid("campaign_id must be a valid UUID v4").optional(),
 });
 
 export type PingRequest = z.infer<typeof PingRequestSchema>;
@@ -30,33 +32,53 @@ export type PingRequest = z.infer<typeof PingRequestSchema>;
 export const RewardTypeEnum = z.enum(["AIRTIME", "DATA", "CASH", "VOUCHER"]);
 export type RewardType = z.infer<typeof RewardTypeEnum>;
 
-export const ClaimStatusEnum = z.enum([
-  "SUCCESS",
+export const ActionTypeEnum = z.enum([
+  "REWARD",
+  "CHECKIN",
+  "ATTENDANCE",
+  "AUDIT",
+  "ACCESS",
+]);
+export type ActionType = z.infer<typeof ActionTypeEnum>;
+
+export const VerificationStatusEnum = z.enum([
+  "VERIFIED",
   "REJECTED_ACCURACY",
   "REJECTED_DUPLICATE",
   "REJECTED_VELOCITY",
   "REJECTED_OUT_OF_BOUNDS",
-  "REJECTED_INACTIVE_NODE",
+  "REJECTED_INACTIVE_GEOFENCE",
 ]);
-export type ClaimStatus = z.infer<typeof ClaimStatusEnum>;
+export type VerificationStatus = z.infer<typeof VerificationStatusEnum>;
 
 export const PingResponseSuccessSchema = z.object({
   success: z.literal(true),
   status: z.literal("VERIFIED"),
   data: z.object({
-    claim_id: z.string().uuid(),
+    verification_id: z.string().uuid(),
+    geofence_id: z.string().uuid(),
+    geofence_title: z.string().optional(),
     distance_meters: z.number(),
-    reward: z.object({
-      type: RewardTypeEnum,
-      amount_ngn: z.number(),
-      payout_status: z.enum(["QUEUED", "PROCESSING", "COMPLETED"]),
-    }),
+    action_type: ActionTypeEnum,
+    verified_at: z.string().datetime().optional(),
+    payout_status: z.enum(["NOT_APPLICABLE", "QUEUED", "PROCESSING", "COMPLETED", "FAILED"]).optional(),
+    campaign_id: z.string().uuid().optional(),
+    points_earned: z.number().int().nonnegative().optional(),
+    leaderboard_rank: z.number().int().positive().optional(),
+    reward: z
+      .object({
+        type: RewardTypeEnum,
+        amount: z.number(),
+        currency: z.string().default("NGN"),
+        payout_status: z.enum(["QUEUED", "PROCESSING", "COMPLETED", "FAILED"]),
+      })
+      .optional(),
   }),
 });
 
 export const PingResponseErrorSchema = z.object({
   success: z.literal(false),
-  status: ClaimStatusEnum,
+  status: VerificationStatusEnum,
   error_code: z.string(),
   message: z.string(),
   details: z.record(z.unknown()).optional(),

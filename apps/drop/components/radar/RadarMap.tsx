@@ -17,7 +17,7 @@ interface RadarMapProps {
   onSelectNode: (node: NodeItem) => void;
 }
 
-export function RadarMap({ userLocation, onSelectNode }: RadarMapProps) {
+export function RadarMap({ userLocation: _userLocation, onSelectNode }: RadarMapProps) {
   const [nodes, setNodes] = useState<NodeItem[]>([]);
 
   useEffect(() => {

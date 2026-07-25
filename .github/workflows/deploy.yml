@@ -6,16 +6,16 @@ on:
 
 jobs:
   deploy-grid-engine:
-    name: Deploy SpottGrid Fastify Core Service
+    name: Deploy SpottEngine Fastify Core Service
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Deploy Notification
-        run: echo "Deploying services/grid-engine to production container service..."
+        run: echo "Deploying services/engine to production container service..."
 
   deploy-apps:
-    name: Deploy Next.js SpottOS & SpottDrop Apps
+    name: Deploy Next.js SpottConsole & SpottDrop Apps
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code

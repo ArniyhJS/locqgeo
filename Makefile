@@ -1,4 +1,4 @@
-.PHONY: dev dev-grid dev-os dev-drop build lint test check-types db-generate db-migrate clean
+.PHONY: dev dev-engine dev-console dev-drop dev-verify build lint test check-types db-generate db-migrate clean
 
 dev:
 	pnpm run dev
@@ -8,6 +8,9 @@ dev-grid:
 
 dev-os:
 	pnpm run dev:os
+
+dev-verify:
+	pnpm run dev:verify
 
 dev-drop:
 	pnpm run dev:drop

@@ -1,0 +1,262 @@
+# SpottVerify Product Requirements Document (PRD)
+
+## 1. Overview
+
+**SpottVerify** is the proof-of-presence verifier consumer Progressive Web App (PWA) for the SpottGeo platform. It allows users to scan QR codes at physical locations to prove attendance, check-in, audit completion, or access authorization — with or without an associated reward campaign.
+
+SpottVerify is designed for contexts where **verification itself is the value**: events, classes, workforce check-ins, inspections, access control, and attendance tracking.
+
+### 1.1 Product Vision
+
+> The fastest way to prove you were really there.
+
+### 1.2 Goals
+
+1. Provide a lightweight, trustless way to verify physical presence.
+2. Support both campaign-based gamification and standalone verification use cases.
+3. Work reliably offline and in low-connectivity environments.
+4. Keep user identity optional until a functional need requires linking.
+5. Deliver clear verification proof that can be shared with organizers, employers, or systems.
+
+### 1.3 Target Users
+
+| Persona                     | Description                                               |
+| --------------------------- | --------------------------------------------------------- |
+| **Event Attendee**          | Checks in at a conference, concert, or meetup.            |
+| **Student / Trainee**       | Verifies class or session attendance.                     |
+| **Field Worker**            | Confirms presence at a job site or inspection point.      |
+| **Security / Patrol Guard** | Scans checkpoints during a patrol route.                  |
+| **Conference Organizer**    | Uses the app to validate attendees via backend dashboard. |
+
+---
+
+## 2. User Journeys
+
+### Journey A: Campaign-Based Verification
+
+1. User sees a campaign poster with a SpottVerify QR code.
+2. Opens SpottVerify or scans with camera.
+3. QR payload contains `geofence_id` and `campaign_id`.
+4. App captures GPS and scans the code.
+5. Engine verifies location, campaign eligibility, and fraud signals.
+6. App shows verification result, points earned, and leaderboard rank.
+7. Verification is recorded in campaign progress and user history.
+
+### Journey B: Standalone Event Check-In
+
+1. User receives an event ticket or invitation with a QR code.
+2. At the venue, user scans the QR at the entrance.
+3. QR payload contains only `geofence_id`.
+4. Engine verifies presence within the event geofence.
+5. App shows a verified check-in badge and timestamp.
+6. Organizer sees the verified attendee in SpottConsole.
+
+### Journey C: Progressive Identity Linking
+
+1. User scans anonymously for several events.
+2. Organizer requires a verified identity for certificates or CPE credits.
+3. User links phone number / email via SpottVerify.
+4. App sends link request to SpottEngine.
+5. Past anonymous verifications are backfilled to the linked user profile.
+6. Certificates and credentials are now tied to the real user.
+
+### Journey D: Offline Inspection
+
+1. A field worker arrives at a remote site with no network.
+2. Scans the QR code at the inspection point.
+3. App stores the verification attempt locally.
+4. When network returns, the app syncs and confirms verification.
+5. Supervisor sees the verified check-in from the console.
+
+---
+
+## 3. Current MVP Features
+
+### 3.1 Home Screen
+
+- Explain the app’s purpose: “Verify your presence at locations and events.”
+- Call-to-action to open the scanner.
+- Link to verification history.
+
+### 3.2 QR Scanner
+
+- Camera-based scanning.
+- Support for JSON payloads (`geofence_id`, `campaign_id`, `user_id`) and raw UUIDs.
+- Manual fallback button.
+- Display current GPS accuracy.
+
+### 3.3 Verification Result
+
+- Success screen with verification ID, campaign context, points earned, leaderboard rank.
+- Reward display if campaign action type is REWARD.
+- Failure screen with rejection reason.
+
+### 3.4 Verification History
+
+- List of offline-cached verification records.
+- Show action type, timestamp, payout status, and campaign context.
+
+### 3.5 Offline Support
+
+- Store scans locally when network is unavailable.
+- Sync in background.
+- Retry failed submissions.
+
+---
+
+## 4. Target-State Features (Roadmap)
+
+### 4.1 Verification Modes
+
+| Feature                         | Description                                                      | Priority |
+| ------------------------------- | ---------------------------------------------------------------- | -------- |
+| Campaign verification           | Scan to participate in a campaign and earn points/rewards.       | Current  |
+| Standalone check-in             | Scan to verify presence without a campaign (events, attendance). | High     |
+| Ordered checkpoint verification | Visit geofences in a required sequence.                          | Medium   |
+| Attendance mode                 | One-time verified check-in per session.                          | High     |
+| Audit mode                      | Attach optional notes or photos to a verification.               | Medium   |
+| Access mode                     | Unlock a gate, door, or restricted area after verification.      | Low      |
+
+### 4.2 Identity & Credentials
+
+| Feature                       | Description                                                   | Priority |
+| ----------------------------- | ------------------------------------------------------------- | -------- |
+| Anonymous scanning            | No account required by default.                               | Current  |
+| Phone/email linking           | Link identity for certificates or rewards.                    | High     |
+| Digital badges / certificates | Generate proof of attendance for events.                      | Medium   |
+| CPE/CEU credits               | Issue continuing-education credits after verified attendance. | Medium   |
+| Export verification proof     | Share a verification link or PDF.                             | Medium   |
+
+### 4.3 Engagement
+
+| Feature                 | Description                                        | Priority |
+| ----------------------- | -------------------------------------------------- | -------- |
+| Points and leaderboards | Show rank within a campaign.                       | Current  |
+| Streaks                 | Consecutive verified days.                         | Low      |
+| Milestone badges        | “10 events attended,” “All checkpoints completed.” | Low      |
+| Social share            | Share verified attendance on social media.         | Low      |
+
+### 4.4 Organizer-Facing Features
+
+| Feature             | Description                                                            | Priority |
+| ------------------- | ---------------------------------------------------------------------- | -------- |
+| Organizer scanner   | Allow authorized staff to scan attendee QR codes instead of self-scan. | Medium   |
+| Bulk check-in       | Verify a list of registered attendees at once.                         | Low      |
+| Attendee search     | Find a user by name or ticket ID.                                      | Low      |
+| Real-time headcount | Live count of verified attendees.                                      | Medium   |
+
+### 4.5 Scanner Enhancements
+
+| Feature                       | Description                                          | Priority |
+| ----------------------------- | ---------------------------------------------------- | -------- |
+| NFC verification              | Tap an NFC tag to verify.                            | Low      |
+| Bluetooth beacon verification | Indoor verification where GPS is weak.               | Low      |
+| Auto-scan toggle              | Continuous scanning for events with high throughput. | Low      |
+
+### 4.6 Trust & Safety
+
+| Feature                 | Description                                  | Priority |
+| ----------------------- | -------------------------------------------- | -------- |
+| Fraud explanation       | Clear message when verification is rejected. | Medium   |
+| Retry guidance          | Tell user to move outside, enable GPS, etc.  | Medium   |
+| Root/jailbreak warnings | Warn users if device looks tampered.         | Low      |
+
+---
+
+## 5. Technical Considerations
+
+- **PWA**: installable, offline-capable, lightweight.
+- **QR decode**: support JSON and raw UUID formats.
+- **GPS**: high-accuracy mode; handle indoor/weak signal gracefully.
+- **IndexedDB**: offline queue and history cache.
+- **Deep linking**: allow QR scanning from external camera app via URL scheme.
+- **Push notifications**: optional alerts for verification success or identity required.
+- **Accessibility**: simple, high-contrast UI for diverse users.
+
+---
+
+## 6. Verification Payloads
+
+SpottVerify should support multiple QR payload formats:
+
+### JSON payload (recommended for campaigns)
+
+```json
+{
+  "geofence_id": "uuid",
+  "campaign_id": "uuid",
+  "user_id": "uuid"
+}
+```
+
+### Raw geofence UUID (for standalone events)
+
+```text
+a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+```
+
+### URL payload (for marketing / deep links)
+
+```text
+https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
+```
+
+---
+
+## 7. Success Metrics
+
+| Metric                      | Target / Meaning                                       |
+| --------------------------- | ------------------------------------------------------ |
+| Scan-to-verify success rate | ≥ 80% of scans are verified                            |
+| Offline sync success rate   | ≥ 95% of queued verifications sync successfully        |
+| Identity linking rate       | ≥ 20% of active users link a phone/email when prompted |
+| Campaign completion rate    | % of users who finish multi-step campaigns             |
+| Organizer satisfaction      | Measured via NPS or churn on console side              |
+| Verification latency        | Median < 2 seconds from scan to result                 |
+| Fraud rate                  | < 3% of verified events later flagged                  |
+
+---
+
+## 8. Design Principles
+
+1. **Trust-first**: every screen reinforces that the verification is official and tamper-resistant.
+2. **Minimal friction**: reduce steps between scan and result.
+3. **Context-aware**: show relevant info based on whether the scan is campaign-based or standalone.
+4. **Offline-first**: assume poor connectivity and design for it.
+5. **Inclusive**: work across device tiers and literacy levels.
+
+---
+
+## 9. Roadmap
+
+### Phase 1 — MVP (Current)
+- QR scanner with campaign and standalone support
+- Verification result screen with points/rank
+- Verification history
+- Offline queue and sync
+
+### Phase 2 — Identity & Credentials
+- Phone/email linking
+- Verification export / share
+- Digital attendance badges
+- Organizer scanner mode
+
+### Phase 3 — Scale
+- NFC and beacon support
+- Real-time event headcount
+- Audit notes and photo attachments
+- CPE/CEU credit integration
+
+### Phase 4 — Ecosystem
+- Access-control integrations
+- Advanced credential verification
+- Multi-event season passes
+
+---
+
+## 10. Related Documents
+
+- `docs/product/spottdrop_prd.md`
+- `docs/product/spottconsole_prd.md`
+- `docs/strategy/fraud_detection_roadmap.md`
+- `docs/verticals/index.md`
