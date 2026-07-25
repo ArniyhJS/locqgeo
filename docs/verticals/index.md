@@ -23,18 +23,32 @@ Once that proof exists, it can be used for:
 
 ## Verticals
 
+### Marketing & Consumer Engagement
 - [Out-of-Home (OOH) Advertising](./out-of-home-ooh-advertising.md)
 - [Retail Loyalty & Foot-Traffic](./retail-loyalty-foot-traffic.md)
 - [Events, Conferences & Concerts](./events-conferences-concerts.md)
-- [Workforce & Field Operations](./workforce-field-operations.md)
-- [Delivery & Logistics](./delivery-logistics.md)
-- [Insurance Claims & Risk Verification](./insurance-claims-risk-verification.md)
-- [Education & Campus Management](./education-campus-management.md)
-- [Healthcare & Pharmaceutical Field Teams](./healthcare-pharmaceutical-field-teams.md)
-- [Real Estate & Property Management](./real-estate-property-management.md)
-- [Government & Civic Programs](./government-civic-programs.md)
 - [Tourism & Hospitality](./tourism-hospitality.md)
 - [Fitness & Wellness](./fitness-wellness.md)
-- [Automotive & Mobility](./automotive-mobility.md)
-- [Agriculture & Field Research](./agriculture-field-research.md)
+- [Geolocation & Web3 Gaming](./geolocation-gaming-web3.md)
+
+### Workforce & Operations
+- [Workforce & Field Operations](./workforce-field-operations.md)
+- [Delivery & Logistics](./delivery-logistics.md)
+- [Healthcare & Pharmaceutical Field Teams](./healthcare-pharmaceutical-field-teams.md)
 - [Security & Patrol Services](./security-patrol-services.md)
+- [Telecom Infrastructure & Fiber Maintenance](./telecom-infrastructure-maintenance.md)
+- [Agriculture & Field Research](./agriculture-field-research.md)
+
+### Governance, Risk & Financial Services
+- [Insurance Claims & Risk Verification](./insurance-claims-risk-verification.md)
+- [Agent Banking & POS Compliance](./agent-banking-pos-compliance.md)
+- [ESG & Carbon Credit Verification (MRV)](./esg-carbon-credit-verification.md)
+- [Waste Management & Sanitation Auditing](./waste-management-sanitation-auditing.md)
+- [Electoral & Civic Process Monitoring](./electoral-civic-process-monitoring.md)
+
+### Public Sector & Real Estate
+- [Government & Civic Programs](./government-civic-programs.md)
+- [Education & Campus Management](./education-campus-management.md)
+- [Real Estate & Property Management](./real-estate-property-management.md)
+- [Automotive & Mobility](./automotive-mobility.md)
+- [Pilgrimage & Faith Community Management](./pilgrimage-faith-community-management.md)

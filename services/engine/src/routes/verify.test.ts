@@ -40,6 +40,8 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
   };
 
   it("rejects pings with accuracy > 50.0m", async () => {
+    mockExecute.mockResolvedValueOnce([]); // prior ping query
+
     const res = await app.inject({
       method: "POST",
       url: "/api/v1/engine/verify",
@@ -51,11 +53,13 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
     expect(body.success).toBe(false);
     expect(body.status).toBe("REJECTED_ACCURACY");
     expect(body.error_code).toBe("ERR_LOW_GPS_ACCURACY");
-    expect(mockExecute).not.toHaveBeenCalled();
+    expect(body.details.spoof_score).toBeGreaterThanOrEqual(40);
   });
 
   it("rejects when the geofence does not exist", async () => {
-    mockExecute.mockResolvedValue([]);
+    mockExecute
+      .mockResolvedValueOnce([]) // prior ping query
+      .mockResolvedValueOnce([]); // geofence query
 
     const res = await app.inject({
       method: "POST",
@@ -70,22 +74,24 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
   });
 
   it("rejects when the geofence is inactive", async () => {
-    mockExecute.mockResolvedValue([
-      {
-        id: validGeofenceId,
-        tenant_id: "tenant-1",
-        title: "Test Zone",
-        radius_meters: 50,
-        action_type: "REWARD",
-        reward_type: "AIRTIME",
-        reward_amount: "500",
-        reward_currency: "NGN",
-        daily_budget_limit: "50000",
-        daily_budget_spent: "0",
-        is_active: false,
-        distance_meters: 10,
-      },
-    ]);
+    mockExecute
+      .mockResolvedValueOnce([]) // prior ping query
+      .mockResolvedValueOnce([
+        {
+          id: validGeofenceId,
+          tenant_id: "tenant-1",
+          title: "Test Zone",
+          radius_meters: 50,
+          action_type: "REWARD",
+          reward_type: "AIRTIME",
+          reward_amount: "500",
+          reward_currency: "NGN",
+          daily_budget_limit: "50000",
+          daily_budget_spent: "0",
+          is_active: false,
+          distance_meters: 10,
+        },
+      ]);
 
     const res = await app.inject({
       method: "POST",
@@ -100,6 +106,7 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
 
   it("rejects duplicate verified events within 24 hours", async () => {
     mockExecute
+      .mockResolvedValueOnce([]) // prior ping query
       .mockResolvedValueOnce([
         {
           id: validGeofenceId,
@@ -116,7 +123,6 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
           distance_meters: 5,
         },
       ])
-      .mockResolvedValueOnce([]) // no prior ping
       .mockResolvedValueOnce([{ id: "prior-verification" }]); // duplicate found
 
     const res = await app.inject({
@@ -132,6 +138,7 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
 
   it("rejects out-of-bounds pings using the geofence's own radius", async () => {
     mockExecute
+      .mockResolvedValueOnce([]) // prior ping query
       .mockResolvedValueOnce([
         {
           id: validGeofenceId,
@@ -148,8 +155,7 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
           distance_meters: 80,
         },
       ])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([]);
+      .mockResolvedValueOnce([]); // no duplicate
 
     const res = await app.inject({
       method: "POST",
@@ -163,24 +169,8 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
     expect(body.message).toContain("25.0m");
   });
 
-  it("rejects excessive computed velocity", async () => {
+  it("rejects excessive computed velocity via AntiCheatFilter", async () => {
     mockExecute
-      .mockResolvedValueOnce([
-        {
-          id: validGeofenceId,
-          tenant_id: "tenant-1",
-          title: "Test Zone",
-          radius_meters: 100,
-          action_type: "CHECKIN",
-          reward_type: null,
-          reward_amount: null,
-          reward_currency: null,
-          daily_budget_limit: null,
-          daily_budget_spent: null,
-          is_active: true,
-          distance_meters: 10,
-        },
-      ])
       .mockResolvedValueOnce([
         {
           latitude: 6.5244,
@@ -189,8 +179,7 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
           distance_delta_meters: 2000,
           time_delta_seconds: 1,
         },
-      ])
-      .mockResolvedValueOnce([]);
+      ]); // prior ping with impossible velocity
 
     const res = await app.inject({
       method: "POST",
@@ -201,10 +190,12 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
     expect(res.statusCode).toBe(422);
     const body = JSON.parse(res.body);
     expect(body.status).toBe("REJECTED_VELOCITY");
+    expect(body.details.spoof_score).toBeGreaterThanOrEqual(50);
   });
 
   it("returns a verified non-reward event for a generic check-in", async () => {
     mockExecute
+      .mockResolvedValueOnce([]) // prior ping query
       .mockResolvedValueOnce([
         {
           id: validGeofenceId,
@@ -221,8 +212,7 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
           distance_meters: 12.5,
         },
       ])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([]) // duplicate query
       .mockResolvedValueOnce(undefined) // ping insert
       .mockResolvedValueOnce(undefined); // verification insert
 
@@ -242,6 +232,7 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
 
   it("returns a verified reward event and triggers a payout", async () => {
     mockExecute
+      .mockResolvedValueOnce([]) // prior ping query
       .mockResolvedValueOnce([
         {
           id: validGeofenceId,
@@ -258,10 +249,11 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
           distance_meters: 8.0,
         },
       ])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce(undefined)
-      .mockResolvedValueOnce(undefined);
+      .mockResolvedValueOnce([]) // duplicate query
+      .mockResolvedValueOnce(undefined) // checkin_pings insert
+      .mockResolvedValueOnce([{ reward_float_balance: "100000.00" }]) // tenant float query
+      .mockResolvedValueOnce(undefined) // tenant float update
+      .mockResolvedValueOnce(undefined); // verifications insert
 
     const res = await app.inject({
       method: "POST",
@@ -281,6 +273,7 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
     const campaignId = "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22";
 
     mockExecute
+      .mockResolvedValueOnce([]) // prior ping query
       .mockResolvedValueOnce([
         {
           id: validGeofenceId,
@@ -310,7 +303,6 @@ describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () 
           reward_currency: "NGN",
         },
       ])
-      .mockResolvedValueOnce([]) // no prior ping
       .mockResolvedValueOnce([]) // no duplicate
       .mockResolvedValueOnce(undefined) // ping insert
       .mockResolvedValueOnce(undefined) // verification insert

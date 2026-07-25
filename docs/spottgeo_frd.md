@@ -1,6 +1,6 @@
 # SpottGeo Functional Requirements Document (FRD)
 
-Document Version: 3.0.0
+Document Version: 3.1.0
 
 ## 1. Functional Requirements Matrix
 
@@ -15,7 +15,12 @@ Document Version: 3.0.0
 - **FRD-DROP-03**: Mobile wallet showing accumulated rewards with instant airtime/data top-up and Paystack bank transfer.
 - **FRD-DROP-04**: PWA manifest & service worker offline caching capabilities.
 
-### 1.3 Core Grid Engine (SpottEngine)
-- **FRD-GRID-01**: Fastify HTTP server capable of handling sub-50ms ping responses.
-- **FRD-GRID-02**: Zod schema validation via `@spottgeo/api-contracts`.
-- **FRD-GRID-03**: Asynchronous payout execution with unique idempotency keys.
+### 1.3 Consumer PWA (SpottVerify)
+- **FRD-VERIFY-01**: QR code scanner for standalone event attendance and check-in without gamification requirements.
+- **FRD-VERIFY-02**: Offline verification queue that stores payloads and syncs with the engine upon network restoration.
+- **FRD-VERIFY-03**: Progressive identity linking, allowing anonymous verifications to be later associated with a user profile.
+
+### 1.4 Core Engine (SpottEngine)
+- **FRD-ENGINE-01**: Fastify HTTP server capable of handling sub-50ms ping responses.
+- **FRD-ENGINE-02**: Zod schema validation via `@spottgeo/api-contracts`.
+- **FRD-ENGINE-03**: Asynchronous payout execution with unique idempotency keys.

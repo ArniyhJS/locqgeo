@@ -48,6 +48,7 @@ export const VerificationStatusEnum = z.enum([
   "REJECTED_VELOCITY",
   "REJECTED_OUT_OF_BOUNDS",
   "REJECTED_INACTIVE_GEOFENCE",
+  "REJECTED_SPOOF",
 ]);
 export type VerificationStatus = z.infer<typeof VerificationStatusEnum>;
 
@@ -81,7 +82,7 @@ export const PingResponseErrorSchema = z.object({
   status: VerificationStatusEnum,
   error_code: z.string(),
   message: z.string(),
-  details: z.record(z.unknown()).optional(),
+  details: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type PingResponseSuccess = z.infer<typeof PingResponseSuccessSchema>;

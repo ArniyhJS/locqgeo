@@ -11,10 +11,14 @@ SpottGeo is a location-based rewards and telemetry platform architected as a **U
 
 ### Core Components
 - **`services/engine`**: Node.js + Fastify core engine processing `POST /api/v1/engine/verify` under 50ms latency.
-- **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM.
+- **`services/payout-worker`**: Standalone background worker executing queued reward payouts with multi-provider fallbacks.
+- **`services/webhook-dispatcher`**: Microservice handling HMAC-signed outbound webhooks to enterprise endpoints.
+- **`services/analytics-worker`**: Background service pre-aggregating telemetry stats and leaderboard rankings.
+- **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM with pre-funded tenant float support.
 - **`packages/api-contracts`**: Shared Zod schemas ensuring zero type drift between backend routes and frontend components.
 - **`apps/console`**: SpottConsole Next.js Enterprise B2B Dashboard.
 - **`apps/drop`**: SpottDrop Next.js Consumer PWA for radar tracking & instant claim payouts.
+- **`apps/verify`**: SpottVerify Next.js Consumer PWA for standalone attendance and check-ins.
 
 ---
 
@@ -43,8 +47,10 @@ WHERE ST_DWithin(
 
 ---
 
-## 4. Payout Delivery Mechanics
+## 4. Payout Delivery & Fallback Mechanics
 
-Supports dual payout providers:
-- **VTPass Telco Airtime / Data**: Dispatched asynchronously via HTTP API webhooks.
-- **Paystack Direct Transfers**: Instant bank account deposits for cash rewards.
+Supports multi-tier fallback payout orchestration:
+- **VTPass Telco Airtime / Data**: Primary provider for digital top-ups.
+- **Paystack Direct Transfers**: Primary provider for cash reward payouts.
+- **Flutterwave**: Secondary provider fallback if primary fails.
+- **User Wallet Credit (`user_wallets`)**: Fallback credit to internal user balance if external payout channels fail.

@@ -16,11 +16,14 @@
     "clean": "turbo run clean && rm -rf node_modules",
     "dev:console": "turbo run dev --filter=@spottgeo/console",
     "dev:engine": "turbo run dev --filter=@spottgeo/engine",
-    "dev:verify": "turbo run dev --filter=@spottgeo/verify"
+    "dev:verify": "turbo run dev --filter=@spottgeo/verify",
+    "dev:payout-worker": "turbo run dev --filter=@spottgeo/payout-worker",
+    "dev:webhook-dispatcher": "turbo run dev --filter=@spottgeo/webhook-dispatcher",
+    "dev:analytics-worker": "turbo run dev --filter=@spottgeo/analytics-worker"
   },
   "devDependencies": {
     "turbo": "^2.10.6",
-    "typescript": "^5.7.2"
+    "typescript": "^7.0.2"
   },
   "packageManager": "pnpm@11.17.0"
 }

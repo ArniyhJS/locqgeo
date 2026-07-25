@@ -3,18 +3,17 @@ import crypto from "node:crypto";
 import {
   PingRequestSchema,
   type PingRequest,
+  type VerificationStatus,
   VerificationStatusEnum,
   PingResponseSuccessSchema,
 } from "@spottgeo/api-contracts";
 import { PayoutOrchestrator } from "../services/payout.js";
 import { db, sql } from "@spottgeo/database";
 import { isCampaignEligible, recordCampaignVisit } from "./campaigns.js";
-
-const MAX_ACCURACY_METERS = 50.0;
-const MAX_VELOCITY_MPS = 55.56; // ~200 km/h
+import { AntiCheatFilter } from "../plugins/anticheat.js";
 
 function errorReply(
-  status: (typeof VerificationStatusEnum._type),
+  status: VerificationStatus,
   code: string,
   message: string,
   details?: Record<string, unknown>
@@ -41,18 +40,61 @@ export async function verifyRoutes(fastify: FastifyInstance) {
 
       const ping = parseResult.data;
 
-      // Step 1: Accuracy filter
-      if (ping.accuracy_meters > MAX_ACCURACY_METERS) {
-        return reply.status(422).send(
-          errorReply(
-            "REJECTED_ACCURACY",
-            "ERR_LOW_GPS_ACCURACY",
-            `Accuracy ${ping.accuracy_meters.toFixed(1)}m exceeds threshold of ${MAX_ACCURACY_METERS}m`
-          )
-        );
-      }
-
       try {
+        // Step 1: Query prior ping for server-side velocity calculation
+        const priorPingResult = (await db.execute(sql`
+          SELECT
+            latitude,
+            longitude,
+            created_at,
+            ST_Distance(
+              ST_SetSRID(ST_MakePoint(${ping.longitude}, ${ping.latitude}), 4326)::geography,
+              ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography
+            ) AS distance_delta_meters,
+            EXTRACT(EPOCH FROM (NOW() - created_at)) AS time_delta_seconds
+          FROM checkin_pings
+          WHERE device_id = ${ping.device_id}
+          ORDER BY created_at DESC
+          LIMIT 1;
+        `)) as unknown as Array<{
+          latitude: number;
+          longitude: number;
+          created_at: Date;
+          distance_delta_meters: number;
+          time_delta_seconds: number;
+        }>;
+
+        const prior = priorPingResult[0];
+
+        // Evaluate 4-Step Anti-Cheat Filter
+        const antiCheatResult = AntiCheatFilter.evaluatePing(
+          ping.latitude,
+          ping.longitude,
+          ping.accuracy_meters,
+          ping.velocity_mps ?? 0,
+          prior ? {
+            distanceDeltaMeters: Number(prior.distance_delta_meters),
+            timeDeltaSeconds: Number(prior.time_delta_seconds),
+          } : undefined
+        );
+
+        if (!antiCheatResult.passed) {
+          const errorCode = antiCheatResult.status === "REJECTED_ACCURACY"
+            ? "ERR_LOW_GPS_ACCURACY"
+            : antiCheatResult.status === "REJECTED_VELOCITY"
+            ? "ERR_IMPOSSIBLE_SPEED"
+            : "ERR_SPOOF_SUSPECTED";
+
+          return reply.status(422).send(
+            errorReply(
+              antiCheatResult.status,
+              errorCode,
+              antiCheatResult.reason || "Verification rejected by anti-cheat filter",
+              { spoof_score: antiCheatResult.spoofScore }
+            )
+          );
+        }
+
         // Look up the target geofence. Restrict by tenant when provided.
         const geofenceResult = (await db.execute(sql`
           SELECT
@@ -118,53 +160,6 @@ export async function verifyRoutes(fastify: FastifyInstance) {
           campaignReward = eligibility.reward ?? null;
           campaignActionType = eligibility.actionType;
           campaignBudgetAmount = campaignReward?.amount ?? 0;
-        }
-
-        // Step 2: Server-side velocity / teleportation check using the last ping
-        const priorPingResult = (await db.execute(sql`
-          SELECT
-            latitude,
-            longitude,
-            created_at,
-            ST_Distance(
-              ST_SetSRID(ST_MakePoint(${ping.longitude}, ${ping.latitude}), 4326)::geography,
-              ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography
-            ) AS distance_delta_meters,
-            EXTRACT(EPOCH FROM (NOW() - created_at)) AS time_delta_seconds
-          FROM checkin_pings
-          WHERE device_id = ${ping.device_id}
-          ORDER BY created_at DESC
-          LIMIT 1;
-        `)) as unknown as Array<{
-          latitude: number;
-          longitude: number;
-          created_at: Date;
-          distance_delta_meters: number;
-          time_delta_seconds: number;
-        }>;
-
-        const prior = priorPingResult[0];
-        let velocityMps = 0;
-        if (prior && prior.time_delta_seconds > 0) {
-          velocityMps = Number(prior.distance_delta_meters) / Number(prior.time_delta_seconds);
-        }
-
-        if (prior && Number(prior.time_delta_seconds) === 0 && Number(prior.distance_delta_meters) > 10) {
-          return reply.status(422).send(
-            errorReply("REJECTED_VELOCITY", "ERR_ZERO_TIME_SPOOF", "Impossible location jump with zero time delta")
-          );
-        }
-
-        // Also reject if client-sent velocity hint or computed velocity exceeds threshold
-        const clientVelocity = ping.velocity_mps ?? 0;
-        if (clientVelocity > MAX_VELOCITY_MPS || velocityMps > MAX_VELOCITY_MPS) {
-          return reply.status(422).send(
-            errorReply(
-              "REJECTED_VELOCITY",
-              "ERR_IMPOSSIBLE_SPEED",
-              `Telemetry velocity exceeds ${MAX_VELOCITY_MPS} m/s`
-            )
-          );
         }
 
         // Step 3: Duplicate verification filter (24h rolling window)
@@ -235,14 +230,29 @@ export async function verifyRoutes(fastify: FastifyInstance) {
           const provider = effectiveRewardType === "CASH" ? "PAYSTACK" : "VTPASS";
           const payoutType = effectiveRewardType === "CASH" ? "CASH" : (effectiveRewardType as "AIRTIME" | "DATA");
 
-          payoutResult = await PayoutOrchestrator.processPayout({
-            claimId: verificationId,
-            amount: effectiveRewardAmount,
-            currency: effectiveRewardCurrency,
-            recipient: ping.device_id,
-            provider,
-            payoutType,
-          });
+          // Check if tenant has sufficient pre-funded reward float
+          const tenantResult = (await db.execute(sql`
+            SELECT reward_float_balance FROM tenants WHERE id = ${geofence.tenant_id} LIMIT 1;
+          `)) as unknown as Array<{ reward_float_balance: string }>;
+
+          const tenantFloat = tenantResult[0] ? Number(tenantResult[0].reward_float_balance) : Infinity;
+
+          if (tenantFloat < effectiveRewardAmount) {
+            payoutResult = {
+              status: "FAILED",
+            };
+          } else {
+            payoutResult = await PayoutOrchestrator.processPayout({
+              claimId: verificationId,
+              amount: effectiveRewardAmount,
+              currency: effectiveRewardCurrency,
+              recipient: ping.device_id,
+              provider,
+              payoutType,
+              tenantId: geofence.tenant_id,
+              userId: ping.user_id,
+            });
+          }
 
           await db.execute(sql`
             INSERT INTO verifications (

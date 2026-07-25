@@ -7,7 +7,7 @@ export const TelemetryEventSchema = z.object({
   device_id: z.string(),
   latitude: z.number(),
   longitude: z.number(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
   timestamp: z.string().or(z.date()).optional(),
 });
 

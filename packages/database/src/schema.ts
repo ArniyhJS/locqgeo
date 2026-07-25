@@ -49,6 +49,7 @@ export const tenants = pgTable("tenants", {
   id: uuid("id").defaultRandom().primaryKey(),
   companyName: varchar("company_name", { length: 255 }).notNull(),
   apiKeyHash: varchar("api_key_hash", { length: 128 }).notNull().unique(),
+  rewardFloatBalance: numeric("reward_float_balance", { precision: 14, scale: 2 }).default("0.00").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
