@@ -207,7 +207,8 @@ Key tables already defined in the SpottGeo schema:
 | `VERIFIED`                   | Presence proved; reward/attendance processed.         |
 | `REJECTED_ACCURACY`          | GPS accuracy too low or payload invalid.              |
 | `REJECTED_DUPLICATE`         | Already verified here in the last 24 hours.           |
-| `REJECTED_VELOCITY`          | Impossible travel speed or zero-time spoof.           |
+| `REJECTED_VELOCITY`          | Impossible travel speed calculated from delta.        |
+| `REJECTED_SPOOF`             | High mock location risk or timing manipulation.       |
 | `REJECTED_OUT_OF_BOUNDS`     | User outside geofence radius.                         |
 | `REJECTED_INACTIVE_GEOFENCE` | Geofence missing or inactive, or campaign ineligible. |
 
