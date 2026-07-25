@@ -34,9 +34,9 @@ Most existing players solve **one piece** of the value chain. SpottGeo’s oppor
           Payments ────────┼────────── Global geofencing APIs
                            │
          Paystack          │         Radar
-         OPay               │         GroundTruth
-         VTpass             │         Bluedot
-         Quickteller        │         Foursquare
+         OPay              │         GroundTruth
+         VTpass            │         Bluedot
+         Quickteller       │         Foursquare
 ```
 
 ---
@@ -125,35 +125,35 @@ Most existing players solve **one piece** of the value chain. SpottGeo’s oppor
 
 These companies show what a mature market looks like, but none has a strong Africa-focused, reward-integrated offering.
 
-| Company | Category | What They Do | How SpottGeo Differs |
-|---|---|---|---|
-| **Radar** | Geofencing API | Developer-friendly geofencing, trip tracking, location analytics | SpottGeo adds anti-fraud, campaign management, and reward orchestration for non-developer marketers |
-| **GroundTruth** | Location-based ads + attribution | Geo-targeted advertising, visitation attribution | SpottGeo is more open-platform and reward-integrated; focused on Africa use cases |
-| **Bluedot** | Location SDK / geofencing | Accurate geofencing for apps, drive-through, curbside | SpottGeo adds QR verification, offline PWA support, and reward disbursement |
-| **Foursquare** | Location intelligence | POI data, foot-traffic analytics, ad attribution | SpottGeo is execution-focused: verify, reward, and prevent fraud, not just measure |
-| **PlotProjects** | Geofencing SDK | Mobile geofencing notifications and analytics | SpottGeo adds campaign builder, leaderboards, and payouts |
-| **AdMobilize** | OOH analytics | Computer vision and analytics for billboards | SpottGeo uses consumer scan + GPS, not cameras; cheaper deployment for billboards |
-| **Gimbal** | Location SDK + beacons | Proximity engagement, place matching | SpottGeo is QR-first and works on low-end devices without SDK integration |
-| **Swarm / Foursquare consumer apps** | Social check-in | Social location sharing | SpottGeo is B2B / B2B2C infrastructure, not a consumer social network |
+| Company                              | Category                         | What They Do                                                     | How SpottGeo Differs                                                                                |
+| ------------------------------------ | -------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Radar**                            | Geofencing API                   | Developer-friendly geofencing, trip tracking, location analytics | SpottGeo adds anti-fraud, campaign management, and reward orchestration for non-developer marketers |
+| **GroundTruth**                      | Location-based ads + attribution | Geo-targeted advertising, visitation attribution                 | SpottGeo is more open-platform and reward-integrated; focused on Africa use cases                   |
+| **Bluedot**                          | Location SDK / geofencing        | Accurate geofencing for apps, drive-through, curbside            | SpottGeo adds QR verification, offline PWA support, and reward disbursement                         |
+| **Foursquare**                       | Location intelligence            | POI data, foot-traffic analytics, ad attribution                 | SpottGeo is execution-focused: verify, reward, and prevent fraud, not just measure                  |
+| **PlotProjects**                     | Geofencing SDK                   | Mobile geofencing notifications and analytics                    | SpottGeo adds campaign builder, leaderboards, and payouts                                           |
+| **AdMobilize**                       | OOH analytics                    | Computer vision and analytics for billboards                     | SpottGeo uses consumer scan + GPS, not cameras; cheaper deployment for billboards                   |
+| **Gimbal**                           | Location SDK + beacons           | Proximity engagement, place matching                             | SpottGeo is QR-first and works on low-end devices without SDK integration                           |
+| **Swarm / Foursquare consumer apps** | Social check-in                  | Social location sharing                                          | SpottGeo is B2B / B2B2C infrastructure, not a consumer social network                               |
 
 ---
 
 ## 5. Feature Comparison Matrix
 
-| Capability | SpottGeo | Terragon | VerifyMe / YouVerify | Eskimi / Twinpine | Kobo360 | Radar |
-|---|---|---|---|---|---|---|
-| Geofence creation | Yes | No | No | No | Limited | Yes |
-| QR-based verification | Yes | No | No | No | No | No |
-| GPS accuracy filtering | Yes | No | No | No | No | Yes |
-| Anti-fraud (velocity, duplicate) | Yes | No | Partial | No | No | Partial |
-| Campaign builder | Yes | Partial | No | No | No | No |
-| Consumer rewards | Yes | Partial | No | No | No | No |
-| Progressive identity | Yes | No | Partial | No | No | No |
-| Payout orchestration | Yes | No | No | No | No | No |
-| Workforce verification | Yes | No | No | No | Yes | Partial |
-| OOH attribution | Yes | No | No | No | No | Partial |
-| Multi-tenant console | Yes | Unknown | Unknown | No | No | Partial |
-| Africa-first UX | Yes | Yes | Yes | Yes | Yes | No |
+| Capability                       | SpottGeo | Terragon | VerifyMe / YouVerify | Eskimi / Twinpine | Kobo360 | Radar   |
+| -------------------------------- | -------- | -------- | -------------------- | ----------------- | ------- | ------- |
+| Geofence creation                | Yes      | No       | No                   | No                | Limited | Yes     |
+| QR-based verification            | Yes      | No       | No                   | No                | No      | No      |
+| GPS accuracy filtering           | Yes      | No       | No                   | No                | No      | Yes     |
+| Anti-fraud (velocity, duplicate) | Yes      | No       | Partial              | No                | No      | Partial |
+| Campaign builder                 | Yes      | Partial  | No                   | No                | No      | No      |
+| Consumer rewards                 | Yes      | Partial  | No                   | No                | No      | No      |
+| Progressive identity             | Yes      | No       | Partial              | No                | No      | No      |
+| Payout orchestration             | Yes      | No       | No                   | No                | No      | No      |
+| Workforce verification           | Yes      | No       | No                   | No                | Yes     | Partial |
+| OOH attribution                  | Yes      | No       | No                   | No                | No      | Partial |
+| Multi-tenant console             | Yes      | Unknown  | Unknown              | No                | No      | Partial |
+| Africa-first UX                  | Yes      | Yes      | Yes                  | Yes               | Yes     | No      |
 
 ---
 
@@ -176,13 +176,13 @@ These companies show what a mature market looks like, but none has a strong Afri
 
 ## 7. Threats and Risks
 
-| Threat | Likelihood | Mitigation |
-|---|---|---|
-| Terragon or a telco adds geofence verification | Medium | Build anti-fraud IP and land enterprise clients fast |
-| Global players like Radar enter Africa | Medium | Local reward integrations and offline consumer apps are hard to replicate |
-| Ad platforms add basic QR check-ins | Medium | SpottGeo owns the full campaign and payout workflow |
-| Payment wallets add reward campaigns | Low | They lack geofence verification; partner with them |
-| GPS spoofing arms race | High | Continuous investment in spoofing detection and device reputation |
+| Threat                                         | Likelihood | Mitigation                                                                |
+| ---------------------------------------------- | ---------- | ------------------------------------------------------------------------- |
+| Terragon or a telco adds geofence verification | Medium     | Build anti-fraud IP and land enterprise clients fast                      |
+| Global players like Radar enter Africa         | Medium     | Local reward integrations and offline consumer apps are hard to replicate |
+| Ad platforms add basic QR check-ins            | Medium     | SpottGeo owns the full campaign and payout workflow                       |
+| Payment wallets add reward campaigns           | Low        | They lack geofence verification; partner with them                        |
+| GPS spoofing arms race                         | High       | Continuous investment in spoofing detection and device reputation         |
 
 ---
 

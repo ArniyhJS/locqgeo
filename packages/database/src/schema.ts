@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, doublePrecision, numeric, timestamp, boolean, text, date, index, unique, primaryKey, integer } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, doublePrecision, numeric, timestamp, boolean, text, date, index, unique, primaryKey, integer, jsonb } from "drizzle-orm/pg-core";
 
 
 // -----------------------------------------------------------------
@@ -216,6 +216,38 @@ export const budgetResetsLog = pgTable("budget_resets_log", {
 }, (table) => [
   unique("unique_geofence_daily_reset").on(table.geofenceId, table.resetDate),
 ]);
+
+// Table: verification_attempts (Comprehensive Audit Log of All Verification Attempts)
+export const verificationAttempts = pgTable("verification_attempts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  deviceId: varchar("device_id", { length: 128 }).notNull(),
+  geofenceId: uuid("geofence_id").references(() => geofences.id, { onDelete: "set null" }),
+  tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "set null" }),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+  status: varchar("status", { length: 50 }).notNull(),
+  latitude: doublePrecision("latitude").notNull(),
+  longitude: doublePrecision("longitude").notNull(),
+  accuracyMeters: doublePrecision("accuracy_meters").notNull(),
+  fraudScore: numeric("fraud_score", { precision: 4, scale: 3 }).default("0.000").notNull(),
+  fraudSignals: jsonb("fraud_signals").$type<string[]>().default([]).notNull(),
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index("idx_verification_attempts_device").on(table.deviceId),
+  index("idx_verification_attempts_geofence").on(table.geofenceId),
+  index("idx_verification_attempts_created").on(table.createdAt),
+]);
+
+// Table: device_reputation (Device Trust and Abuse History)
+export const deviceReputation = pgTable("device_reputation", {
+  deviceId: varchar("device_id", { length: 128 }).primaryKey(),
+  trustScore: numeric("trust_score", { precision: 4, scale: 3 }).default("1.000").notNull(),
+  totalAttempts: integer("total_attempts").default(0).notNull(),
+  rejectedAttempts: integer("rejected_attempts").default(0).notNull(),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
 
 // Legacy / convenience aliases
 export const presenceTargets = geofences;

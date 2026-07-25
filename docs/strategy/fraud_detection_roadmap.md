@@ -25,57 +25,57 @@ SpottGeo should defend in multiple layers. No single signal is enough.
 ### Layer 1: Input Validation
 Already implemented in the engine.
 
-| Signal | Rule | Example Rejection |
-|---|---|---|
-| GPS accuracy | Reject if accuracy > 50 meters | `REJECTED_ACCURACY` |
-| Coordinate bounds | Latitude/longitude must be valid | `INVALID_PAYLOAD` |
-| Device ID format | Alphanumeric, length 16–128 | `INVALID_PAYLOAD` |
-| UUID validity | geofence_id and campaign_id must be valid UUIDs | `INVALID_PAYLOAD` |
+| Signal            | Rule                                            | Example Rejection   |
+| ----------------- | ----------------------------------------------- | ------------------- |
+| GPS accuracy      | Reject if accuracy > 50 meters                  | `REJECTED_ACCURACY` |
+| Coordinate bounds | Latitude/longitude must be valid                | `INVALID_PAYLOAD`   |
+| Device ID format  | Alphanumeric, length 16–128                     | `INVALID_PAYLOAD`   |
+| UUID validity     | geofence_id and campaign_id must be valid UUIDs | `INVALID_PAYLOAD`   |
 
 ### Layer 2: Physical Plausibility
 Already partially implemented.
 
-| Signal | Rule | Example Rejection |
-|---|---|---|
-| Distance from geofence | Reject if outside the geofence radius | `REJECTED_OUT_OF_BOUNDS` |
-| Velocity / teleportation | Reject if speed between two pings is impossible | `REJECTED_VELOCITY` |
-| Zero-time spoof | Reject if distance changes with zero time delta | `REJECTED_VELOCITY` |
-| Duplicate window | Reject if device already verified at this geofence within 24h | `REJECTED_DUPLICATE` |
+| Signal                   | Rule                                                          | Example Rejection        |
+| ------------------------ | ------------------------------------------------------------- | ------------------------ |
+| Distance from geofence   | Reject if outside the geofence radius                         | `REJECTED_OUT_OF_BOUNDS` |
+| Velocity / teleportation | Reject if speed between two pings is impossible               | `REJECTED_VELOCITY`      |
+| Zero-time spoof          | Reject if distance changes with zero time delta               | `REJECTED_VELOCITY`      |
+| Duplicate window         | Reject if device already verified at this geofence within 24h | `REJECTED_DUPLICATE`     |
 
 ### Layer 3: Device Trust
 Build over time.
 
-| Signal | What It Detects |
-|---|---|
-| Device fingerprint consistency | Same device_id sending wildly different fingerprints |
-| Emulator / rooted device flags | Fingerprint libraries, user-agent anomalies |
-| App vs. browser origin | Web scans can be more fragile than native app scans |
-| Screen / hardware attributes | Device model, screen size, OS version consistency |
-| VPN / proxy usage | IP geolocation mismatch with GPS |
-| Multiple device IDs on one phone | Clearing app storage to reset device_id |
+| Signal                           | What It Detects                                      |
+| -------------------------------- | ---------------------------------------------------- |
+| Device fingerprint consistency   | Same device_id sending wildly different fingerprints |
+| Emulator / rooted device flags   | Fingerprint libraries, user-agent anomalies          |
+| App vs. browser origin           | Web scans can be more fragile than native app scans  |
+| Screen / hardware attributes     | Device model, screen size, OS version consistency    |
+| VPN / proxy usage                | IP geolocation mismatch with GPS                     |
+| Multiple device IDs on one phone | Clearing app storage to reset device_id              |
 
 ### Layer 4: Behavioral and Network Patterns
 Build over time.
 
-| Signal | What It Detects |
-|---|---|
-| Scan-to-scan timing | Too many scans in too little time |
-| Geographic clustering | Many devices verifying from the same unusual location |
-| Device farm patterns | Hundreds of devices sharing IPs, models, or behavior sequences |
-| Stolen QR codes | Verifications happening far from the expected geofence after QR leak |
-| Reward farming | Same user/device repeatedly hitting high-reward geofences |
-| Sleep/wake anomalies | Scans at impossible hours for a campaign location |
+| Signal                | What It Detects                                                      |
+| --------------------- | -------------------------------------------------------------------- |
+| Scan-to-scan timing   | Too many scans in too little time                                    |
+| Geographic clustering | Many devices verifying from the same unusual location                |
+| Device farm patterns  | Hundreds of devices sharing IPs, models, or behavior sequences       |
+| Stolen QR codes       | Verifications happening far from the expected geofence after QR leak |
+| Reward farming        | Same user/device repeatedly hitting high-reward geofences            |
+| Sleep/wake anomalies  | Scans at impossible hours for a campaign location                    |
 
 ### Layer 5: Reputation and Probabilistic Scoring
 Build on top of Layers 1–4.
 
-| Signal | What It Detects |
-|---|---|
-| Device trust score | Historical behavior of a device_id |
-| User trust score | Historical behavior of a linked user |
-| Geofence risk score | Geofences that attract abnormal verification patterns |
-| Campaign risk score | Campaigns with unusually high rejection or reward-claim rates |
-| Network / IP reputation | Known datacenter, VPN, or botnet ranges |
+| Signal                  | What It Detects                                               |
+| ----------------------- | ------------------------------------------------------------- |
+| Device trust score      | Historical behavior of a device_id                            |
+| User trust score        | Historical behavior of a linked user                          |
+| Geofence risk score     | Geofences that attract abnormal verification patterns         |
+| Campaign risk score     | Campaigns with unusually high rejection or reward-claim rates |
+| Network / IP reputation | Known datacenter, VPN, or botnet ranges                       |
 
 ---
 
@@ -202,16 +202,16 @@ CREATE TABLE device_reputation (
 
 To build all layers, the system must collect and store:
 
-| Data Point | Purpose |
-|---|---|
-| All verification attempts | Train models and detect patterns |
-| Device fingerprint | Recognize the same device across IDs |
-| IP address + ASN | Detect VPNs, proxies, farms |
-| User agent | Detect emulators, headless browsers |
-| GPS accuracy and satellite count | Detect mocked locations |
-| Timestamp + lat/lng history | Velocity and duplicate checks |
-| Campaign and geofence context | Risk scoring per asset |
-| Reward outcomes | Correlate fraud with reward abuse |
+| Data Point                       | Purpose                              |
+| -------------------------------- | ------------------------------------ |
+| All verification attempts        | Train models and detect patterns     |
+| Device fingerprint               | Recognize the same device across IDs |
+| IP address + ASN                 | Detect VPNs, proxies, farms          |
+| User agent                       | Detect emulators, headless browsers  |
+| GPS accuracy and satellite count | Detect mocked locations              |
+| Timestamp + lat/lng history      | Velocity and duplicate checks        |
+| Campaign and geofence context    | Risk scoring per asset               |
+| Reward outcomes                  | Correlate fraud with reward abuse    |
 
 **Privacy note:** collect the minimum necessary, hash or rotate identifiers where possible, and comply with local data-protection laws.
 
@@ -221,26 +221,26 @@ To build all layers, the system must collect and store:
 
 Not every fraud signal should block the user. Graduated responses reduce friction.
 
-| Risk Level | Response |
-|---|---|
-| Low | Allow normally |
-| Medium | Allow, flag in console, delay reward payout |
-| High | Require challenge (OTP, CAPTCHA, selfie) |
-| Critical | Block verification, log incident, notify ops team |
+| Risk Level      | Response                                             |
+| --------------- | ---------------------------------------------------- |
+| Low             | Allow normally                                       |
+| Medium          | Allow, flag in console, delay reward payout          |
+| High            | Require challenge (OTP, CAPTCHA, selfie)             |
+| Critical        | Block verification, log incident, notify ops team    |
 | Confirmed fraud | Ban device/user, claw back rewards, add to blocklist |
 
 ---
 
 ## 7. Key Metrics
 
-| Metric | Target / Meaning |
-|---|---|
-| Fraud rejection rate | 3–10% of total attempts (varies by campaign type) |
-| False positive rate | < 2% of legitimate users blocked |
-| Reward clawback rate | Track how many verified rewards later proved fraudulent |
-| Time-to-detect | < 15 minutes for campaign-level anomalies |
-| Manual review queue size | Kept below manageable threshold via automation |
-| Model precision / recall | Measured weekly on labeled test set |
+| Metric                   | Target / Meaning                                        |
+| ------------------------ | ------------------------------------------------------- |
+| Fraud rejection rate     | 3–10% of total attempts (varies by campaign type)       |
+| False positive rate      | < 2% of legitimate users blocked                        |
+| Reward clawback rate     | Track how many verified rewards later proved fraudulent |
+| Time-to-detect           | < 15 minutes for campaign-level anomalies               |
+| Manual review queue size | Kept below manageable threshold via automation          |
+| Model precision / recall | Measured weekly on labeled test set                     |
 
 ---
 

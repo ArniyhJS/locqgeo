@@ -25,6 +25,13 @@ export const PingRequestSchema = z.object({
   user_id: z.string().uuid("user_id must be a valid UUID v4").optional(),
   // Optional campaign context for billboard gamification.
   campaign_id: z.string().uuid("campaign_id must be a valid UUID v4").optional(),
+  // Optional device metadata fields for fingerprinting and fraud scoring.
+  user_agent: z.string().optional(),
+  ip_address: z.string().optional(),
+  screen_width: z.number().optional(),
+  screen_height: z.number().optional(),
+  os_name: z.string().optional(),
+  browser_name: z.string().optional(),
 });
 
 export type PingRequest = z.infer<typeof PingRequestSchema>;
@@ -49,6 +56,7 @@ export const VerificationStatusEnum = z.enum([
   "REJECTED_OUT_OF_BOUNDS",
   "REJECTED_INACTIVE_GEOFENCE",
   "REJECTED_SPOOF",
+  "REJECTED_RATE_LIMIT",
 ]);
 export type VerificationStatus = z.infer<typeof VerificationStatusEnum>;
 
