@@ -88,12 +88,12 @@ Build on top of Layers 1–4.
 - Geofence radius check
 - Velocity / duplicate / inactive geofence checks
 
-**Quick wins to add:**
-- [ ] Basic device fingerprint (screen size, user-agent, OS, browser)
-- [ ] IP geolocation check vs. GPS (warning flag, not yet blocking)
-- [ ] Per-device rate limiting (e.g. max 5 verifications per minute)
-- [ ] Store every verification attempt, not just successes, in a `verification_attempts` log
-- [ ] Add `fraud_score` and `fraud_signals` columns to verifications and attempts
+**Quick wins added:**
+- [x] Basic device fingerprint (screen size, user-agent, OS, browser) metadata support in `PingRequestSchema`
+- [x] IP address and User-Agent capture per verification attempt
+- [x] Per-device sliding-window rate limiting (max 5 verifications per 60 seconds -> `REJECTED_RATE_LIMIT`)
+- [x] Store every verification attempt (accepted & rejected) in `verification_attempts` log
+- [x] Add `fraud_score` (0.000-1.000) and `fraud_signals` (JSON array) to attempts log and `device_reputation` table
 
 **Acceptance criteria:**
 - Fraud signals are recorded for every request.

@@ -209,6 +209,7 @@ Key tables already defined in the SpottGeo schema:
 | `REJECTED_DUPLICATE`         | Already verified here in the last 24 hours.           |
 | `REJECTED_VELOCITY`          | Impossible travel speed calculated from delta.        |
 | `REJECTED_SPOOF`             | High mock location risk or timing manipulation.       |
+| `REJECTED_RATE_LIMIT`        | Exceeded max 5 verifications per 60 seconds per device|
 | `REJECTED_OUT_OF_BOUNDS`     | User outside geofence radius.                         |
 | `REJECTED_INACTIVE_GEOFENCE` | Geofence missing or inactive, or campaign ineligible. |
 
