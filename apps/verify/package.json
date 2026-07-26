@@ -14,11 +14,14 @@
     "@spottgeo/api-contracts": "workspace:*",
     "@spottgeo/database": "workspace:*",
     "@zxing/library": "^0.23.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "idb-keyval": "^6.3.0",
     "lucide-react": "^1.26.0",
     "next": "^16.2.11",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^16.2.11",
