@@ -1,0 +1,116 @@
+name: SpottGeo Monorepo CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # -----------------------------------------------------------------
+  # 1. CI Validation (Type Check, Lint, Test, Build)
+  # -----------------------------------------------------------------
+  validate:
+    name: 🧪 CI Validation & Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Type Check
+        run: pnpm run check-types
+
+      - name: Run Linting
+        run: pnpm run lint
+
+      - name: Run Unit Tests
+        run: pnpm run test
+
+      - name: Run Turborepo Build
+        run: pnpm run build
+
+  # -----------------------------------------------------------------
+  # 2. Database Migration Step (Runs on main branch after CI passes)
+  # -----------------------------------------------------------------
+  db-migrate:
+    name: 🗄️ Database Schema Migration
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Execute Drizzle Schema Migration
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: pnpm run db:migrate
+
+  # -----------------------------------------------------------------
+  # 3. CD Deployment (Runs on main branch after migrations)
+  # -----------------------------------------------------------------
+  deploy-services:
+    name: 🚀 Production Services & Apps Deployment
+    needs: db-migrate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm & Turbo
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prune Workspace for SpottEngine
+        run: npx turbo prune --scope=@spottgeo/engine --docker
+
+      - name: Deployment Status Notification
+        run: |
+          echo "✅ SpottEngine Fastify API & Microservice Workers ready for production deploy!"
+          echo "✅ SpottConsole, SpottDrop, and SpottVerify PWAs ready for Vercel deploy!"
