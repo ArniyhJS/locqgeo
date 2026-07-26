@@ -32,10 +32,14 @@ function ScanContent() {
   };
 
   return (
-    <div className="space-y-6 max-w-sm mx-auto">
+    <div className="space-y-5 max-w-sm mx-auto">
+      {/* Page Header */}
       <div className="text-center space-y-1">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#ff6b00]/10 text-[#ff6b00] border border-[#ff6b00]/30">
+          Step 2 of 2: Physical Verification
+        </span>
         <h1 className="text-xl font-extrabold text-white">QR Geofence Scanner</h1>
-        <p className="text-xs text-gray-400">Scan a target code and verify your physical presence.</p>
+        <p className="text-xs text-gray-400">Point camera at billboard QR code to prove spatial presence.</p>
       </div>
 
       <div className="flex justify-center">
@@ -43,31 +47,31 @@ function ScanContent() {
       </div>
 
       {gpsError && (
-        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium text-center">
-          {gpsError}
+        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium text-center">
+          ⚠️ {gpsError}
         </div>
       )}
 
       {scanError && (
-        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium text-center">
-          {scanError}
+        <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium text-center">
+          ❌ {scanError}
         </div>
       )}
 
       {verificationSuccessData ? (
-        <div className="glass-card p-6 rounded-3xl text-center space-y-4 border border-emerald-500/40 shadow-2xl animate-in zoom-in-95">
-          <div className="h-16 w-16 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-2xl">
-            Verified
+        <div className="glass-card p-6 rounded-3xl text-center space-y-4 border border-[#ff6b00] shadow-2xl animate-in zoom-in-95 bg-gradient-to-b from-[#ff6b00]/20 to-transparent">
+          <div className="h-16 w-16 mx-auto rounded-full bg-[#ff6b00]/20 border-2 border-[#ff6b00] flex items-center justify-center text-3xl shadow-lg shadow-[#ff6b00]/40">
+            🎉
           </div>
           <div className="space-y-1">
-            <h3 className="text-xl font-black text-emerald-400">Presence Verified!</h3>
-            <p className="text-xs text-gray-300">Geofence Proximity: {verificationSuccessData.distance_meters}m</p>
-            <p className="text-xs text-gray-400 capitalize">Action: {verificationSuccessData.action_type.toLowerCase()}</p>
+            <h3 className="text-xl font-black text-white">Spatial Presence Verified!</h3>
+            <p className="text-xs text-gray-300">Geofence Proximity: <span className="font-bold text-[#ff6b00]">{verificationSuccessData.distance_meters}m</span></p>
+            <p className="text-xs text-gray-400 capitalize">Status: Verified & Anti-Cheat Validated</p>
           </div>
 
           {verificationSuccessData.reward && (
-            <div className="p-4 rounded-2xl bg-gray-900/80 border border-emerald-500/30 space-y-1">
-              <span className="text-[10px] text-gray-400 uppercase font-bold">Reward Granted</span>
+            <div className="p-4 rounded-2xl bg-[#0b0c0e]/90 border border-[#ff6b00]/40 space-y-1 shadow-inner">
+              <span className="text-[10px] text-[#ff6b00] uppercase font-black tracking-wider">Reward Unlocked</span>
               <div className="text-2xl font-black text-white">
                 {verificationSuccessData.reward.currency} {verificationSuccessData.reward.amount} {verificationSuccessData.reward.type}
               </div>
@@ -76,21 +80,22 @@ function ScanContent() {
 
           <a
             href="/wallet"
-            className="w-full block glass-button py-3 rounded-2xl font-bold text-xs text-white"
+            className="w-full block glass-button py-3.5 rounded-2xl font-bold text-xs text-[#0b0c0e] shadow-xl shadow-[#ff6b00]/30"
           >
-            View in Local Wallet
+            View Code in Wallet 👛
           </a>
         </div>
       ) : (
         <div className="space-y-4">
           <CameraView onScanSuccess={handleQrDecoded} />
 
+          {/* Quick Simulation Fallback Button for Testing */}
           <button
             onClick={() => targetGeofenceId && executeVerification(targetGeofenceId)}
             disabled={isLocating || isSubmitting || !targetGeofenceId}
-            className="w-full glass-button py-3.5 rounded-2xl font-bold text-xs text-white disabled:opacity-50 cursor-pointer shadow-lg"
+            className="w-full glass-button py-3.5 rounded-2xl font-bold text-xs text-[#0b0c0e] disabled:opacity-50 cursor-pointer shadow-lg transition-transform active:scale-95"
           >
-            {isSubmitting ? "Verifying Presence..." : "Manual Simulation Scan"}
+            {isSubmitting ? "Verifying Spatial Radius..." : "Simulate Presence Check"}
           </button>
         </div>
       )}
@@ -100,7 +105,7 @@ function ScanContent() {
 
 export default function ScanPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-emerald-400">Loading Scanner...</div>}>
+    <Suspense fallback={<div className="p-8 text-center text-xs text-[#ff6b00]">Loading Scanner...</div>}>
       <ScanContent />
     </Suspense>
   );

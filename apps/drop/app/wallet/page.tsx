@@ -47,22 +47,27 @@ export default function WalletPage() {
   const totalRewards = records.reduce((acc, r) => acc + (r.reward_amount ?? 0), 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-extrabold text-white">Local Verification Wallet</h1>
-        <p className="text-xs text-gray-400">Offline-cached IndexedDB verification history and reward codes.</p>
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#ff6b00]/10 text-[#ff6b00] border border-[#ff6b00]/30">
+          👛 Offline Vault
+        </span>
+        <h1 className="text-xl font-extrabold text-white mt-1">Verification Wallet</h1>
+        <p className="text-xs text-gray-400">Offline-cached proof records & reward redemption codes.</p>
       </div>
 
-      <div className="glass-card p-6 rounded-3xl space-y-2 border border-emerald-500/30">
-        <span className="text-[10px] uppercase tracking-widest font-extrabold text-emerald-400">Total Reward Value</span>
+      {/* Earnings Overview Card */}
+      <div className="glass-card p-5 rounded-2xl space-y-2 border border-[#ff6b00]/40 bg-gradient-to-tr from-[#ff6b00]/15 to-transparent relative overflow-hidden shadow-xl shadow-[#ff6b00]/10">
+        <span className="text-[10px] uppercase tracking-widest font-black text-[#ff6b00]">Total Verified Earnings</span>
         <div className="text-3xl font-black text-white">NGN {totalRewards.toLocaleString()}</div>
-        <p className="text-xs text-gray-400">Airtime, Data & Cash Vouchers</p>
+        <p className="text-xs text-gray-300">Airtime, Data & Voucher Claims</p>
       </div>
 
+      {/* History List */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-bold text-xs uppercase tracking-wider text-gray-400">Verification History ({records.length})</h3>
-          <span className="text-[10px] text-cyan-400 font-semibold">IndexedDB Sync</span>
+        <div className="flex items-center justify-between px-1">
+          <h3 className="font-bold text-xs uppercase tracking-wider text-gray-400">Claims History ({records.length})</h3>
+          <span className="text-[10px] text-[#ff6b00] font-semibold">IndexedDB Cache Active</span>
         </div>
 
         {records.map((record) => (
