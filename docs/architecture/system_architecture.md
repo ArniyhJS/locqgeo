@@ -37,6 +37,7 @@
 
 ## Related Architecture Documents
 
+- [Inter-App Communication Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/inter_app_communication.md)
 - [Technical Stack Critique & Tradeoffs](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/tech_stack_critique_and_tradeoffs.md)
 - [Entity Relationship Diagram (ERD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/erd.md)
 - [Nationwide Campaign Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/nationwide_campaign_architecture.md)

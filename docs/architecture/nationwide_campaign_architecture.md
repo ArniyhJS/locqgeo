@@ -14,13 +14,13 @@ This document describes the scaled-up deployment architecture required for Spott
 ```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                        Client Layer                              │
-│  ┌────────────┐  ┌─────────────┐  ┌──────────────────┐          │
-│  │ SpottDrop  │  │ SpottVerify │  │  SpottConsole    │          │
-│  │    PWA     │  │     PWA     │  │   Dashboard      │          │
-│  └─────┬──────┘  └──────┬──────┘  └────────┬─────────┘          │
-│        │                │                  │                    │
-│        └────────────────┴──────────────────┘                    │
-│                 Cloudflare / AWS CloudFront CDN                 │
+│  ┌────────────┐  ┌─────────────┐  ┌──────────────────┐           │
+│  │ SpottDrop  │  │ SpottVerify │  │  SpottConsole    │           │
+│  │    PWA     │  │     PWA     │  │   Dashboard      │           │
+│  └─────┬──────┘  └──────┬──────┘  └────────┬─────────┘           │
+│        │                │                  │                     │
+│        └────────────────┴──────────────────┘                     │
+│                 Cloudflare / AWS CloudFront CDN                  │
 └────────────────────────┬─────────────────────────────────────────┘
                          │
 ┌────────────────────────┼─────────────────────────────────────────┐
@@ -123,22 +123,22 @@ This document describes the scaled-up deployment architecture required for Spott
 
 ## Scaling Tiers
 
-| Daily Verifications | Recommended Setup |
-|---|---|
-| 10,000 | Single engine instance + primary DB |
-| 100,000 | 3+ engine instances + 1 read replica + Redis |
-| 1,000,000+ | 10+ engine instances + multiple read replicas + Redis Cluster + dedicated payout workers |
+| Daily Verifications | Recommended Setup                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| 10,000              | Single engine instance + primary DB                                                      |
+| 100,000             | 3+ engine instances + 1 read replica + Redis                                             |
+| 1,000,000+          | 10+ engine instances + multiple read replicas + Redis Cluster + dedicated payout workers |
 
 ## Deployment Recommendations
 
-| Concern | Suggested Technology |
-|---|---|
-| Container orchestration | Kubernetes (EKS/GKE) or AWS ECS Fargate |
-| Database | AWS RDS PostgreSQL Multi-AZ + read replicas, or Supabase/Neon |
-| Cache / Queue | AWS ElastiCache Redis or Upstash |
-| Object storage | AWS S3 or Cloudflare R2 for campaign assets and badge images |
-| CI/CD | GitHub Actions → Docker image → ECR/ACR → ECS/Kubernetes |
-| Edge / DNS | Cloudflare or AWS Route 53 + CloudFront |
+| Concern                 | Suggested Technology                                          |
+| ----------------------- | ------------------------------------------------------------- |
+| Container orchestration | Kubernetes (EKS/GKE) or AWS ECS Fargate                       |
+| Database                | AWS RDS PostgreSQL Multi-AZ + read replicas, or Supabase/Neon |
+| Cache / Queue           | AWS ElastiCache Redis or Upstash                              |
+| Object storage          | AWS S3 or Cloudflare R2 for campaign assets and badge images  |
+| CI/CD                   | GitHub Actions → Docker image → ECR/ACR → ECS/Kubernetes      |
+| Edge / DNS              | Cloudflare or AWS Route 53 + CloudFront                       |
 
 ## Nationwide-Specific Considerations
 
