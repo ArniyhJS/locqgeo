@@ -13,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="flex min-h-screen bg-[#090d16] text-gray-100 antialiased">
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning className="flex min-h-screen bg-[#090d16] text-gray-100 antialiased">
         {/* Sidebar */}
         <aside className="w-64 border-r border-gray-800 bg-[#0c121e]/80 p-6 backdrop-blur-xl flex flex-col justify-between">
           <div>

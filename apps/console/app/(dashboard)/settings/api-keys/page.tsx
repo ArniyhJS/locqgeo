@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { generateApiKeyAction } from "../../../actions/api-keys";
+import { DEMO_TENANT_ID } from "@/lib/constants";
 
 export default function ApiKeysPage() {
   const [label, setLabel] = useState("");
@@ -13,7 +14,7 @@ export default function ApiKeysPage() {
     setLoading(true);
     setGeneratedKey("");
 
-    const res = await generateApiKeyAction("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a00", {
+    const res = await generateApiKeyAction(DEMO_TENANT_ID, {
       key_label: label,
     });
 

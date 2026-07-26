@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { TelemetryQuerySchema, type TelemetrySummaryResponse } from "@spottgeo/api-contracts";
 import { db, sql } from "@spottgeo/database";
+import { DEMO_TENANT_ID } from "@/lib/constants";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const tenantId = searchParams.get("tenant_id") || "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a00";
+  const tenantId = searchParams.get("tenant_id") || DEMO_TENANT_ID;
   const geofenceId = searchParams.get("geofence_id") || undefined;
 
   const parseResult = TelemetryQuerySchema.safeParse({ tenant_id: tenantId, geofence_id: geofenceId });

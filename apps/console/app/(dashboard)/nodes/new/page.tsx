@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createGeofenceAction } from "../../../actions/geofences";
+import { DEMO_TENANT_ID } from "@/lib/constants";
 
 export default function NewGeofencePage() {
   const [title, setTitle] = useState("");
@@ -23,7 +24,7 @@ export default function NewGeofencePage() {
     setLoading(true);
     setMessage("");
 
-    const res = await createGeofenceAction("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a00", {
+    const res = await createGeofenceAction(DEMO_TENANT_ID, {
       title,
       latitude,
       longitude,

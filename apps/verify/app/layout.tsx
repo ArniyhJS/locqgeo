@@ -22,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-[#080c14] text-gray-100 antialiased flex flex-col min-h-screen items-center justify-start">
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body suppressHydrationWarning className="bg-[#080c14] text-gray-100 antialiased flex flex-col min-h-screen items-center justify-start">
         <div className="w-full max-w-md min-h-screen flex flex-col justify-between border-x border-gray-800/80 bg-[#0b101c]/90 shadow-2xl relative">
           <header className="h-14 border-b border-gray-800 bg-[#0d1322]/80 px-5 flex items-center justify-between backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-2.5">

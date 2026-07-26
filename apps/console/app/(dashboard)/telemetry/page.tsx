@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import type { TelemetrySummaryResponse } from "@spottgeo/api-contracts";
 import { FraudBreakdownChart } from "@/components/analytics/FraudBreakdownChart";
 import { HourlyTrendChart } from "@/components/analytics/HourlyTrendChart";
+import { DEMO_TENANT_ID } from "@/lib/constants";
 
 export default function TelemetryPage() {
   const [data, setData] = useState<TelemetrySummaryResponse | null>(null);
 
   useEffect(() => {
-    fetch("/api/v1/console/telemetry?tenant_id=a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a00")
+    fetch(`/api/v1/console/telemetry?tenant_id=${DEMO_TENANT_ID}`)
       .then((res) => res.json())
       .then((json: TelemetrySummaryResponse) => setData(json))
       .catch(() => {});
