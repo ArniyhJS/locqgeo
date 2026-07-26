@@ -1,133 +1,89 @@
-# SpottGeo Brand Marketing & UI Design System
+# SpottGeo Brand Identity & UI Design System
 
-This specification outlines the brand identity, marketing positioning, messaging hierarchy, visual design system, and UI component design tokens for the **SpottGeo Monorepo** ecosystem.
+This specification defines the **Electric Cyber Orange & Obsidian Black** brand identity, marketing philosophy, and UI design system for all customer-facing applications across the **SpottGeo Monorepo** (`SpottConsole`, `SpottDrop`, `SpottVerify`).
 
 ---
 
-## 🌟 Brand Marketing Strategy & Identity
+## 🍊 Brand Strategy & Geofencing Philosophy
 
 ### 1. Brand Vision & Positioning
-**SpottGeo** is the enterprise location-based rewards and physical presence verification infrastructure. 
-Our mission is to **make physical presence measurable, rewardable, and fraud-proof** for billboards, retail stores, stadium check-ins, event attendance, and field workforce management.
+**SpottGeo** is the next-generation spatial infrastructure platform powering real-world presence verification and reward campaigns.
 
-- **Tagline**: *"Verifiable Physical Engagement at Scale"*
-- **Core Value Proposition**: Transform physical-world advertising and attendance into cryptographic, instant-reward presence validation in sub-50ms.
-- **Brand Personality**: High-Tech, Trustworthy, Precision-Engineered, Dynamic, Premium.
-
----
-
-### 2. Product Brand Architecture
-
-```
-                                +-----------------------------------+
-                                |            SpottGeo               |
-                                |    Parent Platform Infrastructure |
-                                +-----------------+-----------------+
-                                                  |
-              ┌───────────────────────────────────┼───────────────────────────────────┐
-              │                                   │                                   │
-              v                                   v                                   v
-+---------------------------+       +---------------------------+       +---------------------------+
-|       SpottConsole        |       |         SpottDrop         |       |        SpottVerify        |
-|  Enterprise Control Plane |       |  Consumer Rewards PWA     |       | Standalone Check-In PWA   |
-|                           |       |                           |       |                           |
-| - Audience: B2B Operators |       | - Audience: Consumers     |       | - Audience: Attendees     |
-| - Vibe: Command Center    |       | - Vibe: Gamified, Cyber   |       | - Vibe: Clean, Fast       |
-| - Accent: Electric Blue   |       | - Accent: Neon Emerald    |       | - Accent: Royal Cobalt    |
-+---------------------------+       +---------------------------+       +---------------------------+
-```
+- **Brand Tagline**: *"Proof of Spatial Presence"*
+- **Core Philosophy**: **Geofence-First Architecture**. Every interaction, verification ping, reward claim, and analytics metric is anchored in verified physical radiuses. Presence is not assumed—it is cryptographically and spatially proven within geofenced boundaries.
+- **Visual & Brand Vibe**: High-Contrast Cyberpunk Glow, Futuristic, Precision-Engineered, Premium Obsidian & Electric Flame.
 
 ---
 
-## 🎨 UI Design System & Visual Tokens
-
-The SpottGeo UI design system is built on **Dark Mode Glassmorphism**, vibrant curated gradients, and dynamic micro-animations.
-
-### 1. Color Palette & Token System
+### 2. Unified Brand Palette: Cyber Orange & Obsidian Black
 
 ```
-                  +-------------------------------------------------------+
-                  |                 GLOBAL DARK BACKGROUND                |
-                  |                Deep Void: #080c14                     |
-                  +-------------------------------------------------------+
+  +---------------------------------------------------------------------------------+
+  |                            OBSIDIAN BLACK SURFACES                              |
+  |                           Deep Void Base: #0B0C0E                               |
+  +---------------------------------------------------------------------------------+
+                                         |
+                       VIBRANT ELECTRIC ORANGE ACCENTS
+                           Primary Glow: #FF6B00
 ```
 
-#### Global Surface & Border Tokens
-- **Background Void**: `#080c14`
-- **Surface Elevation 1 (Card BG)**: `rgba(13, 19, 34, 0.75)`
-- **Surface Elevation 2 (Hover BG)**: `rgba(24, 34, 56, 0.85)`
-- **Glass Border**: `rgba(255, 255, 255, 0.08)`
-- **Glass Border Hover**: `rgba(255, 255, 255, 0.20)`
-- **Text Primary**: `#f9fafb` (Gray 50)
-- **Text Secondary**: `#9ca3af` (Gray 400)
-- **Text Muted**: `#6b7280` (Gray 500)
+#### Global Surface & Obsidian Base Tokens
+- **Obsidian Void (Page Base BG)**: `#0B0C0E`
+- **Carbon Layer 1 (Card BG)**: `rgba(18, 20, 26, 0.85)`
+- **Carbon Layer 2 (Hover BG)**: `rgba(28, 31, 42, 0.90)`
+- **Obsidian Border (Default Glass)**: `rgba(255, 255, 255, 0.08)`
+- **Cyber Orange Glass Border (Active/Hover)**: `rgba(255, 107, 0, 0.35)`
+- **Text Primary**: `#FAFAFA` (Zinc 50)
+- **Text Secondary**: `#A1A1AA` (Zinc 400)
+- **Text Muted**: `#71717A` (Zinc 500)
 
-#### Product Brand Accent Palette
+#### Primary Brand Accent Palette
 
-| Product Brand | Primary Accent | Secondary Accent | Glow / Drop Shadow | Gradient |
-| :--- | :--- | :--- | :--- | :--- |
-| **SpottGeo Core** | `#3b82f6` (Blue 500) | `#6366f1` (Indigo 500) | `rgba(59, 130, 246, 0.35)` | `linear-gradient(135deg, #3b82f6, #6366f1)` |
-| **SpottConsole (B2B)** | `#2563eb` (Blue 600) | `#06b6d4` (Cyan 500) | `rgba(6, 182, 212, 0.30)` | `linear-gradient(135deg, #2563eb, #06b6d4)` |
-| **SpottDrop (Consumer)** | `#10b981` (Emerald 500) | `#14b8a6` (Teal 500) | `rgba(16, 185, 129, 0.35)` | `linear-gradient(135deg, #10b981, #14b8a6)` |
-| **SpottVerify (Field)** | `#3b82f6` (Blue 500) | `#0284c7` (Sky 600) | `rgba(59, 130, 246, 0.30)` | `linear-gradient(135deg, #3b82f6, #0284c7)` |
-
-#### Status & Anti-Cheat Feedback Colors
-- **Verified / Success**: `#10b981` (Emerald 500)
-- **Queued / Processing**: `#f59e0b` (Amber 500)
-- **Rejected / Fraud Flagged**: `#f43f5e` (Rose 500)
-- **Suspicious / Warning**: `#fbbf24` (Amber 400)
+| Token Name | Hex Code | Purpose & Usage |
+| :--- | :--- | :--- |
+| **Cyber Orange (Primary)** | `#FF6B00` | Primary buttons, geofence radius rings, active nav items, brand logos |
+| **Electric Blaze (Hover/Gradient)** | `#FF5500` | CTA hover states, high-priority alert badges, active ring borders |
+| **Ember Gold (Gradient Secondary)** | `#FFA800` | Gradient pair for primary buttons (`linear-gradient(135deg, #FF6B00, #FFA800)`) |
+| **Orange Glow Shadow** | `rgba(255, 107, 0, 0.30)` | Drop shadows, glow effects on radar pulse indicators & active cards |
+| **Obsidian Black (Secondary Base)** | `#0B0C0E` | Background void for all customer-facing apps (`apps/console`, `apps/drop`, `apps/verify`) |
 
 ---
 
-### 2. Typography Hierarchy
+## 🎨 UI Design System Component Tokens
 
-SpottGeo utilizes modern system sans-serif font stacks (`Inter`, `system-ui`, `-apple-system`, `Roboto`).
-
-```
-Display Large   | 32px / 2.25rem | Bold (700)     | Tracking -0.025em | Main Headings
-H1 Page Title   | 24px / 1.50rem | Bold (700)     | Tracking -0.020em | Section Headers
-H2 Card Header  | 18px / 1.125rem| Semibold (600) | Tracking -0.015em | Module Titles
-Body Standard   | 14px / 0.875rem| Regular (400)  | Line Height 1.5   | Content Body
-Caption / Label | 12px / 0.75rem | Medium (500)   | Tracking +0.050em | Badges & Tables
-Code / Coordinates| 13px / 0.812rem| Monospace      | Subpixel Antialiased| Lat/Lng & Hashes
-```
-
----
-
-### 3. Glassmorphic Component Library & Patterns
-
-#### A. Glassmorphic Card (`.glass-card`)
+### 1. Glassmorphic Obsidian Card (`.glass-card` / `.pwa-card`)
 ```css
 .glass-card {
-  background: rgba(13, 19, 34, 0.75);
+  background: rgba(18, 20, 26, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.50);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 107, 0, 0.35);
+  box-shadow: 0 0 25px rgba(255, 107, 0, 0.12);
 }
 ```
 
-#### B. Primary CTA Button (`.glass-button`)
+### 2. Electric Cyber Orange Button (`.glass-button`)
 ```css
 .glass-button {
-  background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
-  border: 1px solid rgba(255, 255, 255, 0.20);
+  background: linear-gradient(135deg, #FF6B00 0%, #FFA800 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 14px;
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.30);
+  color: #0B0C0E; /* Obsidian contrast text for optimal readability */
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(255, 107, 0, 0.35);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
 .glass-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 28px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 30px rgba(255, 107, 0, 0.55);
 }
 
 .glass-button:active {
@@ -135,7 +91,7 @@ Code / Coordinates| 13px / 0.812rem| Monospace      | Subpixel Antialiased| Lat/
 }
 ```
 
-#### C. Geolocation Radar Pulse Ring (`.pulse-ring`)
+### 3. Geofence Spatial Radar Pulse Ring (`.pulse-ring`)
 ```css
 .pulse-ring {
   position: relative;
@@ -144,30 +100,37 @@ Code / Coordinates| 13px / 0.812rem| Monospace      | Subpixel Antialiased| Lat/
 .pulse-ring::before {
   content: "";
   position: absolute;
-  inset: -10px;
+  inset: -12px;
   border-radius: 50%;
-  border: 2px solid rgba(16, 185, 129, 0.6);
-  animation: radar-sweep 2s infinite cubic-bezier(0, 0.2, 0.8, 1);
+  border: 2px solid rgba(255, 107, 0, 0.7);
+  animation: geofence-pulse 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-@keyframes radar-sweep {
+@keyframes geofence-pulse {
   0% {
-    transform: scale(0.8);
+    transform: scale(0.85);
     opacity: 1;
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
   }
   100% {
-    transform: scale(1.6);
+    transform: scale(1.65);
     opacity: 0;
+    box-shadow: 0 0 35px rgba(255, 107, 0, 0);
   }
 }
 ```
 
 ---
 
-### 4. Accessibility & Micro-Interactions
+## 📱 Customer-Facing Applications Alignment
 
-1. **Focus States**: High-contrast focus rings (`focus:outline-none focus:ring-2 focus:ring-blue-500/50`).
-2. **Contrast Ratios**: Minimum 4.5:1 text-to-background ratio on dark surfaces (WCAG 2.1 AA compliant).
-3. **Responsive Breakpoints**:
-   - Mobile PWA: `max-w-md` (375px – 430px centered viewport).
-   - Desktop Dashboard: `min-w-[1280px]` responsive grid.
+All 3 customer-facing applications adhere to this Cyber Orange & Obsidian Black philosophy:
+
+1. **`SpottConsole` (B2B Admin Control Plane - Port 3000)**:
+   - Obsidian `#0B0C0E` backdrop with Cyber Orange (`#FF6B00`) navigation indicators, KPI stat card highlights, and PostGIS geofence radius visualizations.
+
+2. **`SpottDrop` (Consumer Gamification PWA - Port 3001)**:
+   - Deep Carbon mobile shell with glowing Cyber Orange (`#FF6B00`) QR scanner controls, active geofence radar sweeps, and airtime/data claim action buttons.
+
+3. **`SpottVerify` (Check-In & Attendance PWA - Port 3002)**:
+   - Clean obsidian layout with Cyber Orange (`#FF6B00`) presence verification triggers and check-in confirmation badges.

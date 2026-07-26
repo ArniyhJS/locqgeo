@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #090d16;
-  --foreground: #f3f4f6;
-  --card-bg: rgba(17, 24, 39, 0.7);
-  --card-border: rgba(255, 255, 255, 0.1);
-  --accent: #3b82f6;
-  --accent-glow: rgba(59, 130, 246, 0.25);
+  --background: #0b0c0e;
+  --foreground: #fafafa;
+  --card-bg: rgba(18, 20, 26, 0.85);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --accent: #ff6b00;
+  --accent-glow: rgba(255, 107, 0, 0.30);
 }
 
 body {
@@ -20,19 +20,59 @@ body {
 
 .glass-card {
   background: var(--card-bg);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.50);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 107, 0, 0.35);
+  box-shadow: 0 0 25px rgba(255, 107, 0, 0.12);
 }
 
 .glass-button {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 15px var(--accent-glow);
-  transition: all 0.2s ease-in-out;
+  background: linear-gradient(135deg, #ff6b00 0%, #ffa800 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  color: #0b0c0e;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(255, 107, 0, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
 .glass-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 22px var(--accent-glow);
+  box-shadow: 0 0 30px rgba(255, 107, 0, 0.55);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+}
+
+.pulse-ring {
+  position: relative;
+}
+
+.pulse-ring::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 107, 0, 0.7);
+  animation: geofence-pulse 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@keyframes geofence-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+    box-shadow: 0 0 35px rgba(255, 107, 0, 0);
+  }
 }
