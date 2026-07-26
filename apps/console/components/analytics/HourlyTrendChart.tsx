@@ -21,12 +21,38 @@ export function HourlyTrendChart({ data }: HourlyTrendChartProps) {
           <XAxis dataKey="timestamp_hour" stroke="#9ca3af" fontSize={11} tickLine={false} />
           <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} />
           <Tooltip
-            contentStyle={{ backgroundColor: "#111827", borderColor: "#374151", borderRadius: "8px", fontSize: "12px" }}
+            contentStyle={{
+              backgroundColor: "#111827",
+              borderColor: "#374151",
+              borderRadius: "8px",
+              fontSize: "12px",
+            }}
           />
           <Legend wrapperStyle={{ fontSize: "12px" }} />
-          <Line type="monotone" dataKey="pings" stroke="#3b82f6" strokeWidth={2} name="Total Scans" dot={false} />
-          <Line type="monotone" dataKey="verified_events" stroke="#10b981" strokeWidth={2} name="Verified Events" dot={false} />
-          <Line type="monotone" dataKey="blocked_fraud" stroke="#f43f5e" strokeWidth={2} name="Blocked Fraud" dot={false} />
+          <Line
+            type="monotone"
+            dataKey="pings"
+            stroke="#3b82f6"
+            strokeWidth={2}
+            name="Total Scans"
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="verified_events"
+            stroke="#10b981"
+            strokeWidth={2}
+            name="Verified Events"
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="blocked_fraud"
+            stroke="#f43f5e"
+            strokeWidth={2}
+            name="Blocked Fraud"
+            dot={false}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
-let mockExecute = vi.fn();
+const mockExecute = vi.fn();
 
 vi.mock("@spottgeo/database", () => ({
   db: {

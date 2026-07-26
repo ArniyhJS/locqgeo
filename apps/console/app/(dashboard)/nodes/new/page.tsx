@@ -9,7 +9,9 @@ export default function NewGeofencePage() {
   const [latitude, setLatitude] = useState(6.5244);
   const [longitude, setLongitude] = useState(3.3792);
   const [radiusMeters, setRadiusMeters] = useState(50.0);
-  const [actionType, setActionType] = useState<"REWARD" | "CHECKIN" | "ATTENDANCE" | "AUDIT" | "ACCESS">("REWARD");
+  const [actionType, setActionType] = useState<
+    "REWARD" | "CHECKIN" | "ATTENDANCE" | "AUDIT" | "ACCESS"
+  >("REWARD");
   const [rewardType, setRewardType] = useState<"AIRTIME" | "DATA" | "CASH" | "VOUCHER">("AIRTIME");
   const [rewardAmount, setRewardAmount] = useState(1000);
   const [rewardCurrency, setRewardCurrency] = useState("NGN");
@@ -49,7 +51,8 @@ export default function NewGeofencePage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white">Create Geofence</h1>
         <p className="text-sm text-gray-400 mt-1">
-          Configure a generic presence target. It can trigger a reward, attendance record, audit log, access gate, or simple check-in.
+          Configure a generic presence target. It can trigger a reward, attendance record, audit
+          log, access gate, or simple check-in.
         </p>
       </div>
 
@@ -63,7 +66,9 @@ export default function NewGeofencePage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Geofence Title</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                Geofence Title
+              </label>
               <input
                 type="text"
                 required
@@ -76,7 +81,9 @@ export default function NewGeofencePage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Latitude (-90 to 90)</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                  Latitude (-90 to 90)
+                </label>
                 <input
                   type="number"
                   step="any"
@@ -87,7 +94,9 @@ export default function NewGeofencePage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Longitude (-180 to 180)</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                  Longitude (-180 to 180)
+                </label>
                 <input
                   type="number"
                   step="any"
@@ -101,7 +110,9 @@ export default function NewGeofencePage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Radius (10m to 500m)</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                  Radius (10m to 500m)
+                </label>
                 <input
                   type="number"
                   required
@@ -111,7 +122,9 @@ export default function NewGeofencePage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Action Type</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                  Action Type
+                </label>
                 <select
                   value={actionType}
                   onChange={(e) => setActionType(e.target.value as typeof actionType)}
@@ -129,7 +142,9 @@ export default function NewGeofencePage() {
             {showRewardFields && (
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Reward Type</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                    Reward Type
+                  </label>
                   <select
                     value={rewardType}
                     onChange={(e) => setRewardType(e.target.value as typeof rewardType)}
@@ -142,7 +157,9 @@ export default function NewGeofencePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Amount</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                    Amount
+                  </label>
                   <input
                     type="number"
                     required={showRewardFields}
@@ -152,7 +169,9 @@ export default function NewGeofencePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Currency</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                    Currency
+                  </label>
                   <input
                     type="text"
                     required={showRewardFields}
@@ -166,7 +185,9 @@ export default function NewGeofencePage() {
             )}
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">Daily Budget Limit</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                Daily Budget Limit
+              </label>
               <input
                 type="number"
                 required
@@ -178,7 +199,10 @@ export default function NewGeofencePage() {
           </div>
 
           <div className="pt-4 border-t border-gray-800 flex justify-end gap-3">
-            <a href="/nodes" className="px-5 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
+            <a
+              href="/nodes"
+              className="px-5 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors"
+            >
               Cancel
             </a>
             <button

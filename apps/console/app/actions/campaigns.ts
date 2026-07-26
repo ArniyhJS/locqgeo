@@ -1,10 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import {
-  CampaignCreateRequestSchema,
-  type CampaignCreateRequest,
-} from "@spottgeo/api-contracts";
+import { CampaignCreateRequestSchema, type CampaignCreateRequest } from "@spottgeo/api-contracts";
 import { db, sql } from "@spottgeo/database";
 
 export async function getCampaignsAction(tenantId: string) {
@@ -54,7 +51,11 @@ export async function getCampaignsAction(tenantId: string) {
       reward_currency: string;
       is_active: boolean;
       created_at: Date;
-      geofences: Array<{ geofence_id: string; visit_weight: number; required_visit_order: number | null }>;
+      geofences: Array<{
+        geofence_id: string;
+        visit_weight: number;
+        required_visit_order: number | null;
+      }>;
     }>;
 
     const data = rows.map((r) => ({
@@ -137,7 +138,11 @@ export async function getCampaignByIdAction(campaignId: string) {
       SELECT geofence_id, visit_weight, required_visit_order
       FROM campaign_geofences
       WHERE campaign_id = ${campaignId};
-    `)) as unknown as Array<{ geofence_id: string; visit_weight: number; required_visit_order: number | null }>;
+    `)) as unknown as Array<{
+      geofence_id: string;
+      visit_weight: number;
+      required_visit_order: number | null;
+    }>;
 
     const data = {
       id: c.id,
@@ -209,7 +214,10 @@ export async function getCampaignLeaderboardAction(campaignId: string, limit = 2
   }
 }
 
-export async function createCampaignAction(tenantId: string, rawInput: Omit<CampaignCreateRequest, "tenant_id">) {
+export async function createCampaignAction(
+  tenantId: string,
+  rawInput: Omit<CampaignCreateRequest, "tenant_id">,
+) {
   const payload = { ...rawInput, tenant_id: tenantId };
   const parseResult = CampaignCreateRequestSchema.safeParse(payload);
   if (!parseResult.success) {

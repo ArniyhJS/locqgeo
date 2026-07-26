@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface NodeItem {
   id: string;
@@ -18,40 +18,35 @@ interface RadarMapProps {
 }
 
 export function RadarMap({ userLocation: _userLocation, onSelectNode }: RadarMapProps) {
-  const [nodes, setNodes] = useState<NodeItem[]>([]);
-
-  useEffect(() => {
-    // Simulated nearby active physical drops in Lagos
-    setNodes([
-      {
-        id: "00000000-0000-0000-0000-000000000001",
-        title: "Lagos Island Tech Drop #04",
-        lat: 6.5244,
-        lng: 3.3792,
-        rewardType: "AIRTIME",
-        rewardAmount: 500,
-        distanceMeters: 14.5,
-      },
-      {
-        id: "00000000-0000-0000-0000-000000000002",
-        title: "Victoria Island Mall Drop #02",
-        lat: 6.4281,
-        lng: 3.4219,
-        rewardType: "DATA",
-        rewardAmount: 1000,
-        distanceMeters: 35.0,
-      },
-      {
-        id: "00000000-0000-0000-0000-000000000003",
-        title: "Ikeja City Mall Drop #01",
-        lat: 6.6018,
-        lng: 3.3515,
-        rewardType: "CASH",
-        rewardAmount: 2500,
-        distanceMeters: 48.0,
-      },
-    ]);
-  }, []);
+  const [nodes] = useState<NodeItem[]>([
+    {
+      id: "00000000-0000-0000-0000-000000000001",
+      title: "Lagos Island Tech Drop #04",
+      lat: 6.5244,
+      lng: 3.3792,
+      rewardType: "AIRTIME",
+      rewardAmount: 500,
+      distanceMeters: 14.5,
+    },
+    {
+      id: "00000000-0000-0000-0000-000000000002",
+      title: "Victoria Island Mall Drop #02",
+      lat: 6.4281,
+      lng: 3.4219,
+      rewardType: "DATA",
+      rewardAmount: 1000,
+      distanceMeters: 35.0,
+    },
+    {
+      id: "00000000-0000-0000-0000-000000000003",
+      title: "Ikeja City Mall Drop #01",
+      lat: 6.6018,
+      lng: 3.3515,
+      rewardType: "CASH",
+      rewardAmount: 2500,
+      distanceMeters: 48.0,
+    },
+  ]);
 
   return (
     <div className="relative w-full h-80 rounded-3xl overflow-hidden glass-card border border-emerald-500/20 p-6 flex flex-col justify-between">
@@ -61,7 +56,9 @@ export function RadarMap({ userLocation: _userLocation, onSelectNode }: RadarMap
 
       <div className="relative z-10 flex items-center justify-between">
         <div>
-          <span className="text-[10px] uppercase font-extrabold tracking-widest text-emerald-400">Live PostGIS Radar</span>
+          <span className="text-[10px] uppercase font-extrabold tracking-widest text-emerald-400">
+            Live PostGIS Radar
+          </span>
           <h3 className="text-lg font-bold text-white leading-tight">Nearby Active Drops</h3>
         </div>
         <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
@@ -82,14 +79,16 @@ export function RadarMap({ userLocation: _userLocation, onSelectNode }: RadarMap
                 📍
               </div>
               <div>
-                <p className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors">{node.title}</p>
-                <p className="text-[10px] text-gray-400">Geofence Distance: ~{node.distanceMeters}m</p>
+                <p className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors">
+                  {node.title}
+                </p>
+                <p className="text-[10px] text-gray-400">
+                  Geofence Distance: ~{node.distanceMeters}m
+                </p>
               </div>
             </div>
 
-            <span className="text-xs font-extrabold text-emerald-400">
-              ₦ {node.rewardAmount}
-            </span>
+            <span className="text-xs font-extrabold text-emerald-400">₦ {node.rewardAmount}</span>
           </div>
         ))}
       </div>

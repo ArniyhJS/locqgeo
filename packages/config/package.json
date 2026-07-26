@@ -5,6 +5,17 @@
   "type": "module",
   "exports": {
     "./tsconfig.base.json": "./tsconfig.base.json",
-    "./eslint.base.json": "./eslint.base.json"
+    "./eslint.config.mjs": "./eslint.config.mjs",
+    "./prettier.config.mjs": "./prettier.config.mjs"
+  },
+  "dependencies": {
+    "@eslint/js": "^9.39.5",
+    "typescript-eslint": "^8.65.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.5"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings=0"
   }
 }

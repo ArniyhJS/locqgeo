@@ -10,14 +10,18 @@ export default async function UsersPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white">Users</h1>
-        <p className="text-sm text-gray-400 mt-1">Progressively linked identities and wallet balances.</p>
+        <p className="text-sm text-gray-400 mt-1">
+          Progressively linked identities and wallet balances.
+        </p>
       </div>
 
       <div className="glass-card p-6 space-y-4">
         {users.length === 0 ? (
           <div className="text-center py-12 text-gray-400 text-sm">
             No users have linked an account yet.{" "}
-            <span className="text-gray-500">Scans are still anonymous until a device is linked via phone/email.</span>
+            <span className="text-gray-500">
+              Scans are still anonymous until a device is linked via phone/email.
+            </span>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -58,7 +62,9 @@ export default async function UsersPage() {
                         {u.is_verified ? "VERIFIED" : "PENDING"}
                       </span>
                     </td>
-                    <td className="py-3.5 text-gray-400">{new Date(u.created_at).toLocaleDateString()}</td>
+                    <td className="py-3.5 text-gray-400">
+                      {new Date(u.created_at).toLocaleDateString()}
+                    </td>
                   </tr>
                 ))}
               </tbody>

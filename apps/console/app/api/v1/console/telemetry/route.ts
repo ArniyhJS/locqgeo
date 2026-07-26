@@ -8,7 +8,10 @@ export async function GET(request: Request) {
   const tenantId = searchParams.get("tenant_id") || DEMO_TENANT_ID;
   const geofenceId = searchParams.get("geofence_id") || undefined;
 
-  const parseResult = TelemetryQuerySchema.safeParse({ tenant_id: tenantId, geofence_id: geofenceId });
+  const parseResult = TelemetryQuerySchema.safeParse({
+    tenant_id: tenantId,
+    geofence_id: geofenceId,
+  });
   if (!parseResult.success) {
     return NextResponse.json({ error: "Invalid query parameters" }, { status: 400 });
   }

@@ -10,6 +10,7 @@ Status: APPROVED
 SpottGeo is a location-based rewards and telemetry platform architected as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**.
 
 ### Core Components
+
 - **`services/engine`**: Node.js + Fastify core engine processing `POST /api/v1/engine/verify` under 50ms latency.
 - **`services/payout-worker`**: Standalone background worker executing queued reward payouts with multi-provider fallbacks.
 - **`services/webhook-dispatcher`**: Microservice handling HMAC-signed outbound webhooks to enterprise endpoints.
@@ -50,6 +51,7 @@ WHERE ST_DWithin(
 ## 4. Payout Delivery & Fallback Mechanics
 
 Supports multi-tier fallback payout orchestration:
+
 - **VTPass Telco Airtime / Data**: Primary provider for digital top-ups.
 - **Paystack Direct Transfers**: Primary provider for cash reward payouts.
 - **Flutterwave**: Secondary provider fallback if primary fails.

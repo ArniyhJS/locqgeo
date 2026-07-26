@@ -63,7 +63,9 @@ export default function RadarPage() {
       {/* Main Interactive Radar Map */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400">Live Spatial Map</h2>
+          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+            Live Spatial Map
+          </h2>
           <span className="text-[10px] font-semibold text-[#ff6b00]">Tap a node to inspect</span>
         </div>
         <RadarMap userLocation={currentLocation} onSelectNode={(node) => setSelectedNode(node)} />

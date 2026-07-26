@@ -7,9 +7,10 @@ This specification defines the **Electric Cyber Orange & Obsidian Black** brand 
 ## 🍊 Brand Strategy & Geofencing Philosophy
 
 ### 1. Brand Vision & Positioning
+
 **SpottGeo** is the next-generation spatial infrastructure platform powering real-world presence verification and reward campaigns.
 
-- **Brand Tagline**: *"Proof of Spatial Presence"*
+- **Brand Tagline**: _"Proof of Spatial Presence"_
 - **Core Philosophy**: **Geofence-First Architecture**. Every interaction, verification ping, reward claim, and analytics metric is anchored in verified physical radiuses. Presence is not assumed—it is cryptographically and spatially proven within geofenced boundaries.
 - **Visual & Brand Vibe**: High-Contrast Cyberpunk Glow, Futuristic, Precision-Engineered, Premium Obsidian & Electric Flame.
 
@@ -28,6 +29,7 @@ This specification defines the **Electric Cyber Orange & Obsidian Black** brand 
 ```
 
 #### Global Surface & Obsidian Base Tokens
+
 - **Obsidian Void (Page Base BG)**: `#0B0C0E`
 - **Carbon Layer 1 (Card BG)**: `rgba(18, 20, 26, 0.85)`
 - **Carbon Layer 2 (Hover BG)**: `rgba(28, 31, 42, 0.90)`
@@ -39,19 +41,20 @@ This specification defines the **Electric Cyber Orange & Obsidian Black** brand 
 
 #### Primary Brand Accent Palette
 
-| Token Name | Hex Code | Purpose & Usage |
-| :--- | :--- | :--- |
-| **Cyber Orange (Primary)** | `#FF6B00` | Primary buttons, geofence radius rings, active nav items, brand logos |
-| **Electric Blaze (Hover/Gradient)** | `#FF5500` | CTA hover states, high-priority alert badges, active ring borders |
-| **Ember Gold (Gradient Secondary)** | `#FFA800` | Gradient pair for primary buttons (`linear-gradient(135deg, #FF6B00, #FFA800)`) |
-| **Orange Glow Shadow** | `rgba(255, 107, 0, 0.30)` | Drop shadows, glow effects on radar pulse indicators & active cards |
-| **Obsidian Black (Secondary Base)** | `#0B0C0E` | Background void for all customer-facing apps (`apps/console`, `apps/drop`, `apps/verify`) |
+| Token Name                          | Hex Code                  | Purpose & Usage                                                                           |
+| :---------------------------------- | :------------------------ | :---------------------------------------------------------------------------------------- |
+| **Cyber Orange (Primary)**          | `#FF6B00`                 | Primary buttons, geofence radius rings, active nav items, brand logos                     |
+| **Electric Blaze (Hover/Gradient)** | `#FF5500`                 | CTA hover states, high-priority alert badges, active ring borders                         |
+| **Ember Gold (Gradient Secondary)** | `#FFA800`                 | Gradient pair for primary buttons (`linear-gradient(135deg, #FF6B00, #FFA800)`)           |
+| **Orange Glow Shadow**              | `rgba(255, 107, 0, 0.30)` | Drop shadows, glow effects on radar pulse indicators & active cards                       |
+| **Obsidian Black (Secondary Base)** | `#0B0C0E`                 | Background void for all customer-facing apps (`apps/console`, `apps/drop`, `apps/verify`) |
 
 ---
 
 ## 🎨 UI Design System Component Tokens
 
 ### 1. Glassmorphic Obsidian Card (`.glass-card` / `.pwa-card`)
+
 ```css
 .glass-card {
   background: rgba(18, 20, 26, 0.85);
@@ -59,8 +62,10 @@ This specification defines the **Electric Cyber Orange & Obsidian Black** brand 
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.50);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .glass-card:hover {
@@ -70,15 +75,19 @@ This specification defines the **Electric Cyber Orange & Obsidian Black** brand 
 ```
 
 ### 2. Electric Cyber Orange Button (`.glass-button`)
+
 ```css
 .glass-button {
-  background: linear-gradient(135deg, #FF6B00 0%, #FFA800 100%);
+  background: linear-gradient(135deg, #ff6b00 0%, #ffa800 100%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 14px;
-  color: #0B0C0E; /* Obsidian contrast text for optimal readability */
+  color: #0b0c0e; /* Obsidian contrast text for optimal readability */
   font-weight: 700;
   box-shadow: 0 0 20px rgba(255, 107, 0, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .glass-button:hover {
@@ -92,6 +101,7 @@ This specification defines the **Electric Cyber Orange & Obsidian Black** brand 
 ```
 
 ### 3. Geofence Spatial Radar Pulse Ring (`.pulse-ring`)
+
 ```css
 .pulse-ring {
   position: relative;

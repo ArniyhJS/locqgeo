@@ -14,7 +14,9 @@ export function PayoutStatusPill({ status }: PayoutStatusPillProps) {
   };
 
   return (
-    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase border ${styles[status]}`}>
+    <span
+      className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase border ${styles[status]}`}
+    >
       ● {status}
     </span>
   );

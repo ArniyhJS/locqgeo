@@ -1,14 +1,16 @@
 import { z } from "zod";
 
-export const InitiateLinkSchema = z.object({
-  device_id: z.string().min(16).max(128),
-  phone_number: z.string().min(5).max(20).optional(),
-  email: z.string().email().optional(),
-  full_name: z.string().max(255).optional(),
-}).refine((data) => data.phone_number || data.email, {
-  message: "Either phone_number or email is required",
-  path: ["phone_number"],
-});
+export const InitiateLinkSchema = z
+  .object({
+    device_id: z.string().min(16).max(128),
+    phone_number: z.string().min(5).max(20).optional(),
+    email: z.string().email().optional(),
+    full_name: z.string().max(255).optional(),
+  })
+  .refine((data) => data.phone_number || data.email, {
+    message: "Either phone_number or email is required",
+    path: ["phone_number"],
+  });
 
 export const VerifyLinkSchema = z.object({
   device_id: z.string().min(16).max(128),

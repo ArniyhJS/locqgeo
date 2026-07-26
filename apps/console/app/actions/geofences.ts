@@ -64,7 +64,10 @@ export async function createGeofenceAction(tenantId: string, rawInput: CreateGeo
 
     return {
       success: true,
-      data: Array.isArray(result) && result.length > 0 ? result[0] : { id: "geofence_demo", title, created_at: new Date() },
+      data:
+        Array.isArray(result) && result.length > 0
+          ? result[0]
+          : { id: "geofence_demo", title, created_at: new Date() },
     };
   } catch (error) {
     console.error("[SpottConsole] Failed to create geofence:", error);

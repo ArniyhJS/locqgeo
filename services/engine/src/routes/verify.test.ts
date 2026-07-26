@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
 import Fastify, { FastifyInstance } from "fastify";
 
-let mockExecute = vi.fn();
+const mockExecute = vi.fn();
 
 vi.mock("@spottgeo/database", () => ({
   db: {

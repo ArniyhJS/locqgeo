@@ -230,24 +230,28 @@ https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
 ## 9. Roadmap
 
 ### Phase 1 — MVP (Current)
+
 - QR scanner with campaign and standalone support
 - Verification result screen with points/rank
 - Verification history
 - Offline queue and sync
 
 ### Phase 2 — Identity & Credentials
+
 - Phone/email linking
 - Verification export / share
 - Digital attendance badges
 - Organizer scanner mode
 
 ### Phase 3 — Scale
+
 - NFC and beacon support
 - Real-time event headcount
 - Audit notes and photo attachments
 - CPE/CEU credit integration
 
 ### Phase 4 — Ecosystem
+
 - Access-control integrations
 - Advanced credential verification
 - Multi-event season passes

@@ -2,7 +2,12 @@ import crypto from "node:crypto";
 import { db, sql } from "@spottgeo/database";
 
 export interface WebhookEventPayload {
-  event: "verification.created" | "reward.queued" | "reward.completed" | "reward.failed" | "fraud.flagged";
+  event:
+    | "verification.created"
+    | "reward.queued"
+    | "reward.completed"
+    | "reward.failed"
+    | "fraud.flagged";
   data: Record<string, unknown>;
   timestamp: string;
 }
@@ -85,7 +90,9 @@ export class WebhookDispatcherService {
       try {
         const res = await WebhookDispatcherService.dispatchPendingWebhooks(50);
         if (res.sentCount > 0) {
-          console.log(`[WebhookDispatcher] Dispatched ${res.sentCount} webhooks (${res.successCount} success)`);
+          console.log(
+            `[WebhookDispatcher] Dispatched ${res.sentCount} webhooks (${res.successCount} success)`,
+          );
         }
       } catch (err) {
         console.error("[WebhookDispatcher] Dispatcher error:", err);

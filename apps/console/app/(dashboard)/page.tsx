@@ -39,7 +39,8 @@ export default function DashboardOverviewPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white">Executive Dashboard</h1>
         <p className="text-sm text-gray-400 mt-1">
-          Real-time overview of active geofences, presence verifications, and anti-cheat fraud breakdowns.
+          Real-time overview of active geofences, presence verifications, and anti-cheat fraud
+          breakdowns.
         </p>
       </div>
 

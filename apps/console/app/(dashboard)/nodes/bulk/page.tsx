@@ -40,7 +40,9 @@ export default function BulkUploadPage() {
           if (parsed.success) {
             validRows.push(parsed.data as ParsedRow);
           } else {
-            errList.push(`Row ${index + 1}: ${parsed.error.issues.map((i) => i.message).join(", ")}`);
+            errList.push(
+              `Row ${index + 1}: ${parsed.error.issues.map((i) => i.message).join(", ")}`,
+            );
           }
         });
 
@@ -60,18 +62,26 @@ export default function BulkUploadPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white">CSV Bulk Geofence Import</h1>
         <p className="text-sm text-gray-400 mt-1">
-          Upload a CSV spreadsheet containing multiple presence targets (rewards, check-ins, audits, etc.).
+          Upload a CSV spreadsheet containing multiple presence targets (rewards, check-ins, audits,
+          etc.).
         </p>
       </div>
 
       <div className="glass-card p-8 space-y-6">
         <div className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-blue-500 transition-colors">
-          <input type="file" accept=".csv" onChange={handleFileUpload} className="hidden" id="csv-input" />
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileUpload}
+            className="hidden"
+            id="csv-input"
+          />
           <label htmlFor="csv-input" className="cursor-pointer space-y-2 block">
             <span className="text-3xl">📄</span>
             <p className="text-sm font-semibold text-gray-200">Click to upload CSV file</p>
             <p className="text-xs text-gray-400">
-              Required headers: title, latitude, longitude, radius_meters, action_type, reward_type, reward_amount, reward_currency, daily_budget_limit
+              Required headers: title, latitude, longitude, radius_meters, action_type, reward_type,
+              reward_amount, reward_currency, daily_budget_limit
             </p>
           </label>
         </div>
@@ -94,7 +104,9 @@ export default function BulkUploadPage() {
         {rows.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-white">Parsed Preview ({rows.length} Valid Geofences)</h3>
+              <h3 className="font-semibold text-sm text-white">
+                Parsed Preview ({rows.length} Valid Geofences)
+              </h3>
               <button
                 onClick={handleBatchImport}
                 className="glass-button px-5 py-2 rounded-lg text-xs font-semibold text-white"
@@ -118,7 +130,9 @@ export default function BulkUploadPage() {
                   {rows.map((r, i) => (
                     <tr key={i}>
                       <td className="py-2 text-white font-medium">{r.title}</td>
-                      <td>{r.latitude}, {r.longitude}</td>
+                      <td>
+                        {r.latitude}, {r.longitude}
+                      </td>
                       <td>{r.radius_meters}m</td>
                       <td>{r.action_type}</td>
                       <td>{r.reward_amount ? `${r.reward_amount} ${r.reward_currency}` : "—"}</td>

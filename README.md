@@ -1,6 +1,6 @@
 # SpottGeo
 
-SpottGeo is a location-based rewards and telemetry platform architected as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**. 
+SpottGeo is a location-based rewards and telemetry platform architected as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**.
 
 Our vision is to make physical-world presence measurable, rewardable, and trustworthy for any business that cares about real-world engagement.
 
@@ -18,22 +18,27 @@ The SpottGeo platform is composed of four core products:
 The repository is divided into several applications, services, and packages, designed to support horizontal scaling for nationwide gamification events.
 
 ### Applications (Client Layer)
+
 - **`apps/console`**: SpottConsole Next.js Enterprise B2B Dashboard.
 - **`apps/drop`**: SpottDrop Next.js Consumer PWA.
 - **`apps/verify`**: SpottVerify Next.js Consumer PWA for standalone attendance and check-ins.
 
 ### Services (API & Worker Layer)
+
 - **`services/engine`**: Node.js + Fastify core engine processing spatial queries and handling anti-cheat logic.
 - **`services/payout-worker`**: Dedicated background worker for asynchronous reward payouts (Paystack, VTpass, Flutterwave) and wallet fallback credits.
 - **`services/webhook-dispatcher`**: Dedicated microservice for dispatching signed HMAC SHA-256 webhooks to enterprise client endpoints.
 - **`services/analytics-worker`**: Background worker service for pre-aggregating daily verification trends and leaderboard rankings.
 
 ### Packages (Data Layer)
+
 - **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM. Designed to support primary/replica database setups for high read throughput.
 - **`packages/api-contracts`**: Shared Zod schemas ensuring zero type drift between backend routes and frontend components.
 
 ### 🌐 Nationwide Scale Architecture
+
 SpottGeo is built for massive scale. At scale, the architecture relies on:
+
 - **Stateless Engines** for horizontal scaling behind a load balancer.
 - **Decoupled Workers** for asynchronous payout execution, webhook dispatch, and analytics pre-aggregation.
 - **Redis** for rate limiting, session management, and leaderboard caching.
@@ -42,6 +47,7 @@ SpottGeo is built for massive scale. At scale, the architecture relies on:
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js (v20+)
 - pnpm (v9+)
 - PostgreSQL with PostGIS extension
@@ -49,6 +55,7 @@ SpottGeo is built for massive scale. At scale, the architecture relies on:
 ### Installation
 
 1. Install dependencies:
+
    ```bash
    pnpm install
    ```
@@ -99,6 +106,7 @@ You can run individual services or all of them together using Turborepo:
 ## 📖 Documentation
 
 Check out the `docs/` directory for detailed architecture, specs, and feature requirements documents.
+
 - **Product Requirements (PRDs)**: Explore the detailed vision for [SpottConsole](docs/product/spottconsole_prd.md), [SpottDrop](docs/product/spottdrop_prd.md), [SpottVerify](docs/product/spottverify_prd.md), and [SpottEngine](docs/product/spottengine_prd.md).
 - **Architecture**: See the [Nationwide Gamification Architecture](docs/architecture/nationwide_campaign_architecture.md), [System Architecture](docs/architecture/system_architecture.md), and [Database ERD](docs/architecture/erd.md).
 - **Technical Specs**: Read the [SpottGeo SDD Spec](docs/spottgeo_sdd_spec.md).

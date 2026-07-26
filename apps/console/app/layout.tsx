@@ -4,17 +4,17 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "SpottConsole | Enterprise Presence Management Console",
-  description: "Enterprise SpottGeo campaign builder, telemetry analytics, and PostGIS geofence monitor.",
+  description:
+    "Enterprise SpottGeo campaign builder, telemetry analytics, and PostGIS geofence monitor.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning className="flex min-h-screen bg-[#090d16] text-gray-100 antialiased">
+      <body
+        suppressHydrationWarning
+        className="flex min-h-screen bg-[#090d16] text-gray-100 antialiased"
+      >
         {/* Sidebar */}
         <aside className="w-64 border-r border-gray-800 bg-[#0c121e]/80 p-6 backdrop-blur-xl flex flex-col justify-between">
           <div>
@@ -23,7 +23,9 @@ export default function RootLayout({
                 S
               </div>
               <div>
-                <h1 className="font-bold text-lg leading-none tracking-tight text-white">SpottConsole</h1>
+                <h1 className="font-bold text-lg leading-none tracking-tight text-white">
+                  SpottConsole
+                </h1>
                 <span className="text-xs text-blue-400 font-medium">B2B Dashboard</span>
               </div>
             </div>
@@ -51,7 +53,9 @@ export default function RootLayout({
           </div>
 
           <div className="border-t border-gray-800/80 pt-4 text-xs text-gray-500">
-            <p>SpottEngine: <span className="text-emerald-400 font-semibold">Online (Fastify)</span></p>
+            <p>
+              SpottEngine: <span className="text-emerald-400 font-semibold">Online (Fastify)</span>
+            </p>
             <p className="mt-1">v3.0.0 Unified Monorepo</p>
           </div>
         </aside>

@@ -80,7 +80,9 @@ export async function campaignRoutes(fastify: FastifyInstance) {
       return reply.status(200).send(CampaignListResponseSchema.parse(response));
     } catch (err) {
       fastify.log.error(err);
-      return reply.status(500).send({ success: false, error_code: "ERR_INTERNAL", message: "Failed to list campaigns" });
+      return reply
+        .status(500)
+        .send({ success: false, error_code: "ERR_INTERNAL", message: "Failed to list campaigns" });
     }
   });
 
@@ -99,7 +101,11 @@ export async function campaignRoutes(fastify: FastifyInstance) {
 
       const payload = parseResult.data;
       if (new Date(payload.starts_at) >= new Date(payload.ends_at)) {
-        return reply.status(400).send({ success: false, error_code: "INVALID_DATES", message: "starts_at must be before ends_at" });
+        return reply.status(400).send({
+          success: false,
+          error_code: "INVALID_DATES",
+          message: "starts_at must be before ends_at",
+        });
       }
 
       const campaignResult = (await db.execute(sql`
@@ -138,16 +144,20 @@ export async function campaignRoutes(fastify: FastifyInstance) {
       return reply.status(201).send({ success: true, data: { id: campaignId } });
     } catch (err) {
       fastify.log.error(err);
-      return reply.status(500).send({ success: false, error_code: "ERR_INTERNAL", message: "Failed to create campaign" });
+      return reply
+        .status(500)
+        .send({ success: false, error_code: "ERR_INTERNAL", message: "Failed to create campaign" });
     }
   });
 
   // GET /api/v1/campaigns/:id
-  fastify.get("/api/v1/campaigns/:id", async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
-    try {
-      const { id } = request.params;
+  fastify.get(
+    "/api/v1/campaigns/:id",
+    async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+      try {
+        const { id } = request.params;
 
-      const campaignRows = (await db.execute(sql`
+        const campaignRows = (await db.execute(sql`
         SELECT
           id,
           tenant_id,
@@ -168,70 +178,84 @@ export async function campaignRoutes(fastify: FastifyInstance) {
         WHERE id = ${id}
         LIMIT 1;
       `)) as unknown as Array<{
-        id: string;
-        tenant_id: string;
-        title: string;
-        description: string | null;
-        action_type: string;
-        starts_at: Date;
-        ends_at: Date;
-        daily_budget_limit: string | null;
-        total_budget_limit: string | null;
-        total_budget_spent: string;
-        reward_type: string | null;
-        reward_amount: string | null;
-        reward_currency: string;
-        is_active: boolean;
-        created_at: Date;
-      }>;
+          id: string;
+          tenant_id: string;
+          title: string;
+          description: string | null;
+          action_type: string;
+          starts_at: Date;
+          ends_at: Date;
+          daily_budget_limit: string | null;
+          total_budget_limit: string | null;
+          total_budget_spent: string;
+          reward_type: string | null;
+          reward_amount: string | null;
+          reward_currency: string;
+          is_active: boolean;
+          created_at: Date;
+        }>;
 
-      if (campaignRows.length === 0) {
-        return reply.status(404).send({ success: false, error_code: "NOT_FOUND", message: "Campaign not found" });
-      }
+        if (campaignRows.length === 0) {
+          return reply
+            .status(404)
+            .send({ success: false, error_code: "NOT_FOUND", message: "Campaign not found" });
+        }
 
-      const c = campaignRows[0];
+        const c = campaignRows[0];
 
-      const geofenceRows = (await db.execute(sql`
+        const geofenceRows = (await db.execute(sql`
         SELECT geofence_id, visit_weight, required_visit_order
         FROM campaign_geofences
         WHERE campaign_id = ${id};
-      `)) as unknown as Array<{ geofence_id: string; visit_weight: number; required_visit_order: number | null }>;
+      `)) as unknown as Array<{
+          geofence_id: string;
+          visit_weight: number;
+          required_visit_order: number | null;
+        }>;
 
-      const data = {
-        id: c.id,
-        tenant_id: c.tenant_id,
-        title: c.title,
-        description: c.description ?? undefined,
-        action_type: c.action_type,
-        starts_at: c.starts_at.toISOString(),
-        ends_at: c.ends_at.toISOString(),
-        daily_budget_limit: c.daily_budget_limit ? Number(c.daily_budget_limit) : undefined,
-        total_budget_limit: c.total_budget_limit ? Number(c.total_budget_limit) : undefined,
-        total_budget_spent: Number(c.total_budget_spent),
-        reward_type: c.reward_type ?? undefined,
-        reward_amount: c.reward_amount ? Number(c.reward_amount) : undefined,
-        reward_currency: c.reward_currency,
-        is_active: c.is_active,
-        geofences: geofenceRows.map((g) => ({
-          geofence_id: g.geofence_id,
-          visit_weight: g.visit_weight,
-          required_visit_order: g.required_visit_order ?? undefined,
-        })),
-        created_at: c.created_at.toISOString(),
-      };
+        const data = {
+          id: c.id,
+          tenant_id: c.tenant_id,
+          title: c.title,
+          description: c.description ?? undefined,
+          action_type: c.action_type,
+          starts_at: c.starts_at.toISOString(),
+          ends_at: c.ends_at.toISOString(),
+          daily_budget_limit: c.daily_budget_limit ? Number(c.daily_budget_limit) : undefined,
+          total_budget_limit: c.total_budget_limit ? Number(c.total_budget_limit) : undefined,
+          total_budget_spent: Number(c.total_budget_spent),
+          reward_type: c.reward_type ?? undefined,
+          reward_amount: c.reward_amount ? Number(c.reward_amount) : undefined,
+          reward_currency: c.reward_currency,
+          is_active: c.is_active,
+          geofences: geofenceRows.map((g) => ({
+            geofence_id: g.geofence_id,
+            visit_weight: g.visit_weight,
+            required_visit_order: g.required_visit_order ?? undefined,
+          })),
+          created_at: c.created_at.toISOString(),
+        };
 
-      const response = { success: true as const, data };
-      return reply.status(200).send(CampaignDetailResponseSchema.parse(response));
-    } catch (err) {
-      fastify.log.error(err);
-      return reply.status(500).send({ success: false, error_code: "ERR_INTERNAL", message: "Failed to fetch campaign" });
-    }
-  });
+        const response = { success: true as const, data };
+        return reply.status(200).send(CampaignDetailResponseSchema.parse(response));
+      } catch (err) {
+        fastify.log.error(err);
+        return reply.status(500).send({
+          success: false,
+          error_code: "ERR_INTERNAL",
+          message: "Failed to fetch campaign",
+        });
+      }
+    },
+  );
 
   // GET /api/v1/campaigns/:id/leaderboard
   fastify.get(
     "/api/v1/campaigns/:id/leaderboard",
-    async (request: FastifyRequest<{ Params: { id: string }; Querystring: { limit?: string } }>, reply: FastifyReply) => {
+    async (
+      request: FastifyRequest<{ Params: { id: string }; Querystring: { limit?: string } }>,
+      reply: FastifyReply,
+    ) => {
       try {
         const { id } = request.params;
         const limit = Math.min(Number(request.query.limit) || DEFAULT_LEADERBOARD_LIMIT, 100);
@@ -273,21 +297,32 @@ export async function campaignRoutes(fastify: FastifyInstance) {
         return reply.status(200).send(CampaignLeaderboardResponseSchema.parse(response));
       } catch (err) {
         fastify.log.error(err);
-        return reply.status(500).send({ success: false, error_code: "ERR_INTERNAL", message: "Failed to fetch leaderboard" });
+        return reply.status(500).send({
+          success: false,
+          error_code: "ERR_INTERNAL",
+          message: "Failed to fetch leaderboard",
+        });
       }
-    }
+    },
   );
 
   // GET /api/v1/campaigns/:id/me?device_id=...
   fastify.get(
     "/api/v1/campaigns/:id/me",
-    async (request: FastifyRequest<{ Params: { id: string }; Querystring: { device_id?: string } }>, reply: FastifyReply) => {
+    async (
+      request: FastifyRequest<{ Params: { id: string }; Querystring: { device_id?: string } }>,
+      reply: FastifyReply,
+    ) => {
       try {
         const { id } = request.params;
         const deviceId = request.query.device_id;
 
         if (!deviceId) {
-          return reply.status(400).send({ success: false, error_code: "MISSING_DEVICE_ID", message: "device_id query parameter is required" });
+          return reply.status(400).send({
+            success: false,
+            error_code: "MISSING_DEVICE_ID",
+            message: "device_id query parameter is required",
+          });
         }
 
         const rowResult = (await db.execute(sql`
@@ -344,9 +379,13 @@ export async function campaignRoutes(fastify: FastifyInstance) {
         return reply.status(200).send(CampaignMeResponseSchema.parse(response));
       } catch (err) {
         fastify.log.error(err);
-        return reply.status(500).send({ success: false, error_code: "ERR_INTERNAL", message: "Failed to fetch campaign progress" });
+        return reply.status(500).send({
+          success: false,
+          error_code: "ERR_INTERNAL",
+          message: "Failed to fetch campaign progress",
+        });
       }
-    }
+    },
   );
 }
 
@@ -355,7 +394,7 @@ export async function recordCampaignVisit(
   deviceId: string,
   geofenceId: string,
   verificationId: string,
-  userId?: string
+  userId?: string,
 ): Promise<{ pointsEarned: number; rank: number }> {
   // Fetch campaign geofence metadata
   const mappingResult = (await db.execute(sql`
@@ -463,9 +502,10 @@ export async function isCampaignEligible(campaignId: string): Promise<{
     if (spent >= limit) return { eligible: false, reason: "Campaign budget exhausted" };
   }
 
-  const reward = c.reward_type && c.reward_amount
-    ? { type: c.reward_type, amount: Number(c.reward_amount), currency: c.reward_currency }
-    : null;
+  const reward =
+    c.reward_type && c.reward_amount
+      ? { type: c.reward_type, amount: Number(c.reward_amount), currency: c.reward_currency }
+      : null;
 
   return { eligible: true, reward, actionType: c.action_type };
 }

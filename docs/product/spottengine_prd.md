@@ -109,6 +109,7 @@ The central presence-verification endpoint.
 ```
 
 **Validation rules:**
+
 - `device_id` must be 16–128 alphanumeric characters.
 - `latitude` between -90 and 90; `longitude` between -180 and 180.
 - `accuracy_meters` must be non-negative.
@@ -116,6 +117,7 @@ The central presence-verification endpoint.
 - Optional `campaign_id` and `user_id` must be valid UUIDs.
 
 **Anti-fraud pipeline:**
+
 1. Input schema validation.
 2. GPS accuracy check: reject if accuracy > 50m (`REJECTED_ACCURACY`).
 3. Geofence existence and active status check.
@@ -165,6 +167,7 @@ The central presence-verification endpoint.
 ### 3.5 Webhooks (Future)
 
 **Events:**
+
 - `verification.created`
 - `verification.rejected`
 - `reward.queued`
@@ -192,6 +195,7 @@ Key tables already defined in the SpottGeo schema:
 - `user_otp_codes`
 
 **Engine writes to:**
+
 - `checkin_pings` — every raw presence claim.
 - `verifications` — every verified or rejected event.
 - `campaign_progress` — per-campaign visit records.
@@ -202,22 +206,23 @@ Key tables already defined in the SpottGeo schema:
 
 ## 5. Verification States
 
-| Status                       | Meaning                                               |
-| ---------------------------- | ----------------------------------------------------- |
-| `VERIFIED`                   | Presence proved; reward/attendance processed.         |
-| `REJECTED_ACCURACY`          | GPS accuracy too low or payload invalid.              |
-| `REJECTED_DUPLICATE`         | Already verified here in the last 24 hours.           |
-| `REJECTED_VELOCITY`          | Impossible travel speed calculated from delta.        |
-| `REJECTED_SPOOF`             | High mock location risk or timing manipulation.       |
-| `REJECTED_RATE_LIMIT`        | Exceeded max 5 verifications per 60 seconds per device|
-| `REJECTED_OUT_OF_BOUNDS`     | User outside geofence radius.                         |
-| `REJECTED_INACTIVE_GEOFENCE` | Geofence missing or inactive, or campaign ineligible. |
+| Status                       | Meaning                                                |
+| ---------------------------- | ------------------------------------------------------ |
+| `VERIFIED`                   | Presence proved; reward/attendance processed.          |
+| `REJECTED_ACCURACY`          | GPS accuracy too low or payload invalid.               |
+| `REJECTED_DUPLICATE`         | Already verified here in the last 24 hours.            |
+| `REJECTED_VELOCITY`          | Impossible travel speed calculated from delta.         |
+| `REJECTED_SPOOF`             | High mock location risk or timing manipulation.        |
+| `REJECTED_RATE_LIMIT`        | Exceeded max 5 verifications per 60 seconds per device |
+| `REJECTED_OUT_OF_BOUNDS`     | User outside geofence radius.                          |
+| `REJECTED_INACTIVE_GEOFENCE` | Geofence missing or inactive, or campaign ineligible.  |
 
 ---
 
 ## 6. Fraud and Trust Requirements
 
 Current baseline:
+
 - GPS accuracy threshold.
 - Distance-based geofence check.
 - Velocity check against previous pings.
@@ -225,6 +230,7 @@ Current baseline:
 - Schema validation.
 
 Planned fraud layers:
+
 - Device fingerprinting and reputation scoring.
 - IP geolocation comparison.
 - Rate limiting per device and IP.
@@ -247,6 +253,7 @@ When a verified event has a reward:
 6. Emit webhook events.
 
 Payout statuses:
+
 - `NOT_APPLICABLE`
 - `QUEUED`
 - `PROCESSING`
@@ -267,6 +274,7 @@ Payout statuses:
 | Offline sync tolerance               | Hours to days with eventual consistency   |
 
 **Scaling strategy:**
+
 - Stateless Fastify instances behind a load balancer.
 - PostgreSQL read replicas for leaderboard and analytics queries.
 - Redis for rate limiting, leaderboards, and payout queues.
@@ -314,6 +322,7 @@ Payout statuses:
 ## 12. Roadmap
 
 ### Phase 1 — Core Verification (Current)
+
 - `/api/v1/engine/verify` endpoint
 - Geofence lookup and radius check
 - Velocity, duplicate, and accuracy filters
@@ -321,12 +330,14 @@ Payout statuses:
 - User linking and wallet creation
 
 ### Phase 2 — Campaign & Identity APIs
+
 - Full campaign CRUD API
 - Leaderboard and progress endpoints
 - User profile lookup
 - Webhook support
 
 ### Phase 3 — Fraud & Scale
+
 - Device fingerprinting and reputation scoring
 - Rate limiting
 - IP and behavioral anomaly detection
@@ -334,6 +345,7 @@ Payout statuses:
 - Read replicas for analytics
 
 ### Phase 4 — Enterprise & Ecosystem
+
 - Multi-tenant isolation hardening
 - Audit logs API
 - Advanced webhook filtering

@@ -26,14 +26,19 @@ export function NodeDetailsSheet({ node, onClose, onScanClick }: NodeDetailsShee
           <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-extrabold tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
             {node.rewardType} DROP
           </span>
-          <button onClick={onClose} className="text-gray-400 hover:text-white text-xs font-bold px-2 py-1">
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white text-xs font-bold px-2 py-1"
+          >
             ✕ Close
           </button>
         </div>
 
         <div className="space-y-1">
           <h3 className="text-xl font-extrabold text-white leading-snug">{node.title}</h3>
-          <p className="text-xs text-gray-400">Coordinates: {node.lat.toFixed(4)}°, {node.lng.toFixed(4)}°</p>
+          <p className="text-xs text-gray-400">
+            Coordinates: {node.lat.toFixed(4)}°, {node.lng.toFixed(4)}°
+          </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-gray-900/60 border border-gray-800">

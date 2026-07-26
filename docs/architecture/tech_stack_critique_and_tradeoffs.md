@@ -55,24 +55,28 @@ SpottGeo's technical stack is built on modern, high-performance, and cost-effect
 ## 3. Key Technical Tradeoffs & Analysis
 
 ### Tradeoff 1: PostGIS Radial Distance Queries vs. Discrete Global Grids (Uber H3 / Google S2)
+
 - **Current Approach**: Uses PostGIS spatial calculations (`ST_DWithin`).
 - **Advantage**: Simple, exact radial distance checks around arbitrary latitude/longitude points without grid boundary distortions.
 - **Tradeoff**: As active geofences scale past 100,000, spatial index lookups across arbitrary points become CPU-bound on database nodes.
 - **Recommendation**: At scale (>10M daily pings), index geofences using **Uber H3 spatial hexagons** (resolution 8/9) for $O(1)$ spatial binning prior to PostGIS distance refinements.
 
 ### Tradeoff 2: Database Job Queuing vs. External Event Bus (BullMQ / Redis / Kafka)
+
 - **Current Approach**: Decoupled worker services query pending database flags (`payout_status = 'QUEUED'`).
 - **Advantage**: Zero added infrastructure complexity, strong transactional integrity with Postgres, and zero additional cloud costs in early deployment.
 - **Tradeoff**: Continuous DB polling under high concurrency creates read contention on database connection pools.
 - **Recommendation**: Transition background worker queues to **BullMQ + Redis** or **NATS/Kafka** when worker throughput exceeds 500 jobs/second.
 
 ### Tradeoff 3: Centralized Fastify Verification vs. Edge Verification Functions
+
 - **Current Approach**: Pings travel from PWAs to the central Fastify engine.
 - **Advantage**: Centralized anti-cheat state evaluation (velocity deltas, duplicate 24h windows) with direct access to Postgres.
 - **Tradeoff**: Higher network latency for users distant from primary cloud regions.
 - **Recommendation**: Deploy lightweight Edge Verification Functions (e.g. Cloudflare Workers) to reject basic invalid accuracy (>50m) and out-of-bounds pings before hitting origin servers.
 
 ### Tradeoff 4: PWA Offline Queuing vs. Native Mobile SDKs
+
 - **Current Approach**: PWA Service Worker + IndexedDB queue.
 - **Advantage**: Zero app store download friction, universal cross-platform compatibility, instant deployment updates.
 - **Tradeoff**: Web Geolocation API lacks continuous background GPS access when the mobile browser tab is minimized.
@@ -82,9 +86,9 @@ SpottGeo's technical stack is built on modern, high-performance, and cost-effect
 
 ## 4. Technical Evolution Roadmap
 
-| Phase | Milestone | Focus Area | Technical Deliverable |
-| :--- | :--- | :--- | :--- |
-| **Phase 1** | Baseline Stability | Core Engine & PWAs | Fastify `/verify`, 4-step AntiCheatFilter, Payout Fallback, PostGIS GiST. |
-| **Phase 2** | Queue Scaling | Worker Offloading | Migrate worker polling to Redis/BullMQ for sub-second payout dispatching. |
-| **Phase 3** | Spatial Optimization | H3 Hex Grid Indexing | Implement Uber H3 index binning for 10M+ geofence lookup performance. |
-| **Phase 4** | Edge Defense | Distributed Verification | Cloudflare Edge worker pre-filtering for global sub-20ms ping verification. |
+| Phase       | Milestone            | Focus Area               | Technical Deliverable                                                       |
+| :---------- | :------------------- | :----------------------- | :-------------------------------------------------------------------------- |
+| **Phase 1** | Baseline Stability   | Core Engine & PWAs       | Fastify `/verify`, 4-step AntiCheatFilter, Payout Fallback, PostGIS GiST.   |
+| **Phase 2** | Queue Scaling        | Worker Offloading        | Migrate worker polling to Redis/BullMQ for sub-second payout dispatching.   |
+| **Phase 3** | Spatial Optimization | H3 Hex Grid Indexing     | Implement Uber H3 index binning for 10M+ geofence lookup performance.       |
+| **Phase 4** | Edge Defense         | Distributed Verification | Cloudflare Edge worker pre-filtering for global sub-20ms ping verification. |

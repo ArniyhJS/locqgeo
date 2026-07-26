@@ -36,14 +36,16 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
                 isRunning
                   ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                   : c.is_active
-                  ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                  : "bg-gray-500/10 text-gray-400 border-gray-500/20"
+                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                    : "bg-gray-500/10 text-gray-400 border-gray-500/20"
               }`}
             >
               {isRunning ? "RUNNING" : c.is_active ? "SCHEDULED" : "INACTIVE"}
             </span>
           </div>
-          <p className="text-sm text-gray-400 mt-1">{c.description || "No description provided."}</p>
+          <p className="text-sm text-gray-400 mt-1">
+            {c.description || "No description provided."}
+          </p>
         </div>
         <Link
           href="/campaigns"
@@ -67,7 +69,9 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
         <div className="glass-card p-5 space-y-2">
           <span className="text-[10px] uppercase font-bold text-gray-500">Reward</span>
           <div className="text-sm text-gray-200">
-            {c.reward_type ? `${c.reward_currency} ${c.reward_amount} ${c.reward_type}` : "No reward configured"}
+            {c.reward_type
+              ? `${c.reward_currency} ${c.reward_amount} ${c.reward_type}`
+              : "No reward configured"}
           </div>
         </div>
       </div>
@@ -120,7 +124,9 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
                 {leaderboard.map((entry) => (
                   <tr key={entry.device_id}>
                     <td className="py-3 font-bold text-white">#{entry.rank}</td>
-                    <td className="py-3 font-mono text-gray-400">{entry.device_id.slice(0, 16)}…</td>
+                    <td className="py-3 font-mono text-gray-400">
+                      {entry.device_id.slice(0, 16)}…
+                    </td>
                     <td className="py-3">{entry.total_points}</td>
                     <td className="py-3">{entry.total_visits}</td>
                     <td className="py-3">{entry.streak_count}</td>

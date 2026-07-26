@@ -21,9 +21,7 @@ Every route handler, database transaction, and validation middleware inside `ser
 
 $$v = \frac{\Delta d}{\Delta t} = \frac{\text{distance\_delta\_meters}}{\text{time\_delta\_seconds}}$$
 
-If $v > 55.56\text{ m/s}$ ($200\text{ km/h}$), the request MUST be rejected with status `REJECTED_VELOCITY` and error code `ERR_IMPOSSIBLE_SPEED`.
-5. **Deduplication Window**: A `device_id` can successfully claim a specific `node_id` reward at most once per 86,400 seconds (24-hour rolling window).
-6. **Time Delta Guard**: If $\Delta t = 0\text{ seconds}$ between consecutive pings from the same `device_id` with a distance delta $\Delta d > 10\text{m}$, the transaction MUST be rejected as an instant spoofing attempt (`ERR_ZERO_TIME_SPOOF`).
+If $v > 55.56\text{ m/s}$ ($200\text{ km/h}$), the request MUST be rejected with status `REJECTED_VELOCITY` and error code `ERR_IMPOSSIBLE_SPEED`. 5. **Deduplication Window**: A `device_id` can successfully claim a specific `node_id` reward at most once per 86,400 seconds (24-hour rolling window). 6. **Time Delta Guard**: If $\Delta t = 0\text{ seconds}$ between consecutive pings from the same `device_id` with a distance delta $\Delta d > 10\text{m}$, the transaction MUST be rejected as an instant spoofing attempt (`ERR_ZERO_TIME_SPOOF`).
 
 ---
 
@@ -40,20 +38,13 @@ export const PingRequestSchema = z.object({
     .min(16, "Device ID must be at least 16 characters")
     .max(128, "Device ID cannot exceed 128 characters")
     .regex(/^[a-zA-Z0-9_-]+$/, "Device ID contains invalid characters"),
-  latitude: z
-    .number()
-    .min(-90.0, "Latitude must be >= -90")
-    .max(90.0, "Latitude must be <= 90"),
+  latitude: z.number().min(-90.0, "Latitude must be >= -90").max(90.0, "Latitude must be <= 90"),
   longitude: z
     .number()
     .min(-180.0, "Longitude must be >= -180")
     .max(180.0, "Longitude must be <= 180"),
-  accuracy_meters: z
-    .number()
-    .min(0.0, "Accuracy cannot be negative"),
-  node_id: z
-    .string()
-    .uuid("node_id must be a valid UUID v4"),
+  accuracy_meters: z.number().min(0.0, "Accuracy cannot be negative"),
+  node_id: z.string().uuid("node_id must be a valid UUID v4"),
 });
 
 export type PingRequest = z.infer<typeof PingRequestSchema>;
@@ -156,10 +147,10 @@ CREATE TABLE reward_claims (
     ping_id UUID NOT NULL REFERENCES checkin_pings(id),
     status VARCHAR(50) NOT NULL CHECK (
         status IN (
-            'SUCCESS', 
-            'REJECTED_ACCURACY', 
-            'REJECTED_DUPLICATE', 
-            'REJECTED_VELOCITY', 
+            'SUCCESS',
+            'REJECTED_ACCURACY',
+            'REJECTED_DUPLICATE',
+            'REJECTED_VELOCITY',
             'REJECTED_OUT_OF_BOUNDS',
             'REJECTED_INACTIVE_NODE'
         )
@@ -172,8 +163,8 @@ CREATE TABLE reward_claims (
 );
 
 -- Deduplication Index: Prevents multiple successful claims within 24 hours
-CREATE UNIQUE INDEX idx_unique_daily_claim 
-ON reward_claims(device_id, node_id) 
+CREATE UNIQUE INDEX idx_unique_daily_claim
+ON reward_claims(device_id, node_id)
 WHERE status = 'SUCCESS' AND created_at > NOW() - INTERVAL '24 hours';
 ```
 
@@ -235,22 +226,24 @@ WHERE status = 'SUCCESS' AND created_at > NOW() - INTERVAL '24 hours';
 ## 5. SQL Implementation Contracts for Fastify Services
 
 ### 5.1 Step 2: Duplicate Claim Check Query
+
 ```sql
-SELECT id 
-FROM reward_claims 
-WHERE device_id = $1 
-  AND node_id = $2 
-  AND status = 'SUCCESS' 
+SELECT id
+FROM reward_claims
+WHERE device_id = $1
+  AND node_id = $2
+  AND status = 'SUCCESS'
   AND created_at > NOW() - INTERVAL '24 hours'
 LIMIT 1;
 ```
 
 ### 5.2 Step 3: Last Telemetry Fetch for Velocity Check
+
 ```sql
-SELECT 
+SELECT
     created_at,
     ST_Distance(
-        user_location, 
+        user_location,
         ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
     ) AS distance_delta_meters,
     EXTRACT(EPOCH FROM (NOW() - created_at)) AS time_delta_seconds
@@ -261,8 +254,9 @@ LIMIT 1;
 ```
 
 ### 5.3 Step 4: Spatial Distance Geofence Verification
+
 ```sql
-SELECT 
+SELECT
     cn.id,
     cn.tenant_id,
     cn.radius_meters,
@@ -270,12 +264,12 @@ SELECT
     cn.reward_amount_ngn,
     cn.is_active,
     ST_Distance(
-        cn.location, 
+        cn.location,
         ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
     ) AS distance_meters,
     ST_DWithin(
-        cn.location, 
-        ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography, 
+        cn.location,
+        ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography,
         cn.radius_meters
     ) AS is_within_fence
 FROM campaign_nodes cn

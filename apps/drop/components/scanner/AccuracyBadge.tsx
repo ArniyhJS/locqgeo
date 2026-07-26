@@ -24,7 +24,9 @@ export function AccuracyBadge({ accuracyMeters }: AccuracyBadgeProps) {
           : "bg-amber-500/10 text-amber-400 border-amber-500/30"
       }`}
     >
-      <span className={`h-2 w-2 rounded-full ${isGood ? "bg-emerald-400" : "bg-amber-400 animate-ping"}`} />
+      <span
+        className={`h-2 w-2 rounded-full ${isGood ? "bg-emerald-400" : "bg-amber-400 animate-ping"}`}
+      />
       GPS Accuracy: {accuracyMeters.toFixed(1)}m {isGood ? "(Verified)" : "(Weak Signal)"}
     </span>
   );

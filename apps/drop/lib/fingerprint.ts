@@ -24,11 +24,18 @@ export async function getOrCreateDeviceId(): Promise<string> {
     }
   }
 
-  const screenRes = typeof window !== "undefined" ? `${window.screen.width}x${window.screen.height}x${window.screen.colorDepth}` : "800x600x24";
+  const screenRes =
+    typeof window !== "undefined"
+      ? `${window.screen.width}x${window.screen.height}x${window.screen.colorDepth}`
+      : "800x600x24";
   const userAgent = typeof navigator !== "undefined" ? navigator.userAgent : "NodeJS";
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const hardwareConcurrency = (typeof navigator !== "undefined" && navigator.hardwareConcurrency) || 2;
-  const randomEntropy = typeof window !== "undefined" && window.crypto?.randomUUID ? window.crypto.randomUUID() : "demo_entropy";
+  const hardwareConcurrency =
+    (typeof navigator !== "undefined" && navigator.hardwareConcurrency) || 2;
+  const randomEntropy =
+    typeof window !== "undefined" && window.crypto?.randomUUID
+      ? window.crypto.randomUUID()
+      : "demo_entropy";
 
   const rawEntropyString = `${canvasHash}|${screenRes}|${userAgent}|${timeZone}|${hardwareConcurrency}|${randomEntropy}`;
 

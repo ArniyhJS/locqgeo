@@ -39,7 +39,9 @@ function ScanContent() {
           Step 2 of 2: Physical Verification
         </span>
         <h1 className="text-xl font-extrabold text-white">QR Geofence Scanner</h1>
-        <p className="text-xs text-gray-400">Point camera at billboard QR code to prove spatial presence.</p>
+        <p className="text-xs text-gray-400">
+          Point camera at billboard QR code to prove spatial presence.
+        </p>
       </div>
 
       <div className="flex justify-center">
@@ -65,15 +67,25 @@ function ScanContent() {
           </div>
           <div className="space-y-1">
             <h3 className="text-xl font-black text-white">Spatial Presence Verified!</h3>
-            <p className="text-xs text-gray-300">Geofence Proximity: <span className="font-bold text-[#ff6b00]">{verificationSuccessData.distance_meters}m</span></p>
-            <p className="text-xs text-gray-400 capitalize">Status: Verified & Anti-Cheat Validated</p>
+            <p className="text-xs text-gray-300">
+              Geofence Proximity:{" "}
+              <span className="font-bold text-[#ff6b00]">
+                {verificationSuccessData.distance_meters}m
+              </span>
+            </p>
+            <p className="text-xs text-gray-400 capitalize">
+              Status: Verified & Anti-Cheat Validated
+            </p>
           </div>
 
           {verificationSuccessData.reward && (
             <div className="p-4 rounded-2xl bg-[#0b0c0e]/90 border border-[#ff6b00]/40 space-y-1 shadow-inner">
-              <span className="text-[10px] text-[#ff6b00] uppercase font-black tracking-wider">Reward Unlocked</span>
+              <span className="text-[10px] text-[#ff6b00] uppercase font-black tracking-wider">
+                Reward Unlocked
+              </span>
               <div className="text-2xl font-black text-white">
-                {verificationSuccessData.reward.currency} {verificationSuccessData.reward.amount} {verificationSuccessData.reward.type}
+                {verificationSuccessData.reward.currency} {verificationSuccessData.reward.amount}{" "}
+                {verificationSuccessData.reward.type}
               </div>
             </div>
           )}
@@ -105,7 +117,9 @@ function ScanContent() {
 
 export default function ScanPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-[#ff6b00]">Loading Scanner...</div>}>
+    <Suspense
+      fallback={<div className="p-8 text-center text-xs text-[#ff6b00]">Loading Scanner...</div>}
+    >
       <ScanContent />
     </Suspense>
   );

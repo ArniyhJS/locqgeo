@@ -60,12 +60,14 @@ This document details how applications, services, and packages within the **Spot
 Inter-app communication in SpottGeo uses four distinct patterns depending on latency and coupling requirements:
 
 ### 1. HTTP REST APIs (Synchronous Client-to-Engine)
+
 - **Protocols**: HTTP/1.1 (JSON)
 - **Primary Endpoint**: `POST /api/v1/engine/verify` hosted by `SpottEngine` on port 8080.
 - **Participants**: `SpottDrop` (Consumer PWA) and `SpottVerify` (Attendance PWA) invoke `SpottEngine`.
 - **Purpose**: Real-time verification of physical presence claims, anti-cheat evaluation, and instant decision feedback (sub-50ms latency).
 
 ### 2. Database Asynchronous Queues (Decoupled Worker Pattern)
+
 - **Pattern**: Transactional Outbox / Table-as-Queue pattern over PostgreSQL.
 - **Participants**: `SpottEngine` (Producer) $\rightarrow$ PostgreSQL $\rightarrow$ `PayoutWorker`, `WebhookDispatcher`, `AnalyticsWorker` (Consumers).
 - **Purpose**:
@@ -73,6 +75,7 @@ Inter-app communication in SpottGeo uses four distinct patterns depending on lat
   - Background workers poll PostgreSQL at fixed intervals (`5000ms` for payouts, `10000ms` for webhooks, `60000ms` for telemetry pre-aggregation), eliminating HTTP coupling or main-thread blockages on user requests.
 
 ### 3. Shared TypeScript Data Layer (`@spottgeo/database`)
+
 - **Library**: Drizzle ORM (`packages/database`).
 - **Participants**: `SpottEngine`, `SpottConsole`, `PayoutWorker`, `WebhookDispatcher`, and `AnalyticsWorker`.
 - **Purpose**:
@@ -80,6 +83,7 @@ Inter-app communication in SpottGeo uses four distinct patterns depending on lat
   - Ensures schema consistency across API routes, background workers, and admin actions.
 
 ### 4. Shared Contract Schemas (`@spottgeo/api-contracts`)
+
 - **Library**: Zod (`packages/api-contracts`).
 - **Participants**: All 10 packages in the monorepo.
 - **Purpose**:
@@ -105,7 +109,7 @@ sequenceDiagram
     Note over Engine: Run 4-Step Anti-Cheat Filter
     Engine->>DB: INSERT INTO checkin_pings & verifications (status='VERIFIED', payout_status='QUEUED')
     Engine-->>Drop: 200 OK { status: 'VERIFIED', payout_status: 'QUEUED' }
-    
+
     loop Every 5 Seconds
         Worker->>DB: SELECT * FROM verifications WHERE payout_status = 'QUEUED' LIMIT 25
         DB-->>Worker: Pending Payout Jobs
@@ -128,7 +132,7 @@ sequenceDiagram
     participant Client as Client Webhook Endpoint
 
     Engine->>DB: Write Verification Attempt (VERIFIED or FRAUD_FLAGGED)
-    
+
     loop Every 10 Seconds
         Dispatcher->>DB: SELECT recent verifications ORDER BY created_at DESC
         DB-->>Dispatcher: Verification Records
@@ -207,17 +211,19 @@ As verification volume scales from thousands to tens of millions of daily pings,
 ```
 
 ### Phase 1: Current Architecture (0 – 1,000,000 Daily Pings)
+
 - **API Core**: Stateless `SpottEngine` Fastify API instances scaled horizontally behind a load balancer.
 - **Worker Queuing**: PostgreSQL Transactional Outbox / Table-as-Queue polling loops (`payout_status = 'QUEUED'`).
 - **Database**: Single primary PostgreSQL instance with PostGIS spatial indexing.
 - **Contracts & Schema**: Monorepo shared Zod contracts (`@spottgeo/api-contracts`) and Drizzle ORM (`@spottgeo/database`).
 
 ### Phase 2: High-Velocity Scale (1M – 10M Daily Pings)
+
 - **Redis + BullMQ Queuing**: Replace PostgreSQL table polling with Redis event streams / BullMQ queues (`payout-queue`, `webhook-queue`) for instant sub-millisecond job distribution to `PayoutWorker` and `WebhookDispatcher`.
 - **In-Memory Geofence Caching**: Cache active geofence coordinate boundaries in Redis in-memory spatial data structures to eliminate SQL database reads on high-velocity check-in bursts.
 - **Real-Time Leaderboard Caching**: Cache campaign leaderboard scores using Redis Sorted Sets (`ZADD`, `ZREVRANGE`) for instant leaderboard rendering.
 
 ### Phase 3: Nationwide Enterprise Scale (10M+ Daily Pings)
+
 - **PostgreSQL Read Replicas**: Separate write-heavy presence verifications (Primary DB) from read-heavy `SpottConsole` telemetry and reporting queries (Read Replicas).
 - **Distributed Event Streaming**: Route high-frequency raw `checkin_pings` to an event streaming platform (Apache Kafka / NATS) for real-time stream processing and anti-cheat ML model evaluation.
-

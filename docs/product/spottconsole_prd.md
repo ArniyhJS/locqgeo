@@ -42,11 +42,13 @@ SpottConsole sits between:
 **Purpose:** Give every user a quick snapshot of tenant health and campaign performance.
 
 **User Stories:**
+
 - As a Campaign Manager, I want to see total verified events, active campaigns, and total reward spend at a glance.
 - As an Operations Manager, I want to see the latest fraud rejections so I can investigate quickly.
 - As a Finance Manager, I want to see wallet balance and pending payouts.
 
 **Key Metrics:**
+
 - Total verifications today / this week / this month
 - Active campaigns
 - Verified vs rejected events
@@ -56,6 +58,7 @@ SpottConsole sits between:
 - New linked users
 
 **Acceptance Criteria:**
+
 - Dashboard loads within 2 seconds.
 - Metrics refresh automatically every 60 seconds.
 - Each metric card links to a detailed report page.
@@ -67,12 +70,14 @@ SpottConsole sits between:
 **Purpose:** Allow users to define physical locations where presences can be verified.
 
 **User Stories:**
+
 - As an Operations Manager, I want to create a geofence by clicking on a map.
 - As a Campaign Manager, I want to import hundreds of billboards via CSV.
 - As an Operations Manager, I want to activate or deactivate a location without deleting it.
 - As a Campaign Manager, I want to tag locations by city or client.
 
 **Features:**
+
 - Interactive map using PostGIS + Leaflet/Mapbox
 - Draw geofences with radius presets: 25m, 50m, 100m, 250m
 - Manual coordinate entry with validation
@@ -83,6 +88,7 @@ SpottConsole sits between:
 - Duplicate detection by coordinate proximity
 
 **Acceptance Criteria:**
+
 - User can create a geofence in under 60 seconds.
 - CSV import validates required fields and reports errors.
 - Map renders at least 500 geofences without significant lag.
@@ -95,6 +101,7 @@ SpottConsole sits between:
 **Purpose:** Let business users design presence-based gamification, rewards, and attendance workflows.
 
 **User Stories:**
+
 - As a Campaign Manager, I want to choose a campaign template so I can launch faster.
 - As a Campaign Manager, I want to link geofences and assign different point weights.
 - As a Finance Manager, I want to set daily and total budget caps.
@@ -102,6 +109,7 @@ SpottConsole sits between:
 - As a Campaign Manager, I want to configure rewards (airtime, data, cash, voucher).
 
 **Campaign Templates:**
+
 - **Treasure Hunt** — visit geofences in a specific order.
 - **Loyalty Punch Card** — visit the same or different locations N times.
 - **Flash Drop** — reward the first N verified visitors.
@@ -109,6 +117,7 @@ SpottConsole sits between:
 - **Audit / Check-in** — simple verified presence without rewards.
 
 **Features:**
+
 - Campaign title, description, active period
 - Action type: REWARD, CHECKIN, ATTENDANCE, AUDIT, ACCESS
 - Linked geofences with visit weight and optional required order
@@ -119,6 +128,7 @@ SpottConsole sits between:
 - Draft / scheduled / running / paused / ended statuses
 
 **Acceptance Criteria:**
+
 - User can create a campaign from a template in under 3 minutes.
 - Budget caps are enforced before any reward is queued.
 - Campaign status changes take effect within 30 seconds.
@@ -131,12 +141,14 @@ SpottConsole sits between:
 **Purpose:** Surface real-time and historical data about campaign performance and fraud.
 
 **User Stories:**
+
 - As a Campaign Manager, I want to see hourly trends of verifications.
 - As an Operations Manager, I want to see fraud rejected events by reason.
 - As a Campaign Manager, I want to see a leaderboard of top participants.
 - As a Finance Manager, I want to export verification and payout reports.
 
 **Features:**
+
 - Live verification feed (latest 100 events)
 - Fraud breakdown: rejected accuracy, velocity, duplicate, out-of-bounds, inactive geofence
 - Hourly/daily trend charts
@@ -146,6 +158,7 @@ SpottConsole sits between:
 - CSV/PDF export
 
 **Acceptance Criteria:**
+
 - Analytics pages load within 3 seconds for 30 days of data.
 - Fraud breakdown updates within 60 seconds.
 - Export produces a valid CSV with correct columns.
@@ -157,12 +170,14 @@ SpottConsole sits between:
 **Purpose:** Manage anonymous devices and progressively linked user identities.
 
 **User Stories:**
+
 - As an Operations Manager, I want to see all devices that have scanned.
 - As a Support Agent, I want to look up a user by phone or email.
 - As a Finance Manager, I want to see a user's reward history.
 - As an Operations Manager, I want to flag suspicious devices.
 
 **Features:**
+
 - Device list with fingerprint, first/last scan, total verifications
 - User profiles: phone, email, name, linked devices, wallet, verification history
 - Search by device_id, phone, email, or geofence
@@ -170,6 +185,7 @@ SpottConsole sits between:
 - Manual user-device linking for support scenarios
 
 **Acceptance Criteria:**
+
 - Search returns results within 2 seconds.
 - Linked users see all historical verifications associated with their devices.
 - Fraud flags are visible on user and device detail pages.
@@ -181,12 +197,14 @@ SpottConsole sits between:
 **Purpose:** Control how rewards are funded, queued, and disbursed.
 
 **User Stories:**
+
 - As a Finance Manager, I want to see total prefunded reward balance.
 - As an Operations Manager, I want to retry a failed payout.
 - As a Campaign Manager, I want to see how much of my campaign budget has been spent.
 - As a Finance Manager, I want to reconcile payouts by provider.
 
 **Features:**
+
 - Reward float / wallet dashboard
 - Payout queue status: pending, processing, completed, failed
 - Provider configuration: VTpass, Paystack, bank transfer, voucher codes
@@ -195,6 +213,7 @@ SpottConsole sits between:
 - Budget burn chart per campaign
 
 **Acceptance Criteria:**
+
 - Payout status updates within 60 seconds of provider response.
 - Failed payouts can be retried manually from the UI.
 - Campaign budget caps are enforced before payouts are queued.
@@ -206,11 +225,13 @@ SpottConsole sits between:
 **Purpose:** Enable multi-user access with appropriate permissions.
 
 **User Stories:**
+
 - As a Tenant Admin, I want to invite team members.
 - As a Tenant Admin, I want to assign roles.
 - As a Finance Manager, I want to view payout data but not modify campaigns.
 
 **Roles:**
+
 - **Admin** — full access, billing, team management
 - **Campaign Manager** — create/edit campaigns, view analytics
 - **Operations Manager** — manage geofences, verify fraud flags, view live telemetry
@@ -219,6 +240,7 @@ SpottConsole sits between:
 - **Developer** — manage API keys and webhooks
 
 **Acceptance Criteria:**
+
 - Role permissions are enforced on both UI routes and server actions.
 - Invited users receive an email with a secure link.
 - Role changes take effect immediately.
@@ -230,11 +252,13 @@ SpottConsole sits between:
 **Purpose:** Allow external developers and systems to integrate with SpottEngine securely.
 
 **User Stories:**
+
 - As a Developer, I want to generate API keys for staging and production.
 - As a Developer, I want to rotate or revoke an API key.
 - As a Developer, I want to configure webhooks for verification events.
 
 **Features:**
+
 - API key creation with label and environment
 - Key prefix visibility, full key shown only once
 - Revocation and rotation
@@ -243,6 +267,7 @@ SpottConsole sits between:
 - Webhook retry and delivery logs
 
 **Acceptance Criteria:**
+
 - API keys are hashed before storage.
 - Revoked keys are rejected immediately.
 - Webhooks retry failed deliveries up to 5 times with exponential backoff.
@@ -254,10 +279,12 @@ SpottConsole sits between:
 **Purpose:** Provide a tamper-resistant record of all administrative actions.
 
 **User Stories:**
+
 - As a Tenant Admin, I want to see who created or modified a campaign.
 - As a Compliance Officer, I want to export audit logs.
 
 **Logged Events:**
+
 - User login / invite / role change
 - Campaign create / update / delete / status change
 - Geofence create / update / delete / activation change
@@ -266,6 +293,7 @@ SpottConsole sits between:
 - Webhook create / update / delete
 
 **Acceptance Criteria:**
+
 - Logs are append-only from the application layer.
 - Logs are searchable by user, action, and date range.
 - Retention of at least 12 months.
@@ -299,6 +327,7 @@ SpottConsole sits between:
 ## 6. Roadmap
 
 ### Phase 1 — Foundation (Current)
+
 - Executive overview dashboard
 - Campaign nodes (geofences) list and CSV import
 - Campaign CRUD and detail/leaderboard
@@ -307,12 +336,14 @@ SpottConsole sits between:
 - API keys and team settings (UI only)
 
 ### Phase 2 — Campaign Power User
+
 - Interactive map-based geofence studio
 - Campaign templates (treasure hunt, loyalty, flash drop, attendance)
 - Advanced analytics: heatmap, funnel, hourly trends
 - CSV/PDF report export
 
 ### Phase 3 — Enterprise Controls
+
 - Enforced RBAC on server actions
 - Full audit log UI
 - Payout operations dashboard
@@ -320,6 +351,7 @@ SpottConsole sits between:
 - Webhook management
 
 ### Phase 4 — Scale & Ecosystem
+
 - White-label and client sub-accounts
 - Public API documentation
 - Zapier / Make connector
@@ -356,4 +388,4 @@ SpottConsole sits between:
 
 ---
 
-*This PRD should be reviewed quarterly and updated as SpottConsole moves through each roadmap phase.*
+_This PRD should be reviewed quarterly and updated as SpottConsole moves through each roadmap phase._

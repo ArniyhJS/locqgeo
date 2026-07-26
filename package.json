@@ -19,11 +19,15 @@
     "dev:verify": "turbo run dev --filter=@spottgeo/verify",
     "dev:payout-worker": "turbo run dev --filter=@spottgeo/payout-worker",
     "dev:webhook-dispatcher": "turbo run dev --filter=@spottgeo/webhook-dispatcher",
-    "dev:analytics-worker": "turbo run dev --filter=@spottgeo/analytics-worker"
+    "dev:analytics-worker": "turbo run dev --filter=@spottgeo/analytics-worker",
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml}\""
   },
   "devDependencies": {
     "turbo": "^2.10.6",
-    "typescript": "^5.7.3"
+    "typescript": "^5.9.3",
+    "@spottgeo/config": "workspace:*",
+    "prettier": "^3.5.0"
   },
   "packageManager": "pnpm@11.17.0"
 }

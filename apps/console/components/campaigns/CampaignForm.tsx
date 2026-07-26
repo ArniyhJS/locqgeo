@@ -29,7 +29,9 @@ interface FormState {
 
 export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
   const router = useRouter();
-  const [selectedGeofences, setSelectedGeofences] = useState<Record<string, { weight: number; order?: number }>>({});
+  const [selectedGeofences, setSelectedGeofences] = useState<
+    Record<string, { weight: number; order?: number }>
+  >({});
   const [rewardEnabled, setRewardEnabled] = useState(false);
 
   const [state, submitAction, isPending] = useActionState<FormState, FormData>(
@@ -48,22 +50,36 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
         action_type: String(formData.get("action_type")) as CampaignCreateRequest["action_type"],
         starts_at: new Date(String(formData.get("starts_at"))).toISOString(),
         ends_at: new Date(String(formData.get("ends_at"))).toISOString(),
-        daily_budget_limit: formData.get("daily_budget_limit") ? Number(formData.get("daily_budget_limit")) : undefined,
-        total_budget_limit: formData.get("total_budget_limit") ? Number(formData.get("total_budget_limit")) : undefined,
-        reward_type: rewardEnabled ? (String(formData.get("reward_type")) as CampaignCreateRequest["reward_type"]) : undefined,
-        reward_amount: rewardEnabled && formData.get("reward_amount") ? Number(formData.get("reward_amount")) : undefined,
-        reward_currency: rewardEnabled ? String(formData.get("reward_currency") || "NGN") : undefined,
+        daily_budget_limit: formData.get("daily_budget_limit")
+          ? Number(formData.get("daily_budget_limit"))
+          : undefined,
+        total_budget_limit: formData.get("total_budget_limit")
+          ? Number(formData.get("total_budget_limit"))
+          : undefined,
+        reward_type: rewardEnabled
+          ? (String(formData.get("reward_type")) as CampaignCreateRequest["reward_type"])
+          : undefined,
+        reward_amount:
+          rewardEnabled && formData.get("reward_amount")
+            ? Number(formData.get("reward_amount"))
+            : undefined,
+        reward_currency: rewardEnabled
+          ? String(formData.get("reward_currency") || "NGN")
+          : undefined,
         is_active: formData.get("is_active") === "on",
         geofences: entries,
       };
 
-      const result = (await createCampaignAction(tenantId, payload as Omit<CampaignCreateRequest, "tenant_id">)) as FormState;
+      const result = (await createCampaignAction(
+        tenantId,
+        payload as Omit<CampaignCreateRequest, "tenant_id">,
+      )) as FormState;
       if (result.success && result.data) {
         router.push(`/campaigns/${result.data.id}`);
       }
       return result;
     },
-    { success: false }
+    { success: false },
   );
 
   const toggleGeofence = (id: string, checked: boolean) => {
@@ -135,7 +151,9 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
             />
             Active
           </label>
-          <p className="text-[10px] text-gray-500">Only active campaigns can receive verifications.</p>
+          <p className="text-[10px] text-gray-500">
+            Only active campaigns can receive verifications.
+          </p>
         </div>
 
         <div className="space-y-2">
@@ -159,7 +177,9 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-semibold text-gray-400 uppercase">Daily Budget Limit</label>
+          <label className="text-xs font-semibold text-gray-400 uppercase">
+            Daily Budget Limit
+          </label>
           <input
             name="daily_budget_limit"
             type="number"
@@ -171,7 +191,9 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-semibold text-gray-400 uppercase">Total Budget Limit</label>
+          <label className="text-xs font-semibold text-gray-400 uppercase">
+            Total Budget Limit
+          </label>
           <input
             name="total_budget_limit"
             type="number"
@@ -241,7 +263,9 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
 
       <div className="space-y-4 rounded-2xl border border-gray-800 bg-gray-900/40 p-5">
         <h3 className="text-sm font-bold text-white">Linked Billboards / Geofences</h3>
-        <p className="text-xs text-gray-400">Select the physical targets that count toward this campaign.</p>
+        <p className="text-xs text-gray-400">
+          Select the physical targets that count toward this campaign.
+        </p>
 
         {geofences.length === 0 ? (
           <p className="text-sm text-gray-500">No geofences found. Create campaign nodes first.</p>
@@ -250,7 +274,10 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
             {geofences.map((g) => {
               const selected = !!selectedGeofences[g.id];
               return (
-                <div key={g.id} className="flex items-center gap-4 p-3 rounded-xl border border-gray-800 bg-gray-900/60">
+                <div
+                  key={g.id}
+                  className="flex items-center gap-4 p-3 rounded-xl border border-gray-800 bg-gray-900/60"
+                >
                   <input
                     type="checkbox"
                     id={`gf-${g.id}`}
@@ -258,7 +285,10 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
                     onChange={(e) => toggleGeofence(g.id, e.target.checked)}
                     className="rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0"
                   />
-                  <label htmlFor={`gf-${g.id}`} className="flex-1 text-sm text-white cursor-pointer">
+                  <label
+                    htmlFor={`gf-${g.id}`}
+                    className="flex-1 text-sm text-white cursor-pointer"
+                  >
                     {g.title}
                     <span className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded border border-gray-700 text-gray-400">
                       {g.action_type}
@@ -290,7 +320,10 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
                           onChange={(e) =>
                             setSelectedGeofences((prev) => ({
                               ...prev,
-                              [g.id]: { ...prev[g.id], order: e.target.value ? Number(e.target.value) : undefined },
+                              [g.id]: {
+                                ...prev[g.id],
+                                order: e.target.value ? Number(e.target.value) : undefined,
+                              },
                             }))
                           }
                           className="ml-1 w-16 px-2 py-1 rounded bg-gray-900 border border-gray-700 text-white text-xs"
@@ -313,7 +346,8 @@ export function CampaignForm({ tenantId, geofences }: CampaignFormProps) {
         >
           {isPending ? "Creating..." : "Create Campaign"}
         </button>
-        <Link href="/campaigns"
+        <Link
+          href="/campaigns"
           className="px-5 py-2.5 rounded-lg text-sm font-medium bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition-colors"
         >
           Cancel

@@ -3,7 +3,11 @@
 import { useState, useCallback } from "react";
 import { getOrCreateDeviceId } from "@/lib/fingerprint";
 import { saveLocalVerification } from "@/lib/db-store";
-import type { PingResponseSuccess, PingResponseError, LocalVerificationRecord } from "@spottgeo/api-contracts";
+import type {
+  PingResponseSuccess,
+  PingResponseError,
+  LocalVerificationRecord,
+} from "@spottgeo/api-contracts";
 
 export interface ScannerState {
   isLocating: boolean;
@@ -24,7 +28,11 @@ export function useSpottScanner() {
     currentLocation: null,
   });
 
-  const captureLocation = useCallback((): Promise<{ latitude: number; longitude: number; accuracy: number }> => {
+  const captureLocation = useCallback((): Promise<{
+    latitude: number;
+    longitude: number;
+    accuracy: number;
+  }> => {
     setState((prev) => ({ ...prev, isLocating: true, gpsError: null }));
 
     return new Promise((resolve, reject) => {
@@ -50,13 +58,14 @@ export function useSpottScanner() {
         (error) => {
           let msg = "Failed to acquire GPS location.";
           if (error.code === error.PERMISSION_DENIED) msg = "Location permission was denied.";
-          if (error.code === error.POSITION_UNAVAILABLE) msg = "Location information is unavailable.";
+          if (error.code === error.POSITION_UNAVAILABLE)
+            msg = "Location information is unavailable.";
           if (error.code === error.TIMEOUT) msg = "GPS request timed out.";
 
           setState((prev) => ({ ...prev, isLocating: false, gpsError: msg }));
           reject(new Error(msg));
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
       );
     });
   }, []);
@@ -124,7 +133,8 @@ export function useSpottScanner() {
         const result = (await response.json()) as PingResponseSuccess | PingResponseError;
 
         if (!result.success) {
-          const errMessage = result.message || "Verification failed: out of bounds or excessive speed.";
+          const errMessage =
+            result.message || "Verification failed: out of bounds or excessive speed.";
           setState((prev) => ({ ...prev, isSubmitting: false, scanError: errMessage }));
           return { success: false, error: errMessage };
         }
@@ -159,7 +169,7 @@ export function useSpottScanner() {
         return { success: false, error: msg };
       }
     },
-    [captureLocation, state.currentLocation]
+    [captureLocation, state.currentLocation],
   );
 
   return {

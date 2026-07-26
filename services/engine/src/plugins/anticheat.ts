@@ -26,7 +26,7 @@ export class AntiCheatFilter {
     recentPingTimestamps: number[],
     nowTimestamp: number = Date.now(),
     maxAllowed: number = AntiCheatFilter.MAX_VERIFICATIONS_PER_MINUTE,
-    windowSeconds: number = 60
+    windowSeconds: number = 60,
   ): boolean {
     const windowStart = nowTimestamp - windowSeconds * 1000;
     const recentCount = recentPingTimestamps.filter((t) => t >= windowStart).length;
@@ -40,7 +40,7 @@ export class AntiCheatFilter {
     velocityMps: number = 0,
     priorPing?: PriorPingData | { lat: number; lng: number; timestamp: number },
     currentTimestamp: number = Date.now(),
-    recentDevicePingTimestamps: number[] = []
+    recentDevicePingTimestamps: number[] = [],
   ): AntiCheatResult {
     let accuracyValid = true;
     let velocityValid = true;
@@ -54,7 +54,9 @@ export class AntiCheatFilter {
       accuracyValid = false;
       spoofScore += 40;
       fraudSignals.push("LOW_GPS_ACCURACY");
-      reasons.push(`GPS accuracy degraded (${accuracyMeters.toFixed(1)}m > ${this.MAX_ACCURACY_THRESHOLD_METERS}m)`);
+      reasons.push(
+        `GPS accuracy degraded (${accuracyMeters.toFixed(1)}m > ${this.MAX_ACCURACY_THRESHOLD_METERS}m)`,
+      );
     }
 
     // 2. Client Velocity Filter
@@ -72,7 +74,9 @@ export class AntiCheatFilter {
         rateLimitValid = false;
         spoofScore += 50;
         fraudSignals.push("RATE_LIMIT_EXCEEDED");
-        reasons.push(`Per-device rate limit exceeded (max ${this.MAX_VERIFICATIONS_PER_MINUTE} pings per 60s)`);
+        reasons.push(
+          `Per-device rate limit exceeded (max ${this.MAX_VERIFICATIONS_PER_MINUTE} pings per 60s)`,
+        );
       }
     }
 
@@ -87,8 +91,11 @@ export class AntiCheatFilter {
       } else {
         timeDeltaSeconds = (currentTimestamp - priorPing.timestamp) / 1000;
         const latDeltaMeters = Math.abs(lat - priorPing.lat) * 111000;
-        const lngDeltaMeters = Math.abs(lng - priorPing.lng) * 111000 * Math.cos((lat * Math.PI) / 180);
-        distanceDeltaMeters = Math.sqrt(latDeltaMeters * latDeltaMeters + lngDeltaMeters * lngDeltaMeters);
+        const lngDeltaMeters =
+          Math.abs(lng - priorPing.lng) * 111000 * Math.cos((lat * Math.PI) / 180);
+        distanceDeltaMeters = Math.sqrt(
+          latDeltaMeters * latDeltaMeters + lngDeltaMeters * lngDeltaMeters,
+        );
       }
 
       if (timeDeltaSeconds === 0 && distanceDeltaMeters > 10) {
@@ -102,7 +109,9 @@ export class AntiCheatFilter {
           velocityValid = false;
           spoofScore += 60;
           fraudSignals.push("TELEPORTATION_ANOMALY");
-          reasons.push(`Teleportation anomaly: calculated speed ${calculatedVelocity.toFixed(1)} m/s exceeds max threshold ${this.MAX_VELOCITY_MPS} m/s`);
+          reasons.push(
+            `Teleportation anomaly: calculated speed ${calculatedVelocity.toFixed(1)} m/s exceeds max threshold ${this.MAX_VELOCITY_MPS} m/s`,
+          );
         }
       }
     }

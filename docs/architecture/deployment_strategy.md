@@ -38,6 +38,7 @@ SpottGeo is structured as a **Unified TypeScript Monorepo** managed with **pnpm 
 ## 🎯 Component-by-Component Deployment Specification
 
 ### 1. Frontend Layer (`apps/console`, `apps/drop`, `apps/verify`)
+
 - **Hosting Platform**: Vercel / Cloudflare Pages
 - **Runtime**: Next.js 16 (Turbopack) Serverless / Edge Runtime
 - **Build Command**: `pnpm run build --filter=<app_name>`
@@ -48,6 +49,7 @@ SpottGeo is structured as a **Unified TypeScript Monorepo** managed with **pnpm 
   - Custom domain routing (`console.spottgeo.com`, `drop.spottgeo.com`, `verify.spottgeo.com`).
 
 ### 2. Core API Layer (`services/engine`)
+
 - **Hosting Platform**: AWS ECS Fargate / GCP Cloud Run / Railway / Render / Fly.io
 - **Runtime**: Node.js v20+ / Fastify API Server
 - **Port**: `8080`
@@ -57,6 +59,7 @@ SpottGeo is structured as a **Unified TypeScript Monorepo** managed with **pnpm 
 - **Autoscaling**: Scale HTTP container instances based on CPU (>70%) or HTTP request concurrency during nationwide campaign spikes.
 
 ### 3. Background Worker Layer (`services/payout-worker`, `services/webhook-dispatcher`, `services/analytics-worker`)
+
 - **Hosting Platform**: AWS ECS Fargate Tasks / Railway Background Workers / Render Worker Services
 - **Runtime**: Node.js v20+ Long-Running Processes
 - **Ports**: None (Background execution loops; 0 exposed HTTP ports)
@@ -67,6 +70,7 @@ SpottGeo is structured as a **Unified TypeScript Monorepo** managed with **pnpm 
 - **Isolation**: Workers operate asynchronously without blocking main-thread API traffic or exposing public web ports.
 
 ### 4. Database Layer (`packages/database`)
+
 - **Engine**: PostgreSQL v15+ with `postgis` and `uuid-ossp` extensions enabled.
 - **Provider**: AWS RDS PostgreSQL / Neon / Supabase
 - **ORM**: Drizzle ORM (`@spottgeo/database`)
@@ -115,11 +119,11 @@ CMD ["pnpm", "--filter", "@spottgeo/engine", "start"]
 
 ## 📊 Deployment Options Comparison Matrix
 
-| Deployment Strategy | Target Audience | Est. Monthly Cost | Setup Effort | Scalability |
-| :--- | :--- | :--- | :--- | :--- |
-| **Option A: PaaS Hybrid** *(Recommended for Growth)* | Startups / Growth | $20 – $100 | ⚡ 1 Hour | 🟢 High (Auto-scales Next.js & Fastify) |
-| **Option B: AWS Cloud Native** | Scaleup / Enterprise | $150 – $800 | 🛠️ 1–2 Days | 🟢 Unlimited (VPC, IAM, ECS Fargate) |
-| **Option C: Single VPS Docker Compose** | Staging / MVP | $12 – $24 | ⚡ 30 Mins | 🔴 Fixed Single Host Capacity |
+| Deployment Strategy                                  | Target Audience      | Est. Monthly Cost | Setup Effort | Scalability                             |
+| :--------------------------------------------------- | :------------------- | :---------------- | :----------- | :-------------------------------------- |
+| **Option A: PaaS Hybrid** _(Recommended for Growth)_ | Startups / Growth    | $20 – $100        | ⚡ 1 Hour    | 🟢 High (Auto-scales Next.js & Fastify) |
+| **Option B: AWS Cloud Native**                       | Scaleup / Enterprise | $150 – $800       | 🛠️ 1–2 Days  | 🟢 Unlimited (VPC, IAM, ECS Fargate)    |
+| **Option C: Single VPS Docker Compose**              | Staging / MVP        | $12 – $24         | ⚡ 30 Mins   | 🔴 Fixed Single Host Capacity           |
 
 ---
 
@@ -132,12 +136,12 @@ graph TD
     C --> D[pnpm run check-types]
     C --> E[pnpm run lint]
     C --> F[pnpm run test]
-    
+
     D & E & F --> G[Database Migration: pnpm run db:migrate]
-    
+
     G --> H[Deploy Frontends to Vercel]
     G --> I[Build & Push Docker Containers to Registry]
-    
+
     I --> J[Deploy SpottEngine to AWS ECS / Cloud Run]
     I --> K[Deploy Background Workers to AWS ECS / Railway]
 ```
@@ -146,12 +150,12 @@ graph TD
 
 ## 🔑 Environment Variables & Secret Management
 
-| Variable Name | Component Access | Description |
-| :--- | :--- | :--- |
-| `DATABASE_URL` | Engine, Workers, Console | Connection string to PostgreSQL instance (`postgres://...`) |
-| `NODE_ENV` | All Components | `production` / `development` / `test` |
-| `PORT` | Engine, Apps | Service binding port (`8080`, `3000`, `3001`, `3002`) |
+| Variable Name            | Component Access                   | Description                                                      |
+| :----------------------- | :--------------------------------- | :--------------------------------------------------------------- |
+| `DATABASE_URL`           | Engine, Workers, Console           | Connection string to PostgreSQL instance (`postgres://...`)      |
+| `NODE_ENV`               | All Components                     | `production` / `development` / `test`                            |
+| `PORT`                   | Engine, Apps                       | Service binding port (`8080`, `3000`, `3001`, `3002`)            |
 | `NEXT_PUBLIC_ENGINE_URL` | Apps (`drop`, `verify`, `console`) | Public API endpoint for SpottEngine (`https://api.spottgeo.com`) |
-| `PAYSTACK_SECRET_KEY` | Payout Worker | Secret key for Paystack airtime/data payout integration |
-| `VTPASS_SECRET_KEY` | Payout Worker | Secret key for VTpass utility payout integration |
-| `WEBHOOK_HMAC_SECRET` | Webhook Dispatcher | Shared cryptographic secret key for signing outbound webhooks |
+| `PAYSTACK_SECRET_KEY`    | Payout Worker                      | Secret key for Paystack airtime/data payout integration          |
+| `VTPASS_SECRET_KEY`      | Payout Worker                      | Secret key for VTpass utility payout integration                 |
+| `WEBHOOK_HMAC_SECRET`    | Webhook Dispatcher                 | Shared cryptographic secret key for signing outbound webhooks    |

@@ -34,7 +34,11 @@ export function useVerifier() {
     currentLocation: null,
   });
 
-  const captureLocation = useCallback((): Promise<{ latitude: number; longitude: number; accuracy: number }> => {
+  const captureLocation = useCallback((): Promise<{
+    latitude: number;
+    longitude: number;
+    accuracy: number;
+  }> => {
     setState((prev) => ({ ...prev, isLocating: true, gpsError: null }));
 
     return new Promise((resolve, reject) => {
@@ -60,13 +64,14 @@ export function useVerifier() {
         (error) => {
           let msg = "Failed to acquire GPS location.";
           if (error.code === error.PERMISSION_DENIED) msg = "Location permission was denied.";
-          if (error.code === error.POSITION_UNAVAILABLE) msg = "Location information is unavailable.";
+          if (error.code === error.POSITION_UNAVAILABLE)
+            msg = "Location information is unavailable.";
           if (error.code === error.TIMEOUT) msg = "GPS request timed out.";
 
           setState((prev) => ({ ...prev, isLocating: false, gpsError: msg }));
           reject(new Error(msg));
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
       );
     });
   }, []);
@@ -75,8 +80,11 @@ export function useVerifier() {
     async (
       geofenceId: string,
       campaignId?: string,
-      userId?: string
-    ): Promise<({ success: true; data: PingResponseSuccess["data"] } | { success: false; error: PingResponseError })> => {
+      userId?: string,
+    ): Promise<
+      | { success: true; data: PingResponseSuccess["data"] }
+      | { success: false; error: PingResponseError }
+    > => {
       setState((prev) => ({
         ...prev,
         isSubmitting: true,
@@ -114,7 +122,9 @@ export function useVerifier() {
             action_type: actionType,
             verified_at: new Date().toISOString(),
             payout_status: "NOT_APPLICABLE",
-            ...(campaignId ? { campaign_id: campaignId, points_earned: 1, leaderboard_rank: 1 } : {}),
+            ...(campaignId
+              ? { campaign_id: campaignId, points_earned: 1, leaderboard_rank: 1 }
+              : {}),
             ...(userId ? { user_id: userId } : {}),
           };
 
@@ -187,7 +197,7 @@ export function useVerifier() {
         return { success: false, error: errorPayload };
       }
     },
-    [captureLocation, state.currentLocation]
+    [captureLocation, state.currentLocation],
   );
 
   const reset = useCallback(() => {

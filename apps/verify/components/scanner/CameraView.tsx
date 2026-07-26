@@ -16,28 +16,24 @@ export function CameraView({ onScanSuccess }: CameraViewProps) {
 
     if (videoRef.current) {
       codeReader
-        .decodeFromVideoDevice(
-          null,
-          videoRef.current,
-          (result, err) => {
-            if (result) {
-              const text = result.getText();
-              try {
-                const json = JSON.parse(text);
-                if (json.geofence_id) {
-                  onScanSuccess(json.geofence_id);
-                  return;
-                }
-              } catch {
-                onScanSuccess(text);
+        .decodeFromVideoDevice(null, videoRef.current, (result, err) => {
+          if (result) {
+            const text = result.getText();
+            try {
+              const json = JSON.parse(text);
+              if (json.geofence_id) {
+                onScanSuccess(json.geofence_id);
+                return;
               }
-            }
-            // Ignore expected frame-by-frame scanner exceptions
-            if (err && !(err instanceof NotFoundException || err.name === "NotFoundException")) {
-              console.debug("ZXing scan exception:", err);
+            } catch {
+              onScanSuccess(text);
             }
           }
-        )
+          // Ignore expected frame-by-frame scanner exceptions
+          if (err && !(err instanceof NotFoundException || err.name === "NotFoundException")) {
+            console.debug("ZXing scan exception:", err);
+          }
+        })
         .catch((e: unknown) => {
           setError("Camera permission denied or camera not available.");
           console.error("Camera access error:", e);

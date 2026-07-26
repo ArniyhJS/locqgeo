@@ -12,6 +12,7 @@ Make it significantly cheaper and harder to fake a SpottGeo verification than to
 - Multiple accounts or devices can be used to farm rewards.
 
 A strong fraud layer protects:
+
 - Client budgets from being drained by fake verifications.
 - Leaderboards and campaigns from manipulation.
 - The integrity of SpottGeo’s verified-presence brand.
@@ -23,6 +24,7 @@ A strong fraud layer protects:
 SpottGeo should defend in multiple layers. No single signal is enough.
 
 ### Layer 1: Input Validation
+
 Already implemented in the engine.
 
 | Signal            | Rule                                            | Example Rejection   |
@@ -33,6 +35,7 @@ Already implemented in the engine.
 | UUID validity     | geofence_id and campaign_id must be valid UUIDs | `INVALID_PAYLOAD`   |
 
 ### Layer 2: Physical Plausibility
+
 Already partially implemented.
 
 | Signal                   | Rule                                                          | Example Rejection        |
@@ -43,6 +46,7 @@ Already partially implemented.
 | Duplicate window         | Reject if device already verified at this geofence within 24h | `REJECTED_DUPLICATE`     |
 
 ### Layer 3: Device Trust
+
 Build over time.
 
 | Signal                           | What It Detects                                      |
@@ -55,6 +59,7 @@ Build over time.
 | Multiple device IDs on one phone | Clearing app storage to reset device_id              |
 
 ### Layer 4: Behavioral and Network Patterns
+
 Build over time.
 
 | Signal                | What It Detects                                                      |
@@ -67,6 +72,7 @@ Build over time.
 | Sleep/wake anomalies  | Scans at impossible hours for a campaign location                    |
 
 ### Layer 5: Reputation and Probabilistic Scoring
+
 Build on top of Layers 1–4.
 
 | Signal                  | What It Detects                                               |
@@ -84,11 +90,13 @@ Build on top of Layers 1–4.
 ### Phase 1 — Baseline Defenses (Now)
 
 **Already in place:**
+
 - GPS accuracy threshold
 - Geofence radius check
 - Velocity / duplicate / inactive geofence checks
 
 **Quick wins added:**
+
 - [x] Basic device fingerprint (screen size, user-agent, OS, browser) metadata support in `PingRequestSchema`
 - [x] IP address and User-Agent capture per verification attempt
 - [x] Per-device sliding-window rate limiting (max 5 verifications per 60 seconds -> `REJECTED_RATE_LIMIT`)
@@ -96,6 +104,7 @@ Build on top of Layers 1–4.
 - [x] Add `fraud_score` (0.000-1.000) and `fraud_signals` (JSON array) to attempts log and `device_reputation` table
 
 **Acceptance criteria:**
+
 - Fraud signals are recorded for every request.
 - Per-device rate limit is enforced.
 - No increase in false-positive rejection of legitimate users.
@@ -130,6 +139,7 @@ CREATE TABLE device_reputation (
 ```
 
 **Acceptance criteria:**
+
 - Emulators and repeated device resets are flagged.
 - Trust score updates after every verification attempt.
 - Low-trust devices are challenged or blocked without breaking real users.
@@ -143,14 +153,15 @@ CREATE TABLE device_reputation (
 - [ ] Build `verification_attempts` table for all accepted and rejected requests.
 - [ ] Aggregate scans per IP, per geofence, per campaign in time windows.
 - [ ] Detect anomalies like:
-  - >N verifications from same IP in 1 hour
-  - >M devices sharing one GPS coordinate
+  - > N verifications from same IP in 1 hour
+  - > M devices sharing one GPS coordinate
   - Scan bursts around payout thresholds
 - [ ] Implement IP reputation list (datacenters, known VPNs, Tor).
 - [ ] Add campaign-level rate limits and per-user caps.
 - [ ] Introduce a “shadow mode” machine-learning scorer (predicts fraud but does not block yet).
 
 **Acceptance criteria:**
+
 - Anomaly alerts fire within 15 minutes.
 - Shadow-mode model is trained on 30 days of labeled data.
 - False-positive rate is measured and kept below 2%.
@@ -172,6 +183,7 @@ CREATE TABLE device_reputation (
 - [ ] Retrain model weekly as new fraud patterns emerge.
 
 **Acceptance criteria:**
+
 - Fraud score is returned in every verification response.
 - Console shows a review queue with evidence for each flagged case.
 - Automated blocks can be appealed and reversed by admins.
@@ -192,6 +204,7 @@ CREATE TABLE device_reputation (
 - [ ] Optional native mobile SDK with stronger anti-spoof signals than the web PWA.
 
 **Acceptance criteria:**
+
 - Cross-tenant signals improve detection accuracy measurably.
 - Native SDK detects spoofing apps and mocked locations more reliably than web.
 - SpottGeo publishes a fraud transparency report to clients.

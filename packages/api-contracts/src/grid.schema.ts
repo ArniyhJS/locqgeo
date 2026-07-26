@@ -6,17 +6,12 @@ export const PingRequestSchema = z.object({
     .min(16, "Device ID must be at least 16 characters")
     .max(128, "Device ID cannot exceed 128 characters")
     .regex(/^[a-zA-Z0-9_-]+$/, "Device ID contains invalid characters"),
-  latitude: z
-    .number()
-    .min(-90.0, "Latitude must be >= -90")
-    .max(90.0, "Latitude must be <= 90"),
+  latitude: z.number().min(-90.0, "Latitude must be >= -90").max(90.0, "Latitude must be <= 90"),
   longitude: z
     .number()
     .min(-180.0, "Longitude must be >= -180")
     .max(180.0, "Longitude must be <= 180"),
-  accuracy_meters: z
-    .number()
-    .min(0.0, "Accuracy cannot be negative"),
+  accuracy_meters: z.number().min(0.0, "Accuracy cannot be negative"),
   // Optional client-provided velocity hint; the engine always recomputes server-side.
   velocity_mps: z.number().optional(),
   geofence_id: z.string().uuid("geofence_id must be a valid UUID v4"),
@@ -39,13 +34,7 @@ export type PingRequest = z.infer<typeof PingRequestSchema>;
 export const RewardTypeEnum = z.enum(["AIRTIME", "DATA", "CASH", "VOUCHER"]);
 export type RewardType = z.infer<typeof RewardTypeEnum>;
 
-export const ActionTypeEnum = z.enum([
-  "REWARD",
-  "CHECKIN",
-  "ATTENDANCE",
-  "AUDIT",
-  "ACCESS",
-]);
+export const ActionTypeEnum = z.enum(["REWARD", "CHECKIN", "ATTENDANCE", "AUDIT", "ACCESS"]);
 export type ActionType = z.infer<typeof ActionTypeEnum>;
 
 export const VerificationStatusEnum = z.enum([
@@ -70,7 +59,9 @@ export const PingResponseSuccessSchema = z.object({
     distance_meters: z.number(),
     action_type: ActionTypeEnum,
     verified_at: z.string().datetime().optional(),
-    payout_status: z.enum(["NOT_APPLICABLE", "QUEUED", "PROCESSING", "COMPLETED", "FAILED"]).optional(),
+    payout_status: z
+      .enum(["NOT_APPLICABLE", "QUEUED", "PROCESSING", "COMPLETED", "FAILED"])
+      .optional(),
     campaign_id: z.string().uuid().optional(),
     points_earned: z.number().int().nonnegative().optional(),
     leaderboard_rank: z.number().int().positive().optional(),

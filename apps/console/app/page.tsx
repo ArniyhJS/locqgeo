@@ -3,31 +3,41 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white">Executive Dashboard</h1>
-        <p className="text-sm text-gray-400 mt-1">Real-time overview of active geo-campaigns, claims, and anti-cheat telemetry.</p>
+        <p className="text-sm text-gray-400 mt-1">
+          Real-time overview of active geo-campaigns, claims, and anti-cheat telemetry.
+        </p>
       </div>
 
       {/* Metrics Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
         <div className="glass-card p-6 space-y-2">
-          <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">Active Campaigns</span>
+          <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
+            Active Campaigns
+          </span>
           <div className="text-3xl font-extrabold text-white">14</div>
           <span className="text-xs text-emerald-400 font-medium">↑ +3 this week</span>
         </div>
 
         <div className="glass-card p-6 space-y-2">
-          <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">Total Valid Claims</span>
+          <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
+            Total Valid Claims
+          </span>
           <div className="text-3xl font-extrabold text-white">128,490</div>
           <span className="text-xs text-emerald-400 font-medium">↑ 98.4% success rate</span>
         </div>
 
         <div className="glass-card p-6 space-y-2">
-          <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">Fraud Blocked</span>
+          <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
+            Fraud Blocked
+          </span>
           <div className="text-3xl font-extrabold text-rose-400">2,104</div>
           <span className="text-xs text-rose-400 font-medium">Blocked by Anti-Cheat Filter</span>
         </div>
 
         <div className="glass-card p-6 space-y-2">
-          <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">Disbursed Payouts</span>
+          <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">
+            Disbursed Payouts
+          </span>
           <div className="text-3xl font-extrabold text-blue-400">₦ 14.8M</div>
           <span className="text-xs text-gray-400 font-medium">Telco Airtime & Paystack</span>
         </div>

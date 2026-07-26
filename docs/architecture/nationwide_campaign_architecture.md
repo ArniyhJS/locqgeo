@@ -66,40 +66,48 @@ This document describes the scaled-up deployment architecture required for Spott
 ## Component Responsibilities
 
 ### Client Layer
+
 - **SpottDrop / SpottVerify**: Progressive web apps cached by the CDN.
 - Capture QR scans, GPS coordinates, and device fingerprints.
 - Queue verifications offline when connectivity is poor and sync later.
 
 ### CDN / Edge
+
 - Serve static PWA assets globally with low latency.
 - Provide DDoS protection, SSL termination, and edge caching for read-only campaign metadata.
 
 ### Load Balancer
+
 - Distribute traffic across the nearest healthy SpottEngine instances.
 - Apply WAF rules and enforce rate limits at the edge.
 
 ### SpottEngine Cluster
+
 - Stateless Fastify containers that run the verification API.
 - Scale horizontally based on CPU, memory, or request-queue depth.
 - No local state; all persistence goes to PostgreSQL and Redis.
 
 ### Redis Layer
+
 - **Rate limiting**: prevent abuse, e.g. max 5 verifications per device per minute.
 - **Sessions / JWT cache**: optional authenticated-user sessions.
 - **Leaderboard cache**: hold the top-N leaderboard and user rank; refresh asynchronously.
 - **Payout queue**: buffer reward jobs during traffic spikes.
 
 ### PostgreSQL Layer
+
 - **Primary**: handles writes (verifications, campaign progress, user links).
 - **Read replicas**: serve leaderboard queries, analytics, and console reports.
 - **PostGIS**: geospatial lookups for radius checks and distance calculations.
 
 ### Payout Workers
+
 - Consume jobs from a BullMQ/Redis queue.
 - Process reward disbursements through VTpass, Paystack, banks, or telco APIs.
 - Retry failed payouts, respect provider rate limits, and update wallet balances.
 
 ### Monitoring
+
 - **Prometheus + Grafana**: observe request rates, latency, DB connections, queue depth.
 - **Sentry**: collect application errors.
 - **PagerDuty / Opsgenie**: alert on payout failures, DB replication lag, or engine errors.

@@ -30,14 +30,18 @@ export function VerificationCard({ record }: VerificationCardProps) {
 
       <div>
         <h4 className="font-bold text-sm text-white">{record.geofence_title}</h4>
-        <p className="text-[11px] text-gray-400">Verified: {new Date(record.verified_at).toLocaleDateString()}</p>
+        <p className="text-[11px] text-gray-400">
+          Verified: {new Date(record.verified_at).toLocaleDateString()}
+        </p>
       </div>
 
       <div className="flex items-center justify-between pt-2 border-t border-gray-800">
         <div>
           <span className="text-[10px] text-gray-400 uppercase font-semibold">Reward Value</span>
           <div className="text-base font-extrabold text-emerald-400">
-            {record.reward_amount ? `${record.reward_currency ?? "NGN"} ${record.reward_amount}` : "—"}
+            {record.reward_amount
+              ? `${record.reward_currency ?? "NGN"} ${record.reward_amount}`
+              : "—"}
           </div>
         </div>
 

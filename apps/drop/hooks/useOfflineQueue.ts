@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getOfflineQueue, enqueueOfflinePing, clearOfflineQueue, type PendingOfflinePing } from "@/lib/db-store";
+import {
+  getOfflineQueue,
+  enqueueOfflinePing,
+  clearOfflineQueue,
+  type PendingOfflinePing,
+} from "@/lib/db-store";
 
 export function useOfflineQueue() {
   const [queue, setQueue] = useState<PendingOfflinePing[]>([]);

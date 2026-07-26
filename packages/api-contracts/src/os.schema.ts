@@ -9,10 +9,7 @@ export const CreateGeofenceSchema = z.object({
     .string()
     .min(3, "Title must be at least 3 characters")
     .max(255, "Title cannot exceed 255 characters"),
-  latitude: z
-    .number()
-    .min(-90.0, "Latitude must be >= -90")
-    .max(90.0, "Latitude must be <= 90"),
+  latitude: z.number().min(-90.0, "Latitude must be >= -90").max(90.0, "Latitude must be <= 90"),
   longitude: z
     .number()
     .min(-180.0, "Longitude must be >= -180")
@@ -79,7 +76,7 @@ export const TelemetrySummaryResponseSchema = z.object({
       pings: z.number().int(),
       verified_events: z.number().int(),
       blocked_fraud: z.number().int(),
-    })
+    }),
   ),
 });
 

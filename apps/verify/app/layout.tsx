@@ -16,14 +16,13 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body suppressHydrationWarning className="bg-[#0b0c0e] text-gray-100 antialiased flex flex-col min-h-screen items-center justify-start">
+      <body
+        suppressHydrationWarning
+        className="bg-[#0b0c0e] text-gray-100 antialiased flex flex-col min-h-screen items-center justify-start"
+      >
         <div className="w-full max-w-md min-h-screen flex flex-col justify-between border-x border-gray-800/80 bg-[#10121a]/95 shadow-2xl relative">
           <header className="h-14 border-b border-gray-800/80 bg-[#10121a]/90 px-5 flex items-center justify-between backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-2.5">
@@ -40,13 +39,15 @@ export default function RootLayout({
           <main className="flex-1 p-5 overflow-y-auto pb-24">{children}</main>
 
           <nav className="fixed bottom-0 w-full max-w-md border-t border-gray-800/80 bg-[#10121a]/95 backdrop-blur-xl h-16 px-6 flex items-center justify-around z-40">
-            <Link href="/"
+            <Link
+              href="/"
               className="flex flex-col items-center gap-1 text-gray-400 hover:text-[#ff6b00] transition-colors"
             >
               <span className="text-lg">Verify</span>
               <span className="text-[10px] font-bold">Scan</span>
             </Link>
-            <Link href="/history"
+            <Link
+              href="/history"
               className="flex flex-col items-center gap-1 text-gray-400 hover:text-[#ff6b00] transition-colors"
             >
               <span className="text-lg">History</span>

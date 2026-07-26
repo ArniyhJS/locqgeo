@@ -9,7 +9,9 @@ export default function ScannerPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold tracking-tight text-white">QR Code Scanner</h1>
-        <p className="text-xs text-gray-400 mt-0.5">Scan physical drop codes at merchant locations for instant verification.</p>
+        <p className="text-xs text-gray-400 mt-0.5">
+          Scan physical drop codes at merchant locations for instant verification.
+        </p>
       </div>
 
       <div className="pwa-card p-6 flex flex-col items-center justify-center relative overflow-hidden min-h-[300px]">

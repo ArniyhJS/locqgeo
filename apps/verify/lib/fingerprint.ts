@@ -29,9 +29,12 @@ export async function getOrCreateDeviceId(): Promise<string> {
       : "800x600x24";
   const userAgent = typeof navigator !== "undefined" ? navigator.userAgent : "NodeJS";
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const hardwareConcurrency = (typeof navigator !== "undefined" && navigator.hardwareConcurrency) || 2;
+  const hardwareConcurrency =
+    (typeof navigator !== "undefined" && navigator.hardwareConcurrency) || 2;
   const randomEntropy =
-    typeof window !== "undefined" && window.crypto?.randomUUID ? window.crypto.randomUUID() : "demo_entropy";
+    typeof window !== "undefined" && window.crypto?.randomUUID
+      ? window.crypto.randomUUID()
+      : "demo_entropy";
 
   const rawEntropyString = `${canvasHash}|${screenRes}|${userAgent}|${timeZone}|${hardwareConcurrency}|${randomEntropy}`;
 

@@ -209,24 +209,28 @@ Users should never pay to scan or earn.
 ## 9. Roadmap
 
 ### Phase 1 — MVP (Current)
+
 - QR scanner with GPS verification
 - Wallet with reward status
 - Offline queue and sync
 - Basic campaign awareness
 
 ### Phase 2 — Habit Formation
+
 - Campaign discovery feed
 - Push notifications
 - Airtime/data redemption
 - Streak tracking
 
 ### Phase 3 — Loyalty & Cash
+
 - Bank transfer withdrawals
 - Referral program
 - Leaderboards
 - Achievement badges
 
 ### Phase 4 — Ecosystem
+
 - NFC / beacon verification
 - Partner voucher marketplace
 - Advanced fraud education

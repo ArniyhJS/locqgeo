@@ -1,12 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import crypto from "node:crypto";
-import {
-  PingRequestSchema,
-  type PingRequest,
-  type VerificationStatus,
-  VerificationStatusEnum,
-  PingResponseSuccessSchema,
-} from "@spottgeo/api-contracts";
+import { PingRequestSchema, type VerificationStatus } from "@spottgeo/api-contracts";
 import { PayoutOrchestrator } from "../services/payout.js";
 import { db, sql } from "@spottgeo/database";
 import { isCampaignEligible, recordCampaignVisit } from "./campaigns.js";
@@ -16,7 +10,7 @@ function errorReply(
   status: VerificationStatus,
   code: string,
   message: string,
-  details?: Record<string, unknown>
+  details?: Record<string, unknown>,
 ) {
   return {
     success: false as const,
@@ -39,7 +33,7 @@ async function logAttemptAndReputation(
   fraudScore: number,
   fraudSignals: string[],
   ipAddress?: string,
-  userAgent?: string
+  userAgent?: string,
 ) {
   try {
     await db.execute(sql`
@@ -74,28 +68,28 @@ async function logAttemptAndReputation(
 }
 
 export async function verifyRoutes(fastify: FastifyInstance) {
-  fastify.post(
-    "/api/v1/engine/verify",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const parseResult = PingRequestSchema.safeParse(request.body);
-      if (!parseResult.success) {
-        return reply.status(400).send(
+  fastify.post("/api/v1/engine/verify", async (request: FastifyRequest, reply: FastifyReply) => {
+    const parseResult = PingRequestSchema.safeParse(request.body);
+    if (!parseResult.success) {
+      return reply
+        .status(400)
+        .send(
           errorReply(
             "REJECTED_ACCURACY",
             "ERR_INVALID_PAYLOAD",
             "Payload failed schema validation",
-            { errors: parseResult.error.flatten() }
-          )
+            { errors: parseResult.error.flatten() },
+          ),
         );
-      }
+    }
 
-      const ping = parseResult.data;
-      const requestIp = ping.ip_address ?? request.ip;
-      const requestUA = ping.user_agent ?? (request.headers["user-agent"] as string | undefined);
+    const ping = parseResult.data;
+    const requestIp = ping.ip_address ?? request.ip;
+    const requestUA = ping.user_agent ?? (request.headers["user-agent"] as string | undefined);
 
-      try {
-        // Step 1: Query prior pings for rate limiting and velocity calculation
-        const priorPingResult = (await db.execute(sql`
+    try {
+      // Step 1: Query prior pings for rate limiting and velocity calculation
+      const priorPingResult = (await db.execute(sql`
           SELECT
             latitude,
             longitude,
@@ -110,74 +104,81 @@ export async function verifyRoutes(fastify: FastifyInstance) {
           ORDER BY created_at DESC
           LIMIT 1;
         `)) as unknown as Array<{
-          latitude: number;
-          longitude: number;
-          created_at: Date;
-          distance_delta_meters: number;
-          time_delta_seconds: number;
-        }>;
+        latitude: number;
+        longitude: number;
+        created_at: Date;
+        distance_delta_meters: number;
+        time_delta_seconds: number;
+      }>;
 
-        const prior = priorPingResult[0];
+      const prior = priorPingResult[0];
 
-        const recentPingsResult = (await db.execute(sql`
+      const recentPingsResult = (await db.execute(sql`
           SELECT EXTRACT(EPOCH FROM created_at) * 1000 AS created_ms
           FROM checkin_pings
           WHERE device_id = ${ping.device_id}
             AND created_at >= NOW() - INTERVAL '60 seconds';
         `)) as unknown as Array<{ created_ms: number }>;
 
-        const recentTimestamps = recentPingsResult.map((r) => Number(r.created_ms));
+      const recentTimestamps = recentPingsResult.map((r) => Number(r.created_ms));
 
-        // Evaluate 4-Step Anti-Cheat Filter
-        const antiCheatResult = AntiCheatFilter.evaluatePing(
+      // Evaluate 4-Step Anti-Cheat Filter
+      const antiCheatResult = AntiCheatFilter.evaluatePing(
+        ping.latitude,
+        ping.longitude,
+        ping.accuracy_meters,
+        ping.velocity_mps ?? 0,
+        prior
+          ? {
+              distanceDeltaMeters: Number(prior.distance_delta_meters),
+              timeDeltaSeconds: Number(prior.time_delta_seconds),
+            }
+          : undefined,
+        Date.now(),
+        recentTimestamps,
+      );
+
+      if (!antiCheatResult.passed) {
+        const errorCode =
+          antiCheatResult.status === "REJECTED_ACCURACY"
+            ? "ERR_LOW_GPS_ACCURACY"
+            : antiCheatResult.status === "REJECTED_RATE_LIMIT"
+              ? "ERR_RATE_LIMIT_EXCEEDED"
+              : antiCheatResult.status === "REJECTED_VELOCITY"
+                ? "ERR_IMPOSSIBLE_SPEED"
+                : "ERR_SPOOF_SUSPECTED";
+
+        await logAttemptAndReputation(
+          ping.device_id,
+          ping.geofence_id,
+          ping.tenant_id ?? null,
+          ping.user_id ?? null,
+          antiCheatResult.status,
           ping.latitude,
           ping.longitude,
           ping.accuracy_meters,
-          ping.velocity_mps ?? 0,
-          prior ? {
-            distanceDeltaMeters: Number(prior.distance_delta_meters),
-            timeDeltaSeconds: Number(prior.time_delta_seconds),
-          } : undefined,
-          Date.now(),
-          recentTimestamps
+          antiCheatResult.fraudScore,
+          antiCheatResult.fraudSignals,
+          requestIp,
+          requestUA,
         );
 
-        if (!antiCheatResult.passed) {
-          const errorCode = antiCheatResult.status === "REJECTED_ACCURACY"
-            ? "ERR_LOW_GPS_ACCURACY"
-            : antiCheatResult.status === "REJECTED_RATE_LIMIT"
-            ? "ERR_RATE_LIMIT_EXCEEDED"
-            : antiCheatResult.status === "REJECTED_VELOCITY"
-            ? "ERR_IMPOSSIBLE_SPEED"
-            : "ERR_SPOOF_SUSPECTED";
-
-          await logAttemptAndReputation(
-            ping.device_id,
-            ping.geofence_id,
-            ping.tenant_id ?? null,
-            ping.user_id ?? null,
+        return reply.status(422).send(
+          errorReply(
             antiCheatResult.status,
-            ping.latitude,
-            ping.longitude,
-            ping.accuracy_meters,
-            antiCheatResult.fraudScore,
-            antiCheatResult.fraudSignals,
-            requestIp,
-            requestUA
-          );
+            errorCode,
+            antiCheatResult.reason || "Verification rejected by anti-cheat filter",
+            {
+              spoof_score: antiCheatResult.spoofScore,
+              fraud_score: antiCheatResult.fraudScore,
+              fraud_signals: antiCheatResult.fraudSignals,
+            },
+          ),
+        );
+      }
 
-          return reply.status(422).send(
-            errorReply(
-              antiCheatResult.status,
-              errorCode,
-              antiCheatResult.reason || "Verification rejected by anti-cheat filter",
-              { spoof_score: antiCheatResult.spoofScore, fraud_score: antiCheatResult.fraudScore, fraud_signals: antiCheatResult.fraudSignals }
-            )
-          );
-        }
-
-        // Look up the target geofence. Restrict by tenant when provided.
-        const geofenceResult = (await db.execute(sql`
+      // Look up the target geofence. Restrict by tenant when provided.
+      const geofenceResult = (await db.execute(sql`
           SELECT
             id,
             tenant_id,
@@ -199,48 +200,81 @@ export async function verifyRoutes(fastify: FastifyInstance) {
             ${ping.tenant_id ? sql`AND tenant_id = ${ping.tenant_id}` : sql``}
           LIMIT 1;
         `)) as unknown as Array<{
-          id: string;
-          tenant_id: string;
-          title: string;
-          radius_meters: number;
-          action_type: string;
-          reward_type: string | null;
-          reward_amount: string | null;
-          reward_currency: string | null;
-          daily_budget_limit: string | null;
-          daily_budget_spent: string | null;
-          is_active: boolean;
-          distance_meters: number;
-        }>;
+        id: string;
+        tenant_id: string;
+        title: string;
+        radius_meters: number;
+        action_type: string;
+        reward_type: string | null;
+        reward_amount: string | null;
+        reward_currency: string | null;
+        daily_budget_limit: string | null;
+        daily_budget_spent: string | null;
+        is_active: boolean;
+        distance_meters: number;
+      }>;
 
-        const geofence = geofenceResult[0];
+      const geofence = geofenceResult[0];
 
-        if (!geofence) {
-          await logAttemptAndReputation(
-            ping.device_id,
-            ping.geofence_id,
-            ping.tenant_id ?? null,
-            ping.user_id ?? null,
-            "REJECTED_INACTIVE_GEOFENCE",
-            ping.latitude,
-            ping.longitude,
-            ping.accuracy_meters,
-            0.500,
-            ["GEOFENCE_NOT_FOUND"],
-            requestIp,
-            requestUA
-          );
+      if (!geofence) {
+        await logAttemptAndReputation(
+          ping.device_id,
+          ping.geofence_id,
+          ping.tenant_id ?? null,
+          ping.user_id ?? null,
+          "REJECTED_INACTIVE_GEOFENCE",
+          ping.latitude,
+          ping.longitude,
+          ping.accuracy_meters,
+          0.5,
+          ["GEOFENCE_NOT_FOUND"],
+          requestIp,
+          requestUA,
+        );
 
-          return reply.status(422).send(
+        return reply
+          .status(422)
+          .send(
             errorReply(
               "REJECTED_INACTIVE_GEOFENCE",
               "ERR_GEOFENCE_NOT_FOUND",
-              "Target geofence was not found or tenant restriction mismatched"
-            )
+              "Target geofence was not found or tenant restriction mismatched",
+            ),
           );
-        }
+      }
 
-        if (!geofence.is_active) {
+      if (!geofence.is_active) {
+        await logAttemptAndReputation(
+          ping.device_id,
+          ping.geofence_id,
+          geofence.tenant_id,
+          ping.user_id ?? null,
+          "REJECTED_INACTIVE_GEOFENCE",
+          ping.latitude,
+          ping.longitude,
+          ping.accuracy_meters,
+          0.5,
+          ["GEOFENCE_INACTIVE"],
+          requestIp,
+          requestUA,
+        );
+
+        return reply
+          .status(422)
+          .send(
+            errorReply(
+              "REJECTED_INACTIVE_GEOFENCE",
+              "ERR_GEOFENCE_INACTIVE",
+              `Geofence "${geofence.title}" is inactive`,
+            ),
+          );
+      }
+
+      // Validate campaign eligibility when campaign_id is provided
+      let campaignRewardOverride: { type: string; amount: number; currency: string } | null = null;
+      if (ping.campaign_id) {
+        const eligibility = await isCampaignEligible(ping.campaign_id);
+        if (!eligibility.eligible) {
           await logAttemptAndReputation(
             ping.device_id,
             ping.geofence_id,
@@ -250,61 +284,34 @@ export async function verifyRoutes(fastify: FastifyInstance) {
             ping.latitude,
             ping.longitude,
             ping.accuracy_meters,
-            0.500,
-            ["GEOFENCE_INACTIVE"],
+            0.5,
+            ["CAMPAIGN_INELIGIBLE"],
             requestIp,
-            requestUA
+            requestUA,
           );
 
-          return reply.status(422).send(
-            errorReply(
-              "REJECTED_INACTIVE_GEOFENCE",
-              "ERR_GEOFENCE_INACTIVE",
-              `Geofence "${geofence.title}" is inactive`
-            )
-          );
-        }
-
-        // Validate campaign eligibility when campaign_id is provided
-        let campaignRewardOverride: { type: string; amount: number; currency: string } | null = null;
-        if (ping.campaign_id) {
-          const eligibility = await isCampaignEligible(ping.campaign_id);
-          if (!eligibility.eligible) {
-            await logAttemptAndReputation(
-              ping.device_id,
-              ping.geofence_id,
-              geofence.tenant_id,
-              ping.user_id ?? null,
-              "REJECTED_INACTIVE_GEOFENCE",
-              ping.latitude,
-              ping.longitude,
-              ping.accuracy_meters,
-              0.500,
-              ["CAMPAIGN_INELIGIBLE"],
-              requestIp,
-              requestUA
-            );
-
-            return reply.status(422).send(
+          return reply
+            .status(422)
+            .send(
               errorReply(
                 "REJECTED_INACTIVE_GEOFENCE",
                 "ERR_CAMPAIGN_INELIGIBLE",
-                eligibility.reason || "Campaign is inactive or ineligible for this geofence"
-              )
+                eligibility.reason || "Campaign is inactive or ineligible for this geofence",
+              ),
             );
-          }
-
-          if (eligibility.reward) {
-            campaignRewardOverride = {
-              type: eligibility.reward.type,
-              amount: eligibility.reward.amount,
-              currency: eligibility.reward.currency || "NGN",
-            };
-          }
         }
 
-        // Rolling 24-hour duplicate check
-        const dupResult = (await db.execute(sql`
+        if (eligibility.reward) {
+          campaignRewardOverride = {
+            type: eligibility.reward.type,
+            amount: eligibility.reward.amount,
+            currency: eligibility.reward.currency || "NGN",
+          };
+        }
+      }
+
+      // Rolling 24-hour duplicate check
+      const dupResult = (await db.execute(sql`
           SELECT id FROM verifications
           WHERE device_id = ${ping.device_id}
             AND geofence_id = ${ping.geofence_id}
@@ -313,62 +320,66 @@ export async function verifyRoutes(fastify: FastifyInstance) {
           LIMIT 1;
         `)) as unknown as Array<{ id: string }>;
 
-        if (dupResult.length > 0) {
-          await logAttemptAndReputation(
-            ping.device_id,
-            ping.geofence_id,
-            geofence.tenant_id,
-            ping.user_id ?? null,
-            "REJECTED_DUPLICATE",
-            ping.latitude,
-            ping.longitude,
-            ping.accuracy_meters,
-            0.600,
-            ["DUPLICATE_CLAIM_24H"],
-            requestIp,
-            requestUA
-          );
+      if (dupResult.length > 0) {
+        await logAttemptAndReputation(
+          ping.device_id,
+          ping.geofence_id,
+          geofence.tenant_id,
+          ping.user_id ?? null,
+          "REJECTED_DUPLICATE",
+          ping.latitude,
+          ping.longitude,
+          ping.accuracy_meters,
+          0.6,
+          ["DUPLICATE_CLAIM_24H"],
+          requestIp,
+          requestUA,
+        );
 
-          return reply.status(422).send(
+        return reply
+          .status(422)
+          .send(
             errorReply(
               "REJECTED_DUPLICATE",
               "ERR_DUPLICATE_VERIFICATION",
-              `Device "${ping.device_id}" has already verified at geofence "${geofence.title}" within the last 24 hours`
-            )
+              `Device "${ping.device_id}" has already verified at geofence "${geofence.title}" within the last 24 hours`,
+            ),
           );
-        }
+      }
 
-        // Distance boundary validation against the geofence radius
-        const distanceMeters = Number(geofence.distance_meters);
-        const radiusMeters = Number(geofence.radius_meters);
-        if (distanceMeters > radiusMeters) {
-          await logAttemptAndReputation(
-            ping.device_id,
-            ping.geofence_id,
-            geofence.tenant_id,
-            ping.user_id ?? null,
-            "REJECTED_OUT_OF_BOUNDS",
-            ping.latitude,
-            ping.longitude,
-            ping.accuracy_meters,
-            0.400,
-            ["OUT_OF_BOUNDS"],
-            requestIp,
-            requestUA
-          );
+      // Distance boundary validation against the geofence radius
+      const distanceMeters = Number(geofence.distance_meters);
+      const radiusMeters = Number(geofence.radius_meters);
+      if (distanceMeters > radiusMeters) {
+        await logAttemptAndReputation(
+          ping.device_id,
+          ping.geofence_id,
+          geofence.tenant_id,
+          ping.user_id ?? null,
+          "REJECTED_OUT_OF_BOUNDS",
+          ping.latitude,
+          ping.longitude,
+          ping.accuracy_meters,
+          0.4,
+          ["OUT_OF_BOUNDS"],
+          requestIp,
+          requestUA,
+        );
 
-          return reply.status(422).send(
+        return reply
+          .status(422)
+          .send(
             errorReply(
               "REJECTED_OUT_OF_BOUNDS",
               "ERR_OUT_OF_BOUNDS",
-              `Distance ${distanceMeters.toFixed(1)}m exceeds geofence radius of ${radiusMeters.toFixed(1)}m`
-            )
+              `Distance ${distanceMeters.toFixed(1)}m exceeds geofence radius of ${radiusMeters.toFixed(1)}m`,
+            ),
           );
-        }
+      }
 
-        // Insert raw checkin ping
-        const pingId = crypto.randomUUID();
-        await db.execute(sql`
+      // Insert raw checkin ping
+      const pingId = crypto.randomUUID();
+      await db.execute(sql`
           INSERT INTO checkin_pings (
             id, geofence_id, device_id, latitude, longitude, accuracy_meters, velocity_mps, location
           ) VALUES (
@@ -383,54 +394,61 @@ export async function verifyRoutes(fastify: FastifyInstance) {
           );
         `);
 
-        // Record verification attempt success
-        await logAttemptAndReputation(
-          ping.device_id,
-          ping.geofence_id,
-          geofence.tenant_id,
-          ping.user_id ?? null,
-          "VERIFIED",
-          ping.latitude,
-          ping.longitude,
-          ping.accuracy_meters,
-          antiCheatResult.fraudScore,
-          [],
-          requestIp,
-          requestUA
-        );
+      // Record verification attempt success
+      await logAttemptAndReputation(
+        ping.device_id,
+        ping.geofence_id,
+        geofence.tenant_id,
+        ping.user_id ?? null,
+        "VERIFIED",
+        ping.latitude,
+        ping.longitude,
+        ping.accuracy_meters,
+        antiCheatResult.fraudScore,
+        [],
+        requestIp,
+        requestUA,
+      );
 
-        const verificationId = crypto.randomUUID();
-        const effectiveRewardType = campaignRewardOverride?.type ?? geofence.reward_type;
-        const effectiveRewardAmount = campaignRewardOverride?.amount ?? (geofence.reward_amount ? Number(geofence.reward_amount) : null);
-        const effectiveRewardCurrency = campaignRewardOverride?.currency ?? (geofence.reward_currency || "NGN");
-        const campaignBudgetAmount = campaignRewardOverride?.amount ?? 0;
+      const verificationId = crypto.randomUUID();
+      const effectiveRewardType = campaignRewardOverride?.type ?? geofence.reward_type;
+      const effectiveRewardAmount =
+        campaignRewardOverride?.amount ??
+        (geofence.reward_amount ? Number(geofence.reward_amount) : null);
+      const effectiveRewardCurrency =
+        campaignRewardOverride?.currency ?? (geofence.reward_currency || "NGN");
+      const campaignBudgetAmount = campaignRewardOverride?.amount ?? 0;
 
-        let payoutResult: { reference?: string; status: string; provider?: string } = {
-          status: "NOT_APPLICABLE",
-        };
+      let payoutResult: { reference?: string; status: string; provider?: string } = {
+        status: "NOT_APPLICABLE",
+      };
 
-        if (geofence.action_type === "REWARD" || campaignRewardOverride) {
-          if (effectiveRewardType && effectiveRewardAmount && effectiveRewardAmount > 0) {
-            const provider = (effectiveRewardType === "AIRTIME" || effectiveRewardType === "DATA")
+      if (geofence.action_type === "REWARD" || campaignRewardOverride) {
+        if (effectiveRewardType && effectiveRewardAmount && effectiveRewardAmount > 0) {
+          const provider =
+            effectiveRewardType === "AIRTIME" || effectiveRewardType === "DATA"
               ? "VTPASS"
               : "PAYSTACK";
-            const payoutType = (effectiveRewardType === "AIRTIME" || effectiveRewardType === "DATA" || effectiveRewardType === "CASH")
+          const payoutType =
+            effectiveRewardType === "AIRTIME" ||
+            effectiveRewardType === "DATA" ||
+            effectiveRewardType === "CASH"
               ? (effectiveRewardType as "AIRTIME" | "DATA" | "CASH")
               : "CASH";
 
-            payoutResult = await PayoutOrchestrator.processPayout({
-              claimId: verificationId,
-              amount: effectiveRewardAmount,
-              currency: effectiveRewardCurrency,
-              recipient: ping.user_id ?? ping.device_id,
-              provider,
-              payoutType,
-              tenantId: geofence.tenant_id,
-              userId: ping.user_id,
-            });
-          }
+          payoutResult = await PayoutOrchestrator.processPayout({
+            claimId: verificationId,
+            amount: effectiveRewardAmount,
+            currency: effectiveRewardCurrency,
+            recipient: ping.user_id ?? ping.device_id,
+            provider,
+            payoutType,
+            tenantId: geofence.tenant_id,
+            userId: ping.user_id,
+          });
+        }
 
-          await db.execute(sql`
+        await db.execute(sql`
             INSERT INTO verifications (
               id,
               geofence_id,
@@ -458,16 +476,16 @@ export async function verifyRoutes(fastify: FastifyInstance) {
             );
           `);
 
-          if (ping.campaign_id && campaignBudgetAmount > 0 && payoutResult.status !== "FAILED") {
-            await db.execute(sql`
+        if (ping.campaign_id && campaignBudgetAmount > 0 && payoutResult.status !== "FAILED") {
+          await db.execute(sql`
               UPDATE campaigns
               SET total_budget_spent = total_budget_spent + ${campaignBudgetAmount},
                   updated_at = NOW()
               WHERE id = ${ping.campaign_id};
             `);
-          }
-        } else {
-          await db.execute(sql`
+        }
+      } else {
+        await db.execute(sql`
             INSERT INTO verifications (
               id,
               geofence_id,
@@ -486,69 +504,75 @@ export async function verifyRoutes(fastify: FastifyInstance) {
               'NOT_APPLICABLE'
             );
           `);
-        }
+      }
 
-        let campaignMeta:
-          | { campaign_id: string; points_earned: number; leaderboard_rank: number }
-          | undefined;
-        if (ping.campaign_id) {
-          const campaignVisit = await recordCampaignVisit(
-            ping.campaign_id,
-            ping.device_id,
-            ping.geofence_id,
-            verificationId,
-            ping.user_id
-          );
-          campaignMeta = {
-            campaign_id: ping.campaign_id,
-            points_earned: campaignVisit.pointsEarned,
-            leaderboard_rank: campaignVisit.rank,
-          };
-        }
-
-        const nowIso = new Date().toISOString();
-        const successPayload = {
-          success: true as const,
-          status: "VERIFIED" as const,
-          data: {
-            verification_id: verificationId,
-            geofence_id: geofence.id,
-            geofence_title: geofence.title,
-            distance_meters: Number(distanceMeters.toFixed(1)),
-            action_type: geofence.action_type as any,
-            verified_at: nowIso,
-            payout_status: payoutResult.status as any,
-            ...(ping.campaign_id && campaignMeta
-              ? {
-                  campaign_id: ping.campaign_id,
-                  points_earned: campaignMeta.points_earned,
-                  leaderboard_rank: campaignMeta.leaderboard_rank,
-                }
-              : {}),
-            ...(payoutResult.status !== "NOT_APPLICABLE" && effectiveRewardType && effectiveRewardAmount
-              ? {
-                  reward: {
-                    type: effectiveRewardType as any,
-                    amount: effectiveRewardAmount,
-                    currency: effectiveRewardCurrency,
-                    payout_status: payoutResult.status as any,
-                  },
-                }
-              : {}),
-          },
+      let campaignMeta:
+        { campaign_id: string; points_earned: number; leaderboard_rank: number } | undefined;
+      if (ping.campaign_id) {
+        const campaignVisit = await recordCampaignVisit(
+          ping.campaign_id,
+          ping.device_id,
+          ping.geofence_id,
+          verificationId,
+          ping.user_id,
+        );
+        campaignMeta = {
+          campaign_id: ping.campaign_id,
+          points_earned: campaignVisit.pointsEarned,
+          leaderboard_rank: campaignVisit.rank,
         };
+      }
 
-        return reply.status(200).send(successPayload);
-      } catch (err: any) {
-        console.error("Unhandled error during verification processing:", err);
-        return reply.status(500).send(
+      const nowIso = new Date().toISOString();
+      const successPayload = {
+        success: true as const,
+        status: "VERIFIED" as const,
+        data: {
+          verification_id: verificationId,
+          geofence_id: geofence.id,
+          geofence_title: geofence.title,
+          distance_meters: Number(distanceMeters.toFixed(1)),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action_type: geofence.action_type as any,
+          verified_at: nowIso,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          payout_status: payoutResult.status as any,
+          ...(ping.campaign_id && campaignMeta
+            ? {
+                campaign_id: ping.campaign_id,
+                points_earned: campaignMeta.points_earned,
+                leaderboard_rank: campaignMeta.leaderboard_rank,
+              }
+            : {}),
+          ...(payoutResult.status !== "NOT_APPLICABLE" &&
+          effectiveRewardType &&
+          effectiveRewardAmount
+            ? {
+                reward: {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  type: effectiveRewardType as any,
+                  amount: effectiveRewardAmount,
+                  currency: effectiveRewardCurrency,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  payout_status: payoutResult.status as any,
+                },
+              }
+            : {}),
+        },
+      };
+
+      return reply.status(200).send(successPayload);
+    } catch (err: unknown) {
+      console.error("Unhandled error during verification processing:", err);
+      return reply
+        .status(500)
+        .send(
           errorReply(
             "REJECTED_INACTIVE_GEOFENCE",
             "ERR_INTERNAL_SERVER_ERROR",
-            "Internal server error while processing presence verification"
-          )
+            "Internal server error while processing presence verification",
+          ),
         );
-      }
     }
-  );
+  });
 }

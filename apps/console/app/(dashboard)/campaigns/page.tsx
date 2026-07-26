@@ -13,7 +13,9 @@ export default async function CampaignsListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white">Campaigns</h1>
-          <p className="text-sm text-gray-400 mt-1">Build billboard gamification, treasure hunts, and attendance challenges.</p>
+          <p className="text-sm text-gray-400 mt-1">
+            Build billboard gamification, treasure hunts, and attendance challenges.
+          </p>
         </div>
         <Link
           href="/campaigns/new"
@@ -54,17 +56,26 @@ export default async function CampaignsListPage() {
                   const statusClass = isRunning
                     ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                     : c.is_active
-                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                    : "bg-gray-500/10 text-gray-400 border-gray-500/20";
-                  const statusLabel = isRunning ? "RUNNING" : c.is_active ? "SCHEDULED" : "INACTIVE";
+                      ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                      : "bg-gray-500/10 text-gray-400 border-gray-500/20";
+                  const statusLabel = isRunning
+                    ? "RUNNING"
+                    : c.is_active
+                      ? "SCHEDULED"
+                      : "INACTIVE";
 
                   return (
                     <tr key={c.id}>
                       <td className="py-3.5">
-                        <Link href={`/campaigns/${c.id}`} className="font-medium text-white hover:text-blue-400 transition-colors">
+                        <Link
+                          href={`/campaigns/${c.id}`}
+                          className="font-medium text-white hover:text-blue-400 transition-colors"
+                        >
                           {c.title}
                         </Link>
-                        <p className="text-[10px] text-gray-500 mt-0.5">{c.geofences.length} linked nodes</p>
+                        <p className="text-[10px] text-gray-500 mt-0.5">
+                          {c.geofences.length} linked nodes
+                        </p>
                       </td>
                       <td className="py-3.5">
                         <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 font-semibold border border-blue-500/20 uppercase">
@@ -86,14 +97,17 @@ export default async function CampaignsListPage() {
                       <td className="py-3.5">
                         {c.total_budget_limit ? (
                           <span className="text-gray-300">
-                            ₦ {c.total_budget_spent.toLocaleString()} / ₦ {c.total_budget_limit.toLocaleString()}
+                            ₦ {c.total_budget_spent.toLocaleString()} / ₦{" "}
+                            {c.total_budget_limit.toLocaleString()}
                           </span>
                         ) : (
                           <span className="text-gray-500">—</span>
                         )}
                       </td>
                       <td className="py-3.5">
-                        <span className={`px-2 py-0.5 rounded font-semibold border ${statusClass}`}>{statusLabel}</span>
+                        <span className={`px-2 py-0.5 rounded font-semibold border ${statusClass}`}>
+                          {statusLabel}
+                        </span>
                       </td>
                     </tr>
                   );

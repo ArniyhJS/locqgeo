@@ -28,16 +28,21 @@ export default function TelemetryPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">Live Telemetry & Anti-Cheat Analytics</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-white">
+          Live Telemetry & Anti-Cheat Analytics
+        </h1>
         <p className="text-sm text-gray-400 mt-1">
-          NDPR-compliant raw stream tracking velocity, GPS accuracy, and duplicate verification rejections.
+          NDPR-compliant raw stream tracking velocity, GPS accuracy, and duplicate verification
+          rejections.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-200 text-sm">Anti-Cheat Fraud Rule Violations</h3>
+            <h3 className="font-semibold text-gray-200 text-sm">
+              Anti-Cheat Fraud Rule Violations
+            </h3>
             <span className="text-xs text-rose-400 font-semibold">Live Feed</span>
           </div>
           <FraudBreakdownChart

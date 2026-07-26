@@ -63,7 +63,7 @@ export class PayoutOrchestrator {
             payload: { provider: "VTPASS", request_id: `VT_${reference}` },
           };
         }
-      } catch (err) {
+      } catch (_err) {
         // Fallthrough to secondary fallback on primary provider error
       }
     }
@@ -80,7 +80,7 @@ export class PayoutOrchestrator {
           payload: { provider: "FLUTTERWAVE", reference: `FB_${reference}` },
         };
       }
-    } catch (err) {
+    } catch (_err) {
       // Fallthrough to wallet credit on secondary failure
     }
 
@@ -103,7 +103,7 @@ export class PayoutOrchestrator {
           walletCredited: true,
           payload: { provider: "INTERNAL_WALLET", userId: request.userId },
         };
-      } catch (err) {
+      } catch (_err) {
         // Wallet credit failed
       }
     }

@@ -30,7 +30,9 @@ export function ConsoleSidebar() {
               S
             </div>
             <div>
-              <h1 className="font-bold text-lg leading-none tracking-tight text-white">SpottConsole</h1>
+              <h1 className="font-bold text-lg leading-none tracking-tight text-white">
+                SpottConsole
+              </h1>
               <span className="text-xs text-[#ff6b00] font-semibold">Proof of Presence</span>
             </div>
           </div>
@@ -64,7 +66,9 @@ export function ConsoleSidebar() {
           })}
 
           <div className="pt-4 pb-1">
-            <span className="px-3.5 text-[10px] uppercase font-bold tracking-wider text-gray-500">Settings</span>
+            <span className="px-3.5 text-[10px] uppercase font-bold tracking-wider text-gray-500">
+              Settings
+            </span>
           </div>
 
           {settingsItems.map((item) => {
@@ -89,8 +93,12 @@ export function ConsoleSidebar() {
       </div>
 
       <div className="border-t border-gray-800/80 pt-4 text-xs text-gray-500 space-y-1">
-        <p>Tenant ID: <span className="font-mono text-gray-400">a0eebc99-9c0b...</span></p>
-        <p>SpottEngine: <span className="text-[#ff6b00] font-semibold">Fastify v3.1.0</span></p>
+        <p>
+          Tenant ID: <span className="font-mono text-gray-400">a0eebc99-9c0b...</span>
+        </p>
+        <p>
+          SpottEngine: <span className="text-[#ff6b00] font-semibold">Fastify v3.1.0</span>
+        </p>
       </div>
     </div>
   );

@@ -29,7 +29,12 @@ export function FraudBreakdownChart({
           <XAxis dataKey="name" stroke="#9ca3af" fontSize={11} tickLine={false} />
           <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} />
           <Tooltip
-            contentStyle={{ backgroundColor: "#111827", borderColor: "#374151", borderRadius: "8px", fontSize: "12px" }}
+            contentStyle={{
+              backgroundColor: "#111827",
+              borderColor: "#374151",
+              borderRadius: "8px",
+              fontSize: "12px",
+            }}
           />
           <Bar dataKey="value" radius={[6, 6, 0, 0]}>
             {data.map((entry, index) => (

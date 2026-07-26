@@ -43,11 +43,15 @@ export class AnalyticsAggregatorService {
   }
 
   public static async startAggregatorLoop(intervalMs = 60000): Promise<void> {
-    console.log(`[AnalyticsWorker] Starting analytics aggregator loop with interval ${intervalMs}ms...`);
+    console.log(
+      `[AnalyticsWorker] Starting analytics aggregator loop with interval ${intervalMs}ms...`,
+    );
     const run = async () => {
       try {
         const summary = await AnalyticsAggregatorService.computeDailyTelemetrySummary();
-        console.log(`[AnalyticsWorker] Daily telemetry pre-aggregated: ${summary.totalVerifiedToday} verified, ${summary.totalRejectedToday} rejected, ${summary.activeCampaignsCount} active campaigns.`);
+        console.log(
+          `[AnalyticsWorker] Daily telemetry pre-aggregated: ${summary.totalVerifiedToday} verified, ${summary.totalRejectedToday} rejected, ${summary.activeCampaignsCount} active campaigns.`,
+        );
       } catch (err) {
         console.error("[AnalyticsWorker] Aggregator error:", err);
       }

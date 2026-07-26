@@ -61,7 +61,11 @@ function ScanContent() {
     if (!finalGeofenceId) return;
 
     reset();
-    const res = await verifyPresence(finalGeofenceId, finalCampaignId || undefined, finalUserId || undefined);
+    const res = await verifyPresence(
+      finalGeofenceId,
+      finalCampaignId || undefined,
+      finalUserId || undefined,
+    );
     setResult(res);
   };
 
@@ -79,17 +83,31 @@ function ScanContent() {
       )}
 
       {result ? (
-        <VerificationResult data={result.success ? result.data : undefined} error={!result.success ? result.error : undefined} />
+        <VerificationResult
+          data={result.success ? result.data : undefined}
+          error={!result.success ? result.error : undefined}
+        />
       ) : (
         <div className="space-y-4">
           <CameraView onScanSuccess={handleQrDecoded} />
 
           <button
-            onClick={() => targetGeofenceId && verifyPresence(targetGeofenceId, targetCampaignId || undefined, targetUserId || undefined)}
+            onClick={() =>
+              targetGeofenceId &&
+              verifyPresence(
+                targetGeofenceId,
+                targetCampaignId || undefined,
+                targetUserId || undefined,
+              )
+            }
             disabled={isLocating || isSubmitting || !targetGeofenceId}
             className="w-full glass-button py-3.5 rounded-2xl font-bold text-xs text-white disabled:opacity-50 cursor-pointer shadow-lg"
           >
-            {isSubmitting ? "Verifying..." : isLocating ? "Acquiring GPS..." : "Simulate Manual Verification"}
+            {isSubmitting
+              ? "Verifying..."
+              : isLocating
+                ? "Acquiring GPS..."
+                : "Simulate Manual Verification"}
           </button>
 
           {currentLocation && (
@@ -117,7 +135,9 @@ function ScanContent() {
 
 export default function ScanPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-blue-400">Loading Scanner...</div>}>
+    <Suspense
+      fallback={<div className="p-8 text-center text-xs text-blue-400">Loading Scanner...</div>}
+    >
       <ScanContent />
     </Suspense>
   );

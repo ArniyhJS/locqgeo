@@ -42,7 +42,7 @@ export class PayoutWorkerService {
     for (const job of pendingJobs) {
       try {
         const reference = `PWRK_${Date.now()}_${job.id.substring(0, 8)}`;
-        
+
         await db.execute(sql`
           UPDATE verifications
           SET payout_status = 'COMPLETED',
@@ -51,7 +51,7 @@ export class PayoutWorkerService {
         `);
 
         successfulCount++;
-      } catch (err) {
+      } catch (_err) {
         await db.execute(sql`
           UPDATE verifications
           SET payout_status = 'FAILED'
@@ -75,7 +75,9 @@ export class PayoutWorkerService {
       try {
         const res = await PayoutWorkerService.processQueuedPayouts(25);
         if (res.processedCount > 0) {
-          console.log(`[PayoutWorker] Processed ${res.processedCount} jobs (${res.successfulCount} success, ${res.failedCount} failed)`);
+          console.log(
+            `[PayoutWorker] Processed ${res.processedCount} jobs (${res.successfulCount} success, ${res.failedCount} failed)`,
+          );
         }
       } catch (err) {
         console.error("[PayoutWorker] Loop iteration error:", err);

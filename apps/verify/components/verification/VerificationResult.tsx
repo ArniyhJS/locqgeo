@@ -55,7 +55,8 @@ export function VerificationResult({ data, error }: VerificationResultProps) {
         </div>
       )}
 
-      <Link href="/history"
+      <Link
+        href="/history"
         className="w-full block glass-button py-3 rounded-2xl font-bold text-xs text-white"
       >
         View Verification History

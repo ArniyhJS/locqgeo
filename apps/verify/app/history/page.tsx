@@ -19,7 +19,9 @@ export default function HistoryPage() {
       </div>
 
       {records.length === 0 ? (
-        <div className="glass-card p-8 text-center text-sm text-gray-400">No verifications yet.</div>
+        <div className="glass-card p-8 text-center text-sm text-gray-400">
+          No verifications yet.
+        </div>
       ) : (
         <div className="space-y-3">
           {records.map((record) => (
@@ -38,7 +40,9 @@ export default function HistoryPage() {
                   Reward: {record.reward_currency ?? "NGN"} {record.reward_amount}
                 </p>
               )}
-              <p className="text-[10px] text-gray-500 font-mono truncate">ID: {record.verification_id}</p>
+              <p className="text-[10px] text-gray-500 font-mono truncate">
+                ID: {record.verification_id}
+              </p>
             </div>
           ))}
         </div>

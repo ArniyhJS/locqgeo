@@ -4,7 +4,8 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "SpottDrop | Proof-of-Location Consumer PWA",
-  description: "Scan physical billboards, verify your geofence location, and claim instant airtime & data rewards.",
+  description:
+    "Scan physical billboards, verify your geofence location, and claim instant airtime & data rewards.",
   manifest: "/manifest.json",
 };
 
@@ -16,14 +17,13 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body suppressHydrationWarning className="bg-[#0b0c0e] text-gray-100 antialiased flex flex-col min-h-screen items-center justify-start">
+      <body
+        suppressHydrationWarning
+        className="bg-[#0b0c0e] text-gray-100 antialiased flex flex-col min-h-screen items-center justify-start"
+      >
         {/* Mobile App Viewport Container */}
         <div className="w-full max-w-md min-h-screen flex flex-col justify-between border-x border-gray-800/80 bg-[#10121a]/95 shadow-2xl relative">
           {/* Header Bar */}
