@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BrowserMultiFormatReader } from "@zxing/library";
+import { BrowserQRCodeReader, NotFoundException } from "@zxing/library";
 
 interface CameraViewProps {
   onScanSuccess: (geofenceId: string) => void;
@@ -12,7 +12,7 @@ export function CameraView({ onScanSuccess }: CameraViewProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const codeReader = new BrowserMultiFormatReader();
+    const codeReader = new BrowserQRCodeReader();
 
     if (videoRef.current) {
       codeReader
@@ -32,7 +32,8 @@ export function CameraView({ onScanSuccess }: CameraViewProps) {
                 onScanSuccess(text);
               }
             }
-            if (err && !(err.name === "NotFoundException")) {
+            // Ignore expected frame-by-frame scanner exceptions
+            if (err && !(err instanceof NotFoundException || err.name === "NotFoundException")) {
               console.debug("ZXing scan exception:", err);
             }
           }
@@ -49,15 +50,15 @@ export function CameraView({ onScanSuccess }: CameraViewProps) {
   }, [onScanSuccess]);
 
   return (
-    <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-blue-500/50 shadow-2xl bg-black flex items-center justify-center">
+    <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-[#ff6b00]/60 shadow-2xl bg-black flex items-center justify-center">
       {error ? (
-        <div className="p-6 text-center text-xs text-rose-400 font-medium">{error}</div>
+        <div className="p-6 text-center text-xs text-rose-400 font-medium">⚠️ {error}</div>
       ) : (
         <>
           <video ref={videoRef} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 border-4 border-dashed border-blue-400/70 rounded-3xl pointer-events-none animate-pulse" />
+          <div className="absolute inset-0 border-4 border-dashed border-[#ff6b00]/70 rounded-3xl pointer-events-none animate-pulse" />
           <div className="absolute top-4 left-4 right-4 text-center">
-            <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-black/70 text-blue-400 border border-blue-500/30 backdrop-blur-md">
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#0b0c0e]/80 text-[#ff6b00] border border-[#ff6b00]/30 backdrop-blur-md">
               Point Camera at Target QR
             </span>
           </div>
