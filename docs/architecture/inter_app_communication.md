@@ -164,15 +164,15 @@ sequenceDiagram
 
 ## 🔌 Port & Protocol Matrix
 
-| Service / App | Role | Port | Transport Protocol | Connected Services |
-| :--- | :--- | :--- | :--- | :--- |
-| **`@spottgeo/console`** | Next.js Enterprise Admin Dashboard | `3000` | HTTP / Next.js Server Actions | PostgreSQL Database, Browser Clients |
-| **`@spottgeo/drop`** | Next.js Consumer Gamification PWA | `3001` | HTTP (Fetch Client) | `SpottEngine` (`:8080/api/v1/engine/verify`) |
-| **`@spottgeo/verify`** | Next.js Standalone Check-In PWA | `3002` | HTTP (Fetch Client) | `SpottEngine` (`:8080/api/v1/engine/verify`) |
-| **`@spottgeo/engine`** | Node.js Fastify Core Verification API | `8080` | REST API / PostgreSQL Client | `SpottDrop`, `SpottVerify`, PostgreSQL Database |
-| **`@spottgeo/payout-worker`** | Asynchronous Payout Processor | Background Loop | PostgreSQL Polling / HTTPS External | PostgreSQL Database, Paystack / VTpass / Flutterwave APIs |
-| **`@spottgeo/webhook-dispatcher`** | HMAC Webhook Dispatcher | Background Loop | PostgreSQL Polling / HTTP POST | PostgreSQL Database, External Client Webhook Endpoints |
-| **`@spottgeo/analytics-worker`** | Telemetry Aggregator | Background Loop | PostgreSQL Polling / SQL Pre-Aggregation | PostgreSQL Database |
+| Service / App                      | Role                                  | Port            | Transport Protocol                       | Connected Services                                        |
+| :--------------------------------- | :------------------------------------ | :-------------- | :--------------------------------------- | :-------------------------------------------------------- |
+| **`@spottgeo/console`**            | Next.js Enterprise Admin Dashboard    | `3000`          | HTTP / Next.js Server Actions            | PostgreSQL Database, Browser Clients                      |
+| **`@spottgeo/drop`**               | Next.js Consumer Gamification PWA     | `3001`          | HTTP (Fetch Client)                      | `SpottEngine` (`:8080/api/v1/engine/verify`)              |
+| **`@spottgeo/verify`**             | Next.js Standalone Check-In PWA       | `3002`          | HTTP (Fetch Client)                      | `SpottEngine` (`:8080/api/v1/engine/verify`)              |
+| **`@spottgeo/engine`**             | Node.js Fastify Core Verification API | `8080`          | REST API / PostgreSQL Client             | `SpottDrop`, `SpottVerify`, PostgreSQL Database           |
+| **`@spottgeo/payout-worker`**      | Asynchronous Payout Processor         | Background Loop | PostgreSQL Polling / HTTPS External      | PostgreSQL Database, Paystack / VTpass / Flutterwave APIs |
+| **`@spottgeo/webhook-dispatcher`** | HMAC Webhook Dispatcher               | Background Loop | PostgreSQL Polling / HTTP POST           | PostgreSQL Database, External Client Webhook Endpoints    |
+| **`@spottgeo/analytics-worker`**   | Telemetry Aggregator                  | Background Loop | PostgreSQL Polling / SQL Pre-Aggregation | PostgreSQL Database                                       |
 
 ---
 
@@ -192,3 +192,32 @@ sequenceDiagram
 
 3. **Multi-Tenancy Isolation**:
    - All geofences, campaigns, API keys, and verification logs are partitioned by `tenant_id` (UUID) across database tables to guarantee enterprise data isolation.
+
+---
+
+## 🚀 Future Architectural Evolution Path
+
+As verification volume scales from thousands to tens of millions of daily pings, the communication and data pipeline is designed to evolve incrementally without requiring structural application rewrites:
+
+```
+[ Phase 1: Current Monorepo ]       [ Phase 2: High-Velocity Scale ]       [ Phase 3: Nationwide Scale ]
+  Fastify API + Postgres               Redis / BullMQ Queue Layer              PostgreSQL Read Replicas
+  SQL Table-as-Queue Polling    ───►   In-Memory Geofence Caching     ───►   Kafka / NATS Telemetry Streams
+  Shared Monorepo Contracts            Redis Sorted Set Leaderboards           Multi-Region Load Balancing
+```
+
+### Phase 1: Current Architecture (0 – 1,000,000 Daily Pings)
+- **API Core**: Stateless `SpottEngine` Fastify API instances scaled horizontally behind a load balancer.
+- **Worker Queuing**: PostgreSQL Transactional Outbox / Table-as-Queue polling loops (`payout_status = 'QUEUED'`).
+- **Database**: Single primary PostgreSQL instance with PostGIS spatial indexing.
+- **Contracts & Schema**: Monorepo shared Zod contracts (`@spottgeo/api-contracts`) and Drizzle ORM (`@spottgeo/database`).
+
+### Phase 2: High-Velocity Scale (1M – 10M Daily Pings)
+- **Redis + BullMQ Queuing**: Replace PostgreSQL table polling with Redis event streams / BullMQ queues (`payout-queue`, `webhook-queue`) for instant sub-millisecond job distribution to `PayoutWorker` and `WebhookDispatcher`.
+- **In-Memory Geofence Caching**: Cache active geofence coordinate boundaries in Redis in-memory spatial data structures to eliminate SQL database reads on high-velocity check-in bursts.
+- **Real-Time Leaderboard Caching**: Cache campaign leaderboard scores using Redis Sorted Sets (`ZADD`, `ZREVRANGE`) for instant leaderboard rendering.
+
+### Phase 3: Nationwide Enterprise Scale (10M+ Daily Pings)
+- **PostgreSQL Read Replicas**: Separate write-heavy presence verifications (Primary DB) from read-heavy `SpottConsole` telemetry and reporting queries (Read Replicas).
+- **Distributed Event Streaming**: Route high-frequency raw `checkin_pings` to an event streaming platform (Apache Kafka / NATS) for real-time stream processing and anti-cheat ML model evaluation.
+
