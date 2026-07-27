@@ -105,7 +105,7 @@ sequenceDiagram
     participant Worker as Payout Worker
     participant Gateway as Payment Gateway (Paystack/VTpass)
 
-    Drop->>Engine: POST /api/v1/engine/verify (device_id, lat, lng, geofence_id)
+    Drop->>Engine: POST /api/v1/engine/verify (device_id, lat, lng, geofence_id or alias)
     Note over Engine: Run 4-Step Anti-Cheat Filter
     Engine->>DB: INSERT INTO checkin_pings & verifications (status='VERIFIED', payout_status='QUEUED')
     Engine-->>Drop: 200 OK { status: 'VERIFIED', payout_status: 'QUEUED' }

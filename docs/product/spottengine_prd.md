@@ -61,7 +61,8 @@ The central presence-verification endpoint.
   "device_id": "abc123...",
   "user_id": "uuid (optional)",
   "campaign_id": "uuid (optional)",
-  "geofence_id": "uuid",
+  "geofence_id": "uuid (optional if alias is provided)",
+  "alias": "LAGOS-IKEJA-01 (optional if geofence_id is provided)",
   "tenant_id": "uuid (optional)",
   "latitude": 6.5244,
   "longitude": 3.3792,
@@ -113,8 +114,9 @@ The central presence-verification endpoint.
 - `device_id` must be 16–128 alphanumeric characters.
 - `latitude` between -90 and 90; `longitude` between -180 and 180.
 - `accuracy_meters` must be non-negative.
-- `geofence_id` must be a valid UUID.
-- Optional `campaign_id` and `user_id` must be valid UUIDs.
+- Exactly one of `geofence_id` or `alias` must be provided.
+- `geofence_id`, `campaign_id`, `user_id`, and `tenant_id` must be valid UUIDs when supplied.
+- `alias` maps case-insensitively to `geofences.creative_code` and resolves to a concrete geofence before anti-cheat checks.
 
 **Anti-fraud pipeline:**
 

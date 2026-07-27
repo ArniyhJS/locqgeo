@@ -19,7 +19,7 @@ Document Version: 3.2.0
 
 ### 1.3 Consumer PWA (SpottVerify)
 
-- **FRD-VERIFY-01**: QR code scanner for standalone event attendance and check-in without gamification requirements.
+- **FRD-VERIFY-01**: Multi-input verification scanner (QR code, NFC tag, Bluetooth beacon, and manual location code) for standalone event attendance and check-in without gamification requirements.
 - **FRD-VERIFY-02**: Offline verification queue that stores payloads and syncs with the engine upon network restoration.
 - **FRD-VERIFY-03**: Progressive identity linking, allowing anonymous verifications to be later associated with a user profile.
 

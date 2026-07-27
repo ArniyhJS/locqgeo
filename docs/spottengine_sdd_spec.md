@@ -32,20 +32,36 @@ Located in `packages/api-contracts/src/grid.schema.ts` and consumed directly by 
 ```typescript
 import { z } from "zod";
 
-export const PingRequestSchema = z.object({
-  device_id: z
-    .string()
-    .min(16, "Device ID must be at least 16 characters")
-    .max(128, "Device ID cannot exceed 128 characters")
-    .regex(/^[a-zA-Z0-9_-]+$/, "Device ID contains invalid characters"),
-  latitude: z.number().min(-90.0, "Latitude must be >= -90").max(90.0, "Latitude must be <= 90"),
-  longitude: z
-    .number()
-    .min(-180.0, "Longitude must be >= -180")
-    .max(180.0, "Longitude must be <= 180"),
-  accuracy_meters: z.number().min(0.0, "Accuracy cannot be negative"),
-  node_id: z.string().uuid("node_id must be a valid UUID v4"),
-});
+export const PingRequestSchema = z
+  .object({
+    device_id: z
+      .string()
+      .min(16, "Device ID must be at least 16 characters")
+      .max(128, "Device ID cannot exceed 128 characters")
+      .regex(/^[a-zA-Z0-9_-]+$/, "Device ID contains invalid characters"),
+    latitude: z.number().min(-90.0, "Latitude must be >= -90").max(90.0, "Latitude must be <= 90"),
+    longitude: z
+      .number()
+      .min(-180.0, "Longitude must be >= -180")
+      .max(180.0, "Longitude must be <= 180"),
+    accuracy_meters: z.number().min(0.0, "Accuracy cannot be negative"),
+    // Exactly one of geofence_id or alias must be supplied. Alias maps to geofences.creative_code.
+    geofence_id: z.string().uuid("geofence_id must be a valid UUID v4").optional(),
+    alias: z
+      .string()
+      .min(1, "alias cannot be empty")
+      .max(100, "alias cannot exceed 100 characters")
+      .optional(),
+    tenant_id: z.string().uuid("tenant_id must be a valid UUID v4").optional(),
+    user_id: z.string().uuid("user_id must be a valid UUID v4").optional(),
+    campaign_id: z.string().uuid("campaign_id must be a valid UUID v4").optional(),
+    velocity_mps: z.number().optional(),
+    user_agent: z.string().optional(),
+  })
+  .refine((data) => data.geofence_id || data.alias, {
+    message: "Either geofence_id or alias must be provided",
+    path: ["geofence_id"],
+  });
 
 export type PingRequest = z.infer<typeof PingRequestSchema>;
 

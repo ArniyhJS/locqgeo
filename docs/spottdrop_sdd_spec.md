@@ -35,10 +35,13 @@ Located in `packages/api-contracts/src/drop.schema.ts` and consumed directly by 
 ```typescript
 import { z } from "zod";
 
-// 1. QR Payload & Node Scanner Schemas
+// 1. QR Payload & Scanner Input Schemas
+// The PWA accepts QR codes, NFC tags, BLE beacon payloads, deep-link URLs, and manual aliases.
+// All input mechanisms resolve to a geofence_id (UUID) or alias before dispatching a ping.
 export const QrScanPayloadSchema = z.object({
-  node_id: z.string().uuid("Invalid QR Code: node_id must be a valid UUID v4"),
+  geofence_id: z.string().uuid("Invalid QR Code: geofence_id must be a valid UUID v4"),
   tenant_id: z.string().uuid().optional(),
+  campaign_id: z.string().uuid().optional(),
   checksum: z.string().min(8).optional(),
 });
 

@@ -253,7 +253,7 @@ To reduce drop-off from camera failure, low-light environments, and unstable GPS
 3. **NFC tap-to-verify** — Tap a poster or tag; faster than QR in low light and already common on mid-tier Android devices.
 4. **Bluetooth beacon verification** — Solves indoor GPS weakness and enables room-level presence proofs inside malls, stores, and event halls.
 
-All of these ultimately feed the same `QrScanPayload` (`geofence_id`, `campaign_id`, `tenant_id`, `checksum`) to SpottEngine, so the verification pipeline and anti-cheat logic remain unchanged.
+All of these ultimately feed the same `PingRequest` payload (`geofence_id` or `alias`, `campaign_id`, `tenant_id`, etc.) to SpottEngine, so the verification pipeline and anti-cheat logic remain unchanged.
 
 ---
 

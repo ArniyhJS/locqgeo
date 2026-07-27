@@ -272,7 +272,7 @@ To make check-ins more reliable when QR scanning is slow, indoor GPS is weak, or
 3. **NFC tap-to-verify** — Tap a tag or badge; faster than QR and ideal for events and access-control use cases.
 4. **Bluetooth beacon verification** — Solves indoor GPS weakness and enables reliable room-level presence proofs in venues, classrooms, and job sites.
 
-All of these ultimately feed the same `QrScanPayload` (`geofence_id`, `campaign_id`, `tenant_id`, `checksum`) to SpottEngine, so the verification pipeline and anti-cheat logic remain unchanged.
+All of these ultimately feed the same `PingRequest` payload (`geofence_id` or `alias`, `campaign_id`, `tenant_id`, etc.) to SpottEngine, so the verification pipeline and anti-cheat logic remain unchanged.
 
 ---
 
