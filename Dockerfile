@@ -1,10 +1,10 @@
 # ==============================================================================
 # Multi-Stage Dockerfile for SpottGeo Unified Monorepo
-# Built with Node.js 20, pnpm 11+, Turborepo, and Alpine Linux
+# Built with Node.js 24 (LTS), pnpm 11+, Turborepo, and Alpine Linux
 # ==============================================================================
 
 # --- Stage 1: Base Environment ---
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@11.17.0 --activate
