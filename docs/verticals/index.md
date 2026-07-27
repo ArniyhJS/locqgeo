@@ -40,6 +40,8 @@ Once that proof exists, it can be used for:
 - [Security & Patrol Services](./security-patrol-services.md)
 - [Telecom Infrastructure & Fiber Maintenance](./telecom-infrastructure-maintenance.md)
 - [Agriculture & Field Research](./agriculture-field-research.md)
+- [Construction & Infrastructure Management](./construction-infrastructure-management.md)
+- [Mining, Energy & Utility Operations](./mining-energy-utility-operations.md)
 
 ### Governance, Risk & Financial Services
 
@@ -48,10 +50,12 @@ Once that proof exists, it can be used for:
 - [ESG & Carbon Credit Verification (MRV)](./esg-carbon-credit-verification.md)
 - [Waste Management & Sanitation Auditing](./waste-management-sanitation-auditing.md)
 - [Electoral & Civic Process Monitoring](./electoral-civic-process-monitoring.md)
+- [Maritime, Ports & Customs Verification](./maritime-ports-customs-verification.md)
 
 ### Public Sector & Real Estate
 
 - [Government & Civic Programs](./government-civic-programs.md)
+- [Humanitarian Aid & Relief Distribution](./humanitarian-aid-relief-distribution.md)
 - [Education & Campus Management](./education-campus-management.md)
 - [Real Estate & Property Management](./real-estate-property-management.md)
 - [Automotive & Mobility](./automotive-mobility.md)
