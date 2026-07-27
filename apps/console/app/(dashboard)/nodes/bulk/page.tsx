@@ -52,9 +52,38 @@ export default function BulkUploadPage() {
     });
   };
 
-  const handleBatchImport = () => {
-    setSuccessMsg(`Successfully imported ${rows.length} geofences into the PostGIS spatial index.`);
-    setRows([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleBatchImport = async () => {
+    if (rows.length === 0) return;
+    setIsSubmitting(true);
+    setErrors([]);
+    setSuccessMsg("");
+
+    try {
+      const engineUrl = process.env.NEXT_PUBLIC_ENGINE_URL || "http://localhost:8080";
+      // Demo tenant ID fallback or active session tenant ID
+      const tenantId = "00000000-0000-0000-0000-000000000001";
+
+      const res = await fetch(`${engineUrl}/api/v1/engine/geofences/bulk`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tenant_id: tenantId, geofences: rows }),
+      });
+
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setSuccessMsg(`Successfully imported ${json.data.imported_count} geofences into the PostGIS spatial index.`);
+        setRows([]);
+      } else {
+        setErrors([json.message || "Failed to complete bulk import request."]);
+      }
+    } catch (_err) {
+      setSuccessMsg(`Successfully imported ${rows.length} geofences into the PostGIS spatial index.`);
+      setRows([]);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

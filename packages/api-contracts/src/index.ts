@@ -7,3 +7,4 @@ export * from "./ping.schema.js";
 export * from "./scanPayload.js";
 export * from "./user.schema.js";
 export * from "./telemetry.schema.js";
+export { z } from "zod";
