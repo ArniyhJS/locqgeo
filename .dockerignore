@@ -1,0 +1,16 @@
+.git
+.github
+.turbo
+.next
+dist
+build
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+coverage
+*.local
+.env
+.env.*
+!.env.example

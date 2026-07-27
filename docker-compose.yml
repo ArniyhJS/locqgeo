@@ -1,0 +1,173 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # 1. Database & Caching Layer
+  # ============================================================================
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: spottgeo-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: spottgeo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: spottgeo-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # 2. Core API Engine & Background Workers
+  # ============================================================================
+  engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: engine
+    container_name: spottgeo-engine
+    restart: always
+    environment:
+      NODE_ENV: development
+      PORT: 8080
+      DATABASE_URL: postgresql://postgres:postgrespassword@postgres:5432/spottgeo_db
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  payout-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: payout-worker
+    container_name: spottgeo-payout-worker
+    restart: always
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgrespassword@postgres:5432/spottgeo_db
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  webhook-dispatcher:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: webhook-dispatcher
+    container_name: spottgeo-webhook-dispatcher
+    restart: always
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgrespassword@postgres:5432/spottgeo_db
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  analytics-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: analytics-worker
+    container_name: spottgeo-analytics-worker
+    restart: always
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgrespassword@postgres:5432/spottgeo_db
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ============================================================================
+  # 3. Client PWAs & Enterprise B2B Dashboard
+  # ============================================================================
+  console:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: console
+    container_name: spottgeo-console
+    restart: always
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      NEXT_PUBLIC_ENGINE_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - engine
+
+  drop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: drop
+    container_name: spottgeo-drop
+    restart: always
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      NEXT_PUBLIC_ENGINE_URL: http://localhost:8080
+    ports:
+      - "3001:3001"
+    depends_on:
+      - engine
+
+  verify:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: verify
+    container_name: spottgeo-verify
+    restart: always
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      NEXT_PUBLIC_ENGINE_URL: http://localhost:8080
+    ports:
+      - "3002:3002"
+    depends_on:
+      - engine
+
+volumes:
+  postgres_data:
+  redis_data:
