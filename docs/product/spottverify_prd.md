@@ -263,20 +263,7 @@ https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
 
 ---
 
-## 10. Recommended Next Steps
-
-To make check-ins more reliable when QR scanning is slow, indoor GPS is weak, or camera access is unavailable, the following input mechanisms are the recommended immediate expansion after the QR MVP:
-
-1. **Manual alias input** — A short human-friendly code (e.g., `LAGOS-IKEJA-01`) mapped to a `geofence_id`; cheapest to implement and removes camera dependency.
-2. **Deep-link / URL scheme verification** — Marketing URLs shared via SMS, WhatsApp, or email that open the PWA with `geofence_id` and `campaign_id` pre-filled.
-3. **NFC tap-to-verify** — Tap a tag or badge; faster than QR and ideal for events and access-control use cases.
-4. **Bluetooth beacon verification** — Solves indoor GPS weakness and enables reliable room-level presence proofs in venues, classrooms, and job sites.
-
-All of these ultimately feed the same `PingRequest` payload (`geofence_id` or `alias`, `campaign_id`, `tenant_id`, etc.) to SpottEngine, so the verification pipeline and anti-cheat logic remain unchanged.
-
----
-
-## 11. Related Documents
+## 10. Related Documents
 
 - `docs/product/spottdrop_prd.md`
 - `docs/product/spottconsole_prd.md`

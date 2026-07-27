@@ -244,20 +244,7 @@ Users should never pay to scan or earn.
 
 ---
 
-## 10. Recommended Next Steps
-
-To reduce drop-off from camera failure, low-light environments, and unstable GPS, the following input mechanisms are the recommended immediate expansion after the QR MVP:
-
-1. **Manual alias input** — A short human-friendly code (e.g., `LAGOS-IKEJA-01`) mapped to a `geofence_id`; cheapest to implement and removes camera dependency.
-2. **Deep-link / URL verification** — Marketing URLs shared via SMS, WhatsApp, or social media that open the PWA with `geofence_id` and `campaign_id` pre-filled.
-3. **NFC tap-to-verify** — Tap a poster or tag; faster than QR in low light and already common on mid-tier Android devices.
-4. **Bluetooth beacon verification** — Solves indoor GPS weakness and enables room-level presence proofs inside malls, stores, and event halls.
-
-All of these ultimately feed the same `PingRequest` payload (`geofence_id` or `alias`, `campaign_id`, `tenant_id`, etc.) to SpottEngine, so the verification pipeline and anti-cheat logic remain unchanged.
-
----
-
-## 11. Related Documents
+## 10. Related Documents
 
 - `docs/product/spottconsole_prd.md`
 - `docs/product/spottverify_prd.md`
