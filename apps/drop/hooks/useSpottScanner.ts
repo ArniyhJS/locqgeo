@@ -71,30 +71,47 @@ export function useSpottScanner() {
   }, []);
 
   const executeVerification = useCallback(
-    async (geofenceId: string) => {
+    async (
+      input: string | { geofenceId?: string; alias?: string; campaignId?: string; userId?: string },
+    ) => {
       setState((prev) => ({ ...prev, isSubmitting: true, scanError: null }));
+
+      const { geofenceId, alias, campaignId, userId } =
+        typeof input === "string" ? { geofenceId: input, alias: undefined, campaignId: undefined, userId: undefined } : input;
+
+      const targetId = geofenceId || alias;
+      if (!targetId) {
+        const msg = "A geofence ID or alias is required.";
+        setState((prev) => ({ ...prev, isSubmitting: false, scanError: msg }));
+        return { success: false, error: msg };
+      }
 
       try {
         const location = state.currentLocation || (await captureLocation());
         const deviceId = await getOrCreateDeviceId();
 
+        const requestBody: Record<string, unknown> = {
+          device_id: deviceId,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          accuracy_meters: location.accuracy,
+        };
+        if (geofenceId) requestBody.geofence_id = geofenceId;
+        if (alias) requestBody.alias = alias;
+        if (campaignId) requestBody.campaign_id = campaignId;
+        if (userId) requestBody.user_id = userId;
+
         const response = await fetch("http://localhost:8080/api/v1/engine/verify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            device_id: deviceId,
-            latitude: location.latitude,
-            longitude: location.longitude,
-            accuracy_meters: location.accuracy,
-            geofence_id: geofenceId,
-          }),
+          body: JSON.stringify(requestBody),
         }).catch(() => null);
 
         // Fallback simulation for dev environments when the engine is offline
         if (!response || !response.ok) {
           const mockRecord: LocalVerificationRecord = {
             verification_id: `ver_${Date.now()}`,
-            geofence_id: geofenceId,
+            geofence_id: geofenceId || `alias:${alias}`,
             geofence_title: "Physical Presence Target",
             action_type: "REWARD",
             reward_type: "AIRTIME",
@@ -111,7 +128,7 @@ export function useSpottScanner() {
             isSubmitting: false,
             verificationSuccessData: {
               verification_id: mockRecord.verification_id,
-              geofence_id: geofenceId,
+              geofence_id: geofenceId || `alias:${alias}`,
               distance_meters: 14.2,
               action_type: "REWARD",
               reward: {
@@ -142,8 +159,8 @@ export function useSpottScanner() {
         const data = result.data;
         const localRecord: LocalVerificationRecord = {
           verification_id: data.verification_id,
-          geofence_id: geofenceId,
-          geofence_title: "Verified Presence Target",
+          geofence_id: data.geofence_id,
+          geofence_title: data.geofence_title ?? "Verified Presence Target",
           action_type: data.action_type,
           reward_type: data.reward?.type,
           reward_amount: data.reward?.amount,

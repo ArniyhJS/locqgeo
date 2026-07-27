@@ -148,7 +148,10 @@ export const geofences = pgTable(
     isActive: boolean("is_active").default(true).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
-  (table) => [index("idx_geofences_tenant").on(table.tenantId)],
+  (table) => [
+    index("idx_geofences_tenant").on(table.tenantId),
+    unique("uq_geofences_creative_code").on(table.creativeCode),
+  ],
 );
 
 // Table: checkin_pings (Telemetry History)

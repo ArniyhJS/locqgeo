@@ -81,6 +81,7 @@ export function useVerifier() {
       geofenceId: string,
       campaignId?: string,
       userId?: string,
+      alias?: string,
     ): Promise<
       | { success: true; data: PingResponseSuccess["data"] }
       | { success: false; error: PingResponseError }
@@ -92,6 +93,17 @@ export function useVerifier() {
         verificationData: null,
       }));
 
+      if (!geofenceId && !alias) {
+        const errorPayload: PingResponseError = {
+          success: false,
+          status: "REJECTED_ACCURACY",
+          error_code: "ERR_INVALID_PAYLOAD",
+          message: "A geofence ID or alias is required.",
+        };
+        setState((prev) => ({ ...prev, isSubmitting: false, verificationError: errorPayload }));
+        return { success: false, error: errorPayload };
+      }
+
       try {
         const location = state.currentLocation || (await captureLocation());
         const deviceId = await getOrCreateDeviceId();
@@ -101,8 +113,9 @@ export function useVerifier() {
           latitude: location.latitude,
           longitude: location.longitude,
           accuracy_meters: location.accuracy,
-          geofence_id: geofenceId,
         };
+        if (geofenceId) body.geofence_id = geofenceId;
+        if (alias) body.alias = alias;
         if (campaignId) body.campaign_id = campaignId;
         if (userId) body.user_id = userId;
 
@@ -114,9 +127,10 @@ export function useVerifier() {
 
         if (!response || !response.ok) {
           const actionType: ActionType = randomActionType();
+          const fallbackGeofenceId = geofenceId || `alias:${alias}`;
           const fallbackData: PingResponseSuccess["data"] = {
             verification_id: `ver_${Date.now()}`,
-            geofence_id: geofenceId,
+            geofence_id: fallbackGeofenceId,
             geofence_title: "Verified Target",
             distance_meters: 12.3,
             action_type: actionType,

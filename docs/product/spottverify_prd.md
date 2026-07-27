@@ -147,11 +147,16 @@ SpottVerify is designed for contexts where **verification itself is the value**:
 
 ### 4.5 Scanner Enhancements
 
-| Feature                       | Description                                          | Priority |
-| ----------------------------- | ---------------------------------------------------- | -------- |
-| NFC verification              | Tap an NFC tag to verify.                            | Low      |
-| Bluetooth beacon verification | Indoor verification where GPS is weak.               | Low      |
-| Auto-scan toggle              | Continuous scanning for events with high throughput. | Low      |
+| Feature                             | Description                                                                               | Priority |
+| ----------------------------------- | ----------------------------------------------------------------------------------------- | -------- |
+| Manual alias input                  | Type a short location code (e.g., `LAGOS-IKEJA-01`) when camera access is unavailable.   | High     |
+| Barcode / Data Matrix / PDF417      | Decode 1D/2D barcodes on tickets, badges, and posters that resolve to a `geofence_id`.   | Medium   |
+| NFC verification                    | Tap an NFC tag to verify.                                                                 | Low      |
+| Bluetooth beacon verification       | Indoor verification where GPS is weak.                                                    | Low      |
+| Deep-link / URL scheme verification | Open the app from SMS, email, or social links carrying `geofence_id` and `campaign_id`.   | High     |
+| Audio / ultrasonic beacon           | Listen for inaudible audio signatures broadcast at venues, kiosks, or media placements.   | Low      |
+| Wi-Fi / magnetic fingerprint        | Use known Wi-Fi signatures or geomagnetic patterns as an indoor presence hint.            | Low      |
+| Auto-scan toggle                    | Continuous scanning for events with high throughput.                                      | Low      |
 
 ### 4.6 Trust & Safety
 
@@ -258,7 +263,20 @@ https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
 
 ---
 
-## 10. Related Documents
+## 10. Recommended Next Steps
+
+To make check-ins more reliable when QR scanning is slow, indoor GPS is weak, or camera access is unavailable, the following input mechanisms are the recommended immediate expansion after the QR MVP:
+
+1. **Manual alias input** — A short human-friendly code (e.g., `LAGOS-IKEJA-01`) mapped to a `geofence_id`; cheapest to implement and removes camera dependency.
+2. **Deep-link / URL scheme verification** — Marketing URLs shared via SMS, WhatsApp, or email that open the PWA with `geofence_id` and `campaign_id` pre-filled.
+3. **NFC tap-to-verify** — Tap a tag or badge; faster than QR and ideal for events and access-control use cases.
+4. **Bluetooth beacon verification** — Solves indoor GPS weakness and enables reliable room-level presence proofs in venues, classrooms, and job sites.
+
+All of these ultimately feed the same `QrScanPayload` (`geofence_id`, `campaign_id`, `tenant_id`, `checksum`) to SpottEngine, so the verification pipeline and anti-cheat logic remain unchanged.
+
+---
+
+## 11. Related Documents
 
 - `docs/product/spottdrop_prd.md`
 - `docs/product/spottconsole_prd.md`

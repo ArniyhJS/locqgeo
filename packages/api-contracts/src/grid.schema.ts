@@ -1,33 +1,44 @@
 import { z } from "zod";
 
-export const PingRequestSchema = z.object({
-  device_id: z
-    .string()
-    .min(16, "Device ID must be at least 16 characters")
-    .max(128, "Device ID cannot exceed 128 characters")
-    .regex(/^[a-zA-Z0-9_-]+$/, "Device ID contains invalid characters"),
-  latitude: z.number().min(-90.0, "Latitude must be >= -90").max(90.0, "Latitude must be <= 90"),
-  longitude: z
-    .number()
-    .min(-180.0, "Longitude must be >= -180")
-    .max(180.0, "Longitude must be <= 180"),
-  accuracy_meters: z.number().min(0.0, "Accuracy cannot be negative"),
-  // Optional client-provided velocity hint; the engine always recomputes server-side.
-  velocity_mps: z.number().optional(),
-  geofence_id: z.string().uuid("geofence_id must be a valid UUID v4"),
-  tenant_id: z.string().uuid("tenant_id must be a valid UUID v4").optional(),
-  // Optional registered user context for progressive identity.
-  user_id: z.string().uuid("user_id must be a valid UUID v4").optional(),
-  // Optional campaign context for billboard gamification.
-  campaign_id: z.string().uuid("campaign_id must be a valid UUID v4").optional(),
-  // Optional device metadata fields for fingerprinting and fraud scoring.
-  user_agent: z.string().optional(),
-  ip_address: z.string().optional(),
-  screen_width: z.number().optional(),
-  screen_height: z.number().optional(),
-  os_name: z.string().optional(),
-  browser_name: z.string().optional(),
-});
+export const PingRequestSchema = z
+  .object({
+    device_id: z
+      .string()
+      .min(16, "Device ID must be at least 16 characters")
+      .max(128, "Device ID cannot exceed 128 characters")
+      .regex(/^[a-zA-Z0-9_-]+$/, "Device ID contains invalid characters"),
+    latitude: z.number().min(-90.0, "Latitude must be >= -90").max(90.0, "Latitude must be <= 90"),
+    longitude: z
+      .number()
+      .min(-180.0, "Longitude must be >= -180")
+      .max(180.0, "Longitude must be <= 180"),
+    accuracy_meters: z.number().min(0.0, "Accuracy cannot be negative"),
+    // Optional client-provided velocity hint; the engine always recomputes server-side.
+    velocity_mps: z.number().optional(),
+    // Exactly one of geofence_id or alias must be supplied. Alias maps to geofences.creative_code.
+    geofence_id: z.string().uuid("geofence_id must be a valid UUID v4").optional(),
+    alias: z
+      .string()
+      .min(1, "alias cannot be empty")
+      .max(100, "alias cannot exceed 100 characters")
+      .optional(),
+    tenant_id: z.string().uuid("tenant_id must be a valid UUID v4").optional(),
+    // Optional registered user context for progressive identity.
+    user_id: z.string().uuid("user_id must be a valid UUID v4").optional(),
+    // Optional campaign context for billboard gamification.
+    campaign_id: z.string().uuid("campaign_id must be a valid UUID v4").optional(),
+    // Optional device metadata fields for fingerprinting and fraud scoring.
+    user_agent: z.string().optional(),
+    ip_address: z.string().optional(),
+    screen_width: z.number().optional(),
+    screen_height: z.number().optional(),
+    os_name: z.string().optional(),
+    browser_name: z.string().optional(),
+  })
+  .refine((data) => data.geofence_id || data.alias, {
+    message: "Either geofence_id or alias must be provided",
+    path: ["geofence_id"],
+  });
 
 export type PingRequest = z.infer<typeof PingRequestSchema>;
 

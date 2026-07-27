@@ -107,12 +107,18 @@ SpottDrop is the **consumer-facing distribution channel** that makes physical-wo
 
 ### 4.2 Scanner Enhancements
 
-| Feature                  | Description                                      | Priority |
-| ------------------------ | ------------------------------------------------ | -------- |
-| Low-light mode           | Improve scan success in dark environments.       | Medium   |
-| Auto-zoom                | Focus on small or distant QR codes.              | Low      |
-| NFC support              | Allow tap-to-verify at NFC-enabled locations.    | Low      |
-| Bluetooth beacon support | Verify presence via BLE signal at indoor venues. | Low      |
+| Feature                             | Description                                                                               | Priority |
+| ----------------------------------- | ----------------------------------------------------------------------------------------- | -------- |
+| Low-light mode                      | Improve scan success in dark environments.                                                | Medium   |
+| Auto-zoom                           | Focus on small or distant QR codes.                                                       | Low      |
+| Manual alias input                  | Type a short location code (e.g., `LAGOS-IKEJA-01`) when camera access is unavailable.   | High     |
+| Barcode / Data Matrix / PDF417      | Decode 1D/2D barcodes on tickets, posters, and packaging that resolve to a `geofence_id`. | Medium   |
+| NFC support                         | Allow tap-to-verify at NFC-enabled locations.                                             | Low      |
+| Bluetooth beacon support            | Verify presence via BLE signal at indoor venues.                                          | Low      |
+| Deep-link / URL scheme verification | Open the app from SMS, email, or social links carrying `geofence_id` and `campaign_id`.   | High     |
+| Audio / ultrasonic beacon           | Listen for inaudible audio signatures broadcast at TV/radio ads or kiosks.                | Low      |
+| Wi-Fi / magnetic fingerprint        | Use known Wi-Fi signatures or geomagnetic patterns as an indoor presence hint.            | Low      |
+| Organizer reverse scan              | Allow authorized staff to scan the user’s personal app QR code at a partner POS/booth.    | Low      |
 
 ### 4.3 Wallet & Redemptions
 
@@ -238,7 +244,20 @@ Users should never pay to scan or earn.
 
 ---
 
-## 10. Related Documents
+## 10. Recommended Next Steps
+
+To reduce drop-off from camera failure, low-light environments, and unstable GPS, the following input mechanisms are the recommended immediate expansion after the QR MVP:
+
+1. **Manual alias input** — A short human-friendly code (e.g., `LAGOS-IKEJA-01`) mapped to a `geofence_id`; cheapest to implement and removes camera dependency.
+2. **Deep-link / URL verification** — Marketing URLs shared via SMS, WhatsApp, or social media that open the PWA with `geofence_id` and `campaign_id` pre-filled.
+3. **NFC tap-to-verify** — Tap a poster or tag; faster than QR in low light and already common on mid-tier Android devices.
+4. **Bluetooth beacon verification** — Solves indoor GPS weakness and enables room-level presence proofs inside malls, stores, and event halls.
+
+All of these ultimately feed the same `QrScanPayload` (`geofence_id`, `campaign_id`, `tenant_id`, `checksum`) to SpottEngine, so the verification pipeline and anti-cheat logic remain unchanged.
+
+---
+
+## 11. Related Documents
 
 - `docs/product/spottconsole_prd.md`
 - `docs/product/spottverify_prd.md`
