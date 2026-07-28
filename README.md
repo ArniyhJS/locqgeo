@@ -1,58 +1,136 @@
 # SpottGeo
 
-SpottGeo is a location-based rewards and telemetry platform architected as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**.
+SpottGeo is a **proof-of-presence platform** that lets businesses verify that a real person was physically at a real location — and then reward, audit, or trigger workflows from that verification. It is built as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**.
 
 Our vision is to make physical-world presence measurable, rewardable, and trustworthy for any business that cares about real-world engagement.
 
-## 🌟 Product Suite
+## Product Suite
 
 The SpottGeo platform is composed of four core products:
 
-- **SpottConsole**: The enterprise control plane for B2B operators. It allows campaign managers, operations teams, and developers to configure geofences, launch reward campaigns, manage users, and analyze real-time verification and fraud telemetry at scale.
+- **SpottConsole**: The enterprise control plane for B2B operators. Campaign managers, operations teams, and developers use it to configure geofences, launch reward campaigns, manage progressive user identities, and inspect verification and fraud telemetry.
 - **SpottDrop**: A reward-first consumer Progressive Web App (PWA) where users scan QR codes at physical locations (billboards, stores, events) to prove their presence and earn rewards like airtime, data, or cash.
 - **SpottVerify**: A lightweight consumer PWA focused purely on proof-of-presence verification. Ideal for event check-ins, class attendance, workforce field operations, and access control without necessarily tying into a rewards campaign.
-- **SpottEngine**: The core Node.js + Fastify API and verification engine that powers the platform. It validates presence claims, enforces campaign rules, executes the 4-step anti-cheat pipeline, and processes payouts with sub-50ms latency.
+- **SpottEngine**: The core Node.js + Fastify API and verification engine that powers the platform. It validates presence claims, enforces campaign rules, executes the 4-step anti-cheat pipeline, and triggers reward payouts with sub-50ms response latency targets.
 
-## 🏗️ Architecture Overview
+## Repository Layout
 
-The repository is divided into several applications, services, and packages, designed to support horizontal scaling for nationwide gamification events.
+```text
+spottgeo-monorepo/
+├── apps/
+│   ├── console/          # SpottConsole Next.js 16 Enterprise B2B Dashboard (port 3000)
+│   ├── drop/             # SpottDrop Next.js 16 Consumer PWA (port 3001)
+│   └── verify/           # SpottVerify Next.js 16 Consumer PWA (port 3002)
+├── services/
+│   ├── engine/           # SpottEngine Fastify 5 core API (port 8080)
+│   ├── payout-worker/    # Asynchronous reward-payout processor
+│   ├── webhook-dispatcher/ # HMAC SHA-256 webhook dispatcher
+│   └── analytics-worker/   # Telemetry pre-aggregation worker
+├── packages/
+│   ├── database/         # PostgreSQL + PostGIS client and Drizzle ORM schema
+│   ├── api-contracts/    # Shared Zod v4 schemas and TypeScript types
+│   └── config/           # Shared tsconfig, ESLint 9, and Prettier configs
+└── docs/                 # PRDs, architecture, strategy, and vertical guides
+```
+
+## Tech Stack
+
+| Layer         | Technology                                                |
+| ------------- | --------------------------------------------------------- |
+| Monorepo      | pnpm 11 workspaces, Turborepo 2                           |
+| Runtime       | Node.js 24 LTS                                            |
+| Language      | TypeScript 5.9 (ES2022, `NodeNext` module resolution)     |
+| Frontend      | Next.js 16, React 19, Tailwind CSS 4                      |
+| API           | Fastify 5                                                 |
+| ORM           | Drizzle ORM 0.45 + drizzle-kit                            |
+| Validation    | Zod 4                                                     |
+| Database      | PostgreSQL 16 + PostGIS 3.4                               |
+| Cache / Queue | Redis 7 (target state; workers currently poll PostgreSQL) |
+| Testing       | Vitest 4                                                  |
+| Linting       | ESLint 9 flat config                                      |
+
+## Architecture Overview
 
 ### Applications (Client Layer)
 
-- **`apps/console`**: SpottConsole Next.js Enterprise B2B Dashboard.
-- **`apps/drop`**: SpottDrop Next.js Consumer PWA.
-- **`apps/verify`**: SpottVerify Next.js Consumer PWA for standalone attendance and check-ins.
+- **`apps/console`**: SpottConsole dashboard. Uses Next.js App Router, React Server Actions, and Recharts for analytics visualizations.
+- **`apps/drop`**: SpottDrop consumer PWA. Includes a QR scanner, offline queue, wallet view, and campaign radar map.
+- **`apps/verify`**: SpottVerify consumer PWA. Provides standalone QR presence verification and a verification history page.
 
 ### Services (API & Worker Layer)
 
-- **`services/engine`**: Node.js + Fastify core engine processing spatial queries and handling anti-cheat logic.
-- **`services/payout-worker`**: Dedicated background worker for asynchronous reward payouts (Paystack, VTpass, Flutterwave) and wallet fallback credits.
-- **`services/webhook-dispatcher`**: Dedicated microservice for dispatching signed HMAC SHA-256 webhooks to enterprise client endpoints.
-- **`services/analytics-worker`**: Background worker service for pre-aggregating daily verification trends and leaderboard rankings.
+- **`services/engine`**: Stateless Fastify API. Registers `/health`, `/api/v1/engine/verify`, `/api/v1/campaigns`, `/api/v1/users`, and `/api/v1/engine/geofences` routes.
+- **`services/payout-worker`**: Polls the `verifications` table for `payout_status = 'QUEUED'` records and executes provider payouts with fallbacks.
+- **`services/webhook-dispatcher`**: Polls recent verification records and prepares HMAC-signed webhook payloads for enterprise clients.
+- **`services/analytics-worker`**: Pre-aggregates daily verification statistics and active campaign counts for the console dashboard.
 
-### Packages (Data Layer)
+### Packages (Data & Contract Layer)
 
-- **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM. Designed to support primary/replica database setups for high read throughput.
-- **`packages/api-contracts`**: Shared Zod schemas ensuring zero type drift between backend routes and frontend components.
+- **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM. Defines `users`, `user_devices`, `user_wallets`, `tenants`, `tenant_users`, `api_keys`, `geofences`, `campaigns`, `campaign_geofences`, `campaign_progress`, `leaderboards`, `checkin_pings`, `verifications`, `verification_attempts`, `device_reputation`, and `budget_resets_log`.
+- **`packages/api-contracts`**: Shared Zod v4 request/response schemas ensuring zero type drift between backend routes and frontend components.
+- **`packages/config`**: Shared `tsconfig.base.json`, ESLint 9 flat config (`eslint.config.mjs`), and Prettier config.
 
-### 🌐 Nationwide Scale Architecture
+## 4-Step Anti-Cheat Pipeline
 
-SpottGeo is built for massive scale. At scale, the architecture relies on:
+SpottEngine evaluates every presence claim through a configurable filter:
+
+1. **Accuracy Filter**: Rejects pings with `accuracy_meters > 50`.
+2. **Velocity Filter**: Rejects pings reporting or calculating speed above `30 m/s`.
+3. **Rate-Limit Filter**: Allows a maximum of 5 verification attempts per device per 60-second window.
+4. **Spoof Score**: Aggregates anomalies into a `spoof_score` (0–100); rejects if ≥ 50.
+
+Possible verification statuses: `VERIFIED`, `REJECTED_ACCURACY`, `REJECTED_VELOCITY`, `REJECTED_RATE_LIMIT`, `REJECTED_SPOOF`, `REJECTED_DUPLICATE`, `REJECTED_OUT_OF_BOUNDS`, `REJECTED_INACTIVE_GEOFENCE`.
+
+## Worker Orchestration & Async Processing
+
+The current release uses a **PostgreSQL table-as-queue / transactional outbox** pattern:
+
+- SpottEngine writes verified reward records with `payout_status = 'QUEUED'`.
+- Background workers poll PostgreSQL at fixed intervals:
+  - Payout Worker: every 5 seconds
+  - Webhook Dispatcher: every 10 seconds
+  - Analytics Worker: every 60 seconds
+- Reward provider cascade: primary provider (Paystack / VTpass) → secondary fallback (Flutterwave) → internal `user_wallets` credit.
+
+For high-velocity scale, the architecture is designed to migrate these polling loops to Redis/BullMQ without application rewrites.
+
+## Nationwide Scale Architecture
+
+At scale, the architecture relies on:
 
 - **Stateless Engines** for horizontal scaling behind a load balancer.
 - **Decoupled Workers** for asynchronous payout execution, webhook dispatch, and analytics pre-aggregation.
 - **Redis** for rate limiting, session management, and leaderboard caching.
 - **PostgreSQL Read Replicas** for separating write-heavy verifications from read-heavy dashboard and analytics queries.
 
-## 🚀 Getting Started
+See `docs/architecture/nationwide_campaign_architecture.md` for the full target-state deployment topology.
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js (v20+)
-- pnpm (v9+)
-- PostgreSQL with PostGIS extension
+- Node.js 24 LTS
+- pnpm 11.17.0 (enabled via Corepack)
+- PostgreSQL 16 with the `postgis` extension **or** Docker + Docker Compose
 
-### Installation
+### Option A: Docker Compose (Recommended for Local Development)
+
+1. Start PostgreSQL, Redis, and all services:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+2. Apply database migrations:
+
+   ```bash
+   pnpm install
+   pnpm run db:migrate
+   ```
+
+The console will be available at `http://localhost:3000`, SpottDrop at `http://localhost:3001`, SpottVerify at `http://localhost:3002`, and SpottEngine at `http://localhost:8080`.
+
+### Option B: Local Services + pnpm
 
 1. Install dependencies:
 
@@ -60,20 +138,23 @@ SpottGeo is built for massive scale. At scale, the architecture relies on:
    pnpm install
    ```
 
-2. Generate and run database migrations:
+2. Start PostgreSQL and Redis, then set `DATABASE_URL` and `REDIS_URL`.
+
+3. Generate and run database migrations:
+
    ```bash
    pnpm run db:generate
    pnpm run db:migrate
    ```
 
-### Development
+4. Start all apps and services in dev mode:
 
-You can run individual services or all of them together using Turborepo:
+   ```bash
+   pnpm run dev
+   ```
 
-- Start all apps and services in dev mode:
-  ```bash
-  pnpm run dev
-  ```
+### Per-Service Development
+
 - Start SpottConsole:
   ```bash
   pnpm run dev:console
@@ -103,10 +184,40 @@ You can run individual services or all of them together using Turborepo:
   pnpm run dev:analytics-worker
   ```
 
-## 📖 Documentation
+## Quality & CI/CD
 
-Check out the `docs/` directory for detailed architecture, specs, and feature requirements documents.
+Root-level scripts for quality assurance:
 
-- **Product Requirements (PRDs)**: Explore the detailed vision for [SpottConsole](docs/product/spottconsole_prd.md), [SpottDrop](docs/product/spottdrop_prd.md), [SpottVerify](docs/product/spottverify_prd.md), and [SpottEngine](docs/product/spottengine_prd.md).
-- **Architecture**: See the [Nationwide Gamification Architecture](docs/architecture/nationwide_campaign_architecture.md), [System Architecture](docs/architecture/system_architecture.md), and [Database ERD](docs/architecture/erd.md).
-- **Technical Specs**: Read the [SpottGeo SDD Spec](docs/spottgeo_sdd_spec.md).
+- `pnpm run lint` — Run ESLint across all packages.
+- `pnpm run test` — Run Vitest unit/integration tests.
+- `pnpm run check-types` — Run `tsc --noEmit` in every package.
+- `pnpm run build` — Build all packages and apps.
+- `pnpm run format` — Format code with Prettier.
+- `pnpm run format:check` — Check formatting without writing.
+
+A GitHub Actions workflow (`.github/workflows/ci-cd.yml`) runs `check-types`, `lint`, `test`, and `build` on every push/PR. On merges to `main`, it executes `db:migrate` and prepares deployment artifacts.
+
+## Documentation
+
+Detailed specs, requirements, and strategy documents live in `docs/`:
+
+- **Product Requirements (PRDs)**:
+  - [SpottConsole PRD](docs/product/spottconsole_prd.md)
+  - [SpottDrop PRD](docs/product/spottdrop_prd.md)
+  - [SpottVerify PRD](docs/product/spottverify_prd.md)
+  - [SpottEngine PRD](docs/product/spottengine_prd.md)
+- **Functional Requirements**: [SpottGeo FRD](docs/spottgeo_frd.md)
+- **Architecture**:
+  - [Nationwide Gamification Architecture](docs/architecture/nationwide_campaign_architecture.md)
+  - [System Architecture](docs/architecture/system_architecture.md)
+  - [Inter-App Communication](docs/architecture/inter_app_communication.md)
+  - [Deployment Strategy](docs/architecture/deployment_strategy.md)
+  - [Database ERD](docs/architecture/erd.md)
+  - [Tech Stack Critique & Tradeoffs](docs/architecture/tech_stack_critique_and_tradeoffs.md)
+- **Strategy & Verticals**:
+  - [Brand Identity & Design System](docs/brand_marketing_and_design_system.md)
+  - [Fraud Detection Roadmap](docs/strategy/fraud_detection_roadmap.md)
+  - [Competitive Landscape](docs/strategy/competitive_landscape.md)
+  - [Pan-African Expansion Strategy](docs/strategy/pan_african_expansion_strategy.md)
+  - [Vertical Use Cases Overview](docs/verticals/index.md)
+- **Spec-Driven Development**: [SpottGeo SDD Spec](docs/spottgeo_sdd_spec.md)
