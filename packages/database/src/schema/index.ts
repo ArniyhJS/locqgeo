@@ -8,4 +8,6 @@ export * from "./referrals.js";
 export * from "./squads.js";
 export * from "./webhook-subscriptions.js";
 export * from "./webhook-deliveries.js";
-
+export * from "./device-reputation.js";
+export * from "./ip-intelligence.js";
+export * from "./fraud-alerts.js";

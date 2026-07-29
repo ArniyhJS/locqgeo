@@ -332,16 +332,6 @@ export const verificationAttempts = pgTable(
   ],
 );
 
-// Table: device_reputation (Device Trust and Abuse History)
-export const deviceReputation = pgTable("device_reputation", {
-  deviceId: varchar("device_id", { length: 128 }).primaryKey(),
-  trustScore: numeric("trust_score", { precision: 4, scale: 3 }).default("1.000").notNull(),
-  totalAttempts: integer("total_attempts").default(0).notNull(),
-  rejectedAttempts: integer("rejected_attempts").default(0).notNull(),
-  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-});
-
 // Legacy / convenience aliases
 export const presenceTargets = geofences;
 export const checks = verifications;
