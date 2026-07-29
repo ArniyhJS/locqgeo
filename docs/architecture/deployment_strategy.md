@@ -137,13 +137,33 @@ graph TD
     C --> E[pnpm run lint]
     C --> F[pnpm run test]
 
-    D & E & F --> G[Database Migration: pnpm run db:migrate]
+    D & E & F --> G[Database Seed & Migration: pnpm --filter @spottgeo/database db:seed]
 
     G --> H[Deploy Frontends to Vercel]
     G --> I[Build & Push Docker Containers to Registry]
 
     I --> J[Deploy SpottEngine to AWS ECS / Cloud Run]
     I --> K[Deploy Background Workers to AWS ECS / Railway]
+
+---
+
+## 🐳 Local Docker & Database Seed Workflow
+
+SpottGeo provides a top-level Docker Compose environment and seed script for rapid local testing:
+
+```bash
+# 1. Start PostgreSQL (PostGIS 3.4) and Redis 7 containers
+docker compose up -d
+
+# 2. Populate default features, plans, demo tenant, and geofence target
+pnpm --filter @spottgeo/database db:seed
+```
+
+### GitHub Actions CI Configuration (`.github/workflows/ci.yml`)
+The monorepo workflow automatically runs on `push` and `pull_request` to `main`:
+- **Node.js 20** + **pnpm v10**
+- `pnpm run check-types` (all 13 packages)
+- `pnpm run test` (all 140+ unit tests)
 ```
 
 ---

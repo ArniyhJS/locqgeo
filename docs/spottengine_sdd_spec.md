@@ -297,3 +297,15 @@ WHERE cn.id = $3 AND cn.is_active = TRUE;
 ## 6. System Prompt Directive for AI Agents
 
 > "You are building the SpottEngine core engine inside services/engine following spottengine_sdd_spec.md. Always validate inputs using PingRequestSchema from @spottgeo/api-contracts. Ensure all SQL queries with PostGIS geometries format point inputs strictly as ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography (note: longitude comes before latitude in PostGIS points). Implement the 4-step anti-cheat checks in the exact sequence specified: Accuracy -> Duplicate -> Velocity -> Spatial Distance. Write Vitest unit tests verifying that velocity calculations exceeding $55.56\text{ m/s}$ trigger HTTP 422 with error code ERR_IMPOSSIBLE_SPEED."
+
+---
+
+## 7. Operational & Developer Integration Endpoints
+
+| Endpoint | Method | Security | Description |
+|----------|--------|----------|-------------|
+| `/api/v1/webhooks/paystack` | `POST` | HMAC SHA-512 (`x-paystack-signature`) | Ingests Paystack subscription events (`subscription.create`, `charge.success`, `subscription.disable`) and invalidates `@spottgeo/feature-gate` cache |
+| `/api/v1/webhooks/stripe` | `POST` | HMAC SHA-256 (`stripe-signature`) | Ingests Stripe subscription events (`customer.subscription.created`, `invoice.paid`, `customer.subscription.deleted`) and invalidates `@spottgeo/feature-gate` cache |
+| `/api/v1/engine/telemetry/stream` | `GET` | SSE (`text/event-stream`) | Real-time broadcast stream emitting presence verification telemetry frames (`VERIFIED`, `VERIFIED_FLAGGED`, `REJECTED_SPOOF`) to SpottConsole |
+| `/docs/json` | `GET` | None (Public Developer Spec) | Exposes OpenAPI 3.0.3 JSON schema definition for 3rd-party `@spottgeo/sdk` consumers |
+

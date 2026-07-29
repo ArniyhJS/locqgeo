@@ -66,6 +66,19 @@ Inter-app communication in SpottGeo uses four distinct patterns depending on lat
 - **Participants**: `SpottDrop` (Consumer PWA) and `SpottVerify` (Attendance PWA) invoke `SpottEngine`.
 - **Purpose**: Real-time verification of physical presence claims, anti-cheat evaluation, and instant decision feedback (sub-50ms latency).
 
+### 2. Real-Time Telemetry Event Streaming (SSE)
+
+- **Protocols**: Server-Sent Events (`text/event-stream`)
+- **Primary Endpoint**: `GET /api/v1/engine/telemetry/stream` hosted by `SpottEngine`.
+- **Participants**: `SpottEngine` (Broadcaster) $\rightarrow$ `SpottConsole` (`useTelemetryStream` hook).
+- **Purpose**: Real-time streaming of verification telemetry events (`VERIFIED`, `VERIFIED_FLAGGED`, `REJECTED_SPOOF`) directly into the executive fraud dashboard.
+
+### 3. Payment Ingestion Webhooks (Paystack & Stripe)
+
+- **Protocols**: Signed Inbound HTTP POST (`/api/v1/webhooks/paystack`, `/api/v1/webhooks/stripe`).
+- **Signature Security**: HMAC SHA-512 (`x-paystack-signature`) and HMAC SHA-256 (`stripe-signature`).
+- **Participants**: Paystack / Stripe Payment Gateways $\rightarrow$ `SpottEngine` $\rightarrow$ `@spottgeo/feature-gate` (Redis cache invalidation).
+
 ### 2. Database Asynchronous Queues (Decoupled Worker Pattern)
 
 - **Pattern**: Transactional Outbox / Table-as-Queue pattern over PostgreSQL.
