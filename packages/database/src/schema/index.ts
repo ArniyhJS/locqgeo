@@ -6,3 +6,6 @@ export * from "./mystery-drops.js";
 export * from "./leaderboards.js";
 export * from "./referrals.js";
 export * from "./squads.js";
+export * from "./webhook-subscriptions.js";
+export * from "./webhook-deliveries.js";
+
