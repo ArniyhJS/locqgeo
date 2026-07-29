@@ -13,6 +13,7 @@ export function ConsoleSidebar() {
     { href: "/nodes", label: "Campaign Nodes", icon: "📍" },
     { href: "/campaigns", label: "Campaigns", icon: "🏆" },
     { href: "/telemetry", label: "Live Telemetry & Fraud", icon: "📡" },
+    { href: "/billing", label: "Billing & Ledger", icon: "💳" },
   ];
 
   const settingsItems = [
