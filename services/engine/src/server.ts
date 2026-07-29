@@ -5,6 +5,7 @@ import { verifyRoutes } from "./routes/verify.js";
 import { campaignRoutes } from "./routes/campaigns.js";
 import { userRoutes } from "./routes/users.js";
 import { geofenceRoutes } from "./routes/geofences.js";
+import { paymentWebhookRoutes } from "./routes/payment-webhooks.js";
 
 const fastify = Fastify({
   logger: true,
@@ -30,6 +31,9 @@ await fastify.register(userRoutes);
 
 // Register Geofence & Bulk Import Routes
 await fastify.register(geofenceRoutes);
+
+// Register Payment Webhook Routes
+await fastify.register(paymentWebhookRoutes);
 
 const PORT = Number(process.env.PORT) || 8080;
 const HOST = process.env.HOST || "0.0.0.0";
