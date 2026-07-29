@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "check-types": "tsc --noEmit",
-    "lint": "eslint . --max-warnings=0"
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run"
   },
   "dependencies": {
     "@spottgeo/api-contracts": "workspace:*",
@@ -36,6 +37,7 @@
     "eslint-config-next": "^16.2.12",
     "postcss": "^8.5.23",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
   }
 }
