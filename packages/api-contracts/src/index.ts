@@ -10,5 +10,6 @@ export * from "./telemetry.schema.js";
 export * from "./billing.schema.js";
 export * from "./gamification.schema.js";
 export * from "./webhook.schema.js";
+export * from "./fraud.schema.js";
 export { z } from "zod";
 
