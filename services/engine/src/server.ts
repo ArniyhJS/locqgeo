@@ -7,6 +7,7 @@ import { userRoutes } from "./routes/users.js";
 import { geofenceRoutes } from "./routes/geofences.js";
 import { paymentWebhookRoutes } from "./routes/payment-webhooks.js";
 import { telemetrySseRoutes } from "./routes/telemetry-sse.js";
+import { swaggerDocsRoutes } from "./routes/swagger-docs.js";
 
 const fastify = Fastify({
   logger: true,
@@ -38,6 +39,9 @@ await fastify.register(paymentWebhookRoutes);
 
 // Register Telemetry SSE Stream Routes
 await fastify.register(telemetrySseRoutes);
+
+// Register Swagger OpenAPI Documentation Routes
+await fastify.register(swaggerDocsRoutes);
 
 const PORT = Number(process.env.PORT) || 8080;
 const HOST = process.env.HOST || "0.0.0.0";
