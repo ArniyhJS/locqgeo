@@ -17,7 +17,8 @@
     "check-types": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "lint": "eslint . --max-warnings=0"
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
@@ -28,6 +29,7 @@
     "@types/node": "^26.1.1",
     "drizzle-kit": "^0.31.10",
     "typescript": "^5.9.3",
-    "eslint": "^9.39.5"
+    "eslint": "^9.39.5",
+    "vitest": "^4.1.10"
   }
 }

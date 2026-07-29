@@ -347,3 +347,6 @@ export const presenceTargets = geofences;
 export const checks = verifications;
 export const payouts = verifications;
 export const telemetryLogs = checkinPings;
+
+export * from "./schema/index.js";
+
