@@ -17,6 +17,7 @@
     "check-types": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx src/seed.ts",
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run"
   },
