@@ -18,6 +18,22 @@ export interface WebhookDispatchResult {
   failedCount: number;
 }
 
+export function calculateNextRetryInterval(attemptCount: number): number {
+  switch (attemptCount) {
+    case 1:
+      return 15;
+    case 2:
+      return 60;
+    case 3:
+      return 300;
+    case 4:
+      return 900;
+    case 5:
+    default:
+      return 3600;
+  }
+}
+
 export class WebhookDispatcherService {
   /**
    * Generates an HMAC SHA-256 signature for outbound webhooks.

@@ -10,7 +10,7 @@ vi.mock("@spottgeo/database", () => ({
     strings.reduce((acc, s, i) => acc + s + (values[i] ?? ""), ""),
 }));
 
-import { WebhookDispatcherService } from "./dispatcher.js";
+import { WebhookDispatcherService, calculateNextRetryInterval } from "./dispatcher.js";
 
 describe("WebhookDispatcherService", () => {
   beforeEach(() => {
@@ -44,5 +44,14 @@ describe("WebhookDispatcherService", () => {
     expect(result.sentCount).toBe(1);
     expect(result.successCount).toBe(1);
     expect(result.failedCount).toBe(0);
+  });
+
+  it("calculates exponential backoff intervals correctly", () => {
+    expect(calculateNextRetryInterval(1)).toBe(15);
+    expect(calculateNextRetryInterval(2)).toBe(60);
+    expect(calculateNextRetryInterval(3)).toBe(300);
+    expect(calculateNextRetryInterval(4)).toBe(900);
+    expect(calculateNextRetryInterval(5)).toBe(3600);
+    expect(calculateNextRetryInterval(6)).toBe(3600);
   });
 });
