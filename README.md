@@ -27,10 +27,12 @@ spottgeo-monorepo/
 │   ├── webhook-dispatcher/ # HMAC SHA-256 webhook dispatcher
 │   └── analytics-worker/   # Telemetry pre-aggregation worker
 ├── packages/
-│   ├── database/         # PostgreSQL + PostGIS client and Drizzle ORM schema
+│   ├── database/         # PostgreSQL + PostGIS client, Drizzle ORM schemas & seed script
+│   ├── feature-gate/     # Cache-backed feature resolver and gating checker
+│   ├── sdk/              # Client-side developer SDK (@spottgeo/sdk)
 │   ├── api-contracts/    # Shared Zod v4 schemas and TypeScript types
 │   └── config/           # Shared tsconfig, ESLint 9, and Prettier configs
-└── docs/                 # PRDs, architecture, strategy, and vertical guides
+└── docs/                 # PRDs, architecture, strategy, vertical guides, and specs
 ```
 
 ## Tech Stack
@@ -45,7 +47,7 @@ spottgeo-monorepo/
 | ORM           | Drizzle ORM 0.45 + drizzle-kit                            |
 | Validation    | Zod 4                                                     |
 | Database      | PostgreSQL 16 + PostGIS 3.4                               |
-| Cache / Queue | Redis 7 (target state; workers currently poll PostgreSQL) |
+| Cache / Queue | Redis 7 (feature gate caching & atomic budget checks)     |
 | Testing       | Vitest 4                                                  |
 | Linting       | ESLint 9 flat config                                      |
 
@@ -53,20 +55,22 @@ spottgeo-monorepo/
 
 ### Applications (Client Layer)
 
-- **`apps/console`**: SpottConsole dashboard. Uses Next.js App Router, React Server Actions, and Recharts for analytics visualizations.
-- **`apps/drop`**: SpottDrop consumer PWA. Includes a QR scanner, offline queue, wallet view, and campaign radar map.
-- **`apps/verify`**: SpottVerify consumer PWA. Provides standalone QR presence verification and a verification history page.
+- **`apps/console`**: SpottConsole dashboard. Uses Next.js App Router, React Server Actions, real-time SSE telemetry hook (`useTelemetryStream`), and Recharts for analytics visualizations.
+- **`apps/drop`**: SpottDrop consumer PWA. Includes Cyber-Gamified Dark Mode, streak hero flame counter, squad quest progress cards, and 3D mystery drop unboxing modal.
+- **`apps/verify`**: SpottVerify consumer PWA. Features 3D circular GPS radar scanner (`RadarScanner.tsx`), floating signal telemetry header, instant feedback drawer, and verification history timeline.
 
 ### Services (API & Worker Layer)
 
-- **`services/engine`**: Stateless Fastify API. Registers `/health`, `/api/v1/engine/verify`, `/api/v1/campaigns`, `/api/v1/users`, and `/api/v1/engine/geofences` routes.
+- **`services/engine`**: Stateless Fastify API. Registers `/health`, `/api/v1/engine/verify`, `/api/v1/webhooks/paystack`, `/api/v1/webhooks/stripe`, `/api/v1/engine/telemetry/stream` (SSE), and `/docs/json` (OpenAPI 3.0.3).
 - **`services/payout-worker`**: Polls the `verifications` table for `payout_status = 'QUEUED'` records and executes provider payouts with fallbacks.
 - **`services/webhook-dispatcher`**: Polls recent verification records and prepares HMAC-signed webhook payloads for enterprise clients.
 - **`services/analytics-worker`**: Pre-aggregates daily verification statistics and active campaign counts for the console dashboard.
 
 ### Packages (Data & Contract Layer)
 
-- **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM. Defines `users`, `user_devices`, `user_wallets`, `tenants`, `tenant_users`, `api_keys`, `geofences`, `campaigns`, `campaign_geofences`, `campaign_progress`, `leaderboards`, `checkin_pings`, `verifications`, `verification_attempts`, `device_reputation`, and `budget_resets_log`.
+- **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM. Defines `users`, `tenants`, `plans`, `plan_features`, `tenant_subscriptions`, `user_subscriptions`, `feature_overrides`, `device_reputation`, `ip_intelligence_cache`, `fraud_alerts`, `tenant_wallets`, `tenant_invoices`, `financial_audit_logs`, `user_streaks`, `mystery_drops`, `leaderboard_ranks`, `referrals`, `squads`, `webhook_subscriptions`, and `webhook_deliveries`. Includes database seeding script (`db:seed`).
+- **`packages/feature-gate`**: Cache-backed feature resolver and checker providing `hasFeature()`, `getFeatureLimit()`, `resolveAllFeatures()`, and `invalidateFeatureCache()`.
+- **`packages/sdk`**: Developer client library (`@spottgeo/sdk`) for integrating location presence verification into 3rd-party apps.
 - **`packages/api-contracts`**: Shared Zod v4 request/response schemas ensuring zero type drift between backend routes and frontend components.
 - **`packages/config`**: Shared `tsconfig.base.json`, ESLint 9 flat config (`eslint.config.mjs`), and Prettier config.
 
@@ -115,17 +119,16 @@ See `docs/architecture/nationwide_campaign_architecture.md` for the full target-
 
 ### Option A: Docker Compose (Recommended for Local Development)
 
-1. Start PostgreSQL, Redis, and all services:
+1. Start PostgreSQL (PostGIS 3.4) and Redis 7 containers:
 
    ```bash
-   docker-compose up --build
+   docker compose up -d
    ```
 
-2. Apply database migrations:
+2. Seed default features, plans, demo tenant, and geofence target:
 
    ```bash
-   pnpm install
-   pnpm run db:migrate
+   pnpm --filter @spottgeo/database db:seed
    ```
 
 The console will be available at `http://localhost:3000`, SpottDrop at `http://localhost:3001`, SpottVerify at `http://localhost:3002`, and SpottEngine at `http://localhost:8080`.
@@ -140,11 +143,10 @@ The console will be available at `http://localhost:3000`, SpottDrop at `http://l
 
 2. Start PostgreSQL and Redis, then set `DATABASE_URL` and `REDIS_URL`.
 
-3. Generate and run database migrations:
+3. Seed default database features and plans:
 
    ```bash
-   pnpm run db:generate
-   pnpm run db:migrate
+   pnpm --filter @spottgeo/database db:seed
    ```
 
 4. Start all apps and services in dev mode:
@@ -195,7 +197,7 @@ Root-level scripts for quality assurance:
 - `pnpm run format` — Format code with Prettier.
 - `pnpm run format:check` — Check formatting without writing.
 
-A GitHub Actions workflow (`.github/workflows/ci-cd.yml`) runs `check-types`, `lint`, `test`, and `build` on every push/PR. On merges to `main`, it executes `db:migrate` and prepares deployment artifacts.
+A GitHub Actions workflow (`.github/workflows/ci.yml`) automatically executes `check-types` and `test` on every push and pull request to `main`.
 
 ## Documentation
 
