@@ -1,6 +1,6 @@
 # SpottDrop Consumer PWA — Spec-Driven Development (SDD) Technical Specification
 
-Document Version: 1.0.0
+Document Version: 3.3.0
 
 Workspace Path: `apps/drop`
 
@@ -24,7 +24,9 @@ $$\text{device\_id} = \text{SHA256}(\text{canvas\_hash} \parallel \text{webgl\_v
 
 $$\text{accuracy\_meters} \le 50.0 \implies \text{Proceed to Ping Dispatch}$$
 
-5. **Offline Claim Queueing**: If a user scans a physical node in an area with zero cellular connectivity, the payload MUST be encrypted and stored locally in IndexedDB. A service worker background sync task MUST retry transmission using exponential backoff when connectivity is restored.
+5. **Offline Claim Queueing & Clock Integrity**: If a user scans a physical node in an area with zero cellular connectivity, the payload MUST be encrypted and stored locally in IndexedDB along with the original scan timestamp (`scanned_at`) and monotonic clock duration delta (`monotonic_delta_ms`). Offline sync MUST observe drop type time windows (15 minutes for Flash Drops, 24 hours for standard drops). A service worker background sync task MUST retry transmission using exponential backoff when connectivity is restored while preserving daily loyalty streak metrics.
+6. **Minimum Withdrawal Thresholds**: To prevent micro-transaction fee drain and guarantee payment processor efficiency, payout redemptions inside SpottDrop MUST enforce minimum withdrawal thresholds: a minimum of $\text{₦}50$ for airtime/mobile data top-ups processed via VTpass, and a minimum of $\text{₦}500$ for direct bank account transfers processed via Paystack. Direct bank transfers MUST present a transparent fee disclosure UI (e.g., standard $\text{₦}10-\text{₦}25$ transfer processing fee) prior to transaction confirmation.
+7. **Cross-PWA Payload Deep-Link Handling**: If a user scans a dynamic HMAC QR code generated for SpottVerify (or accesses a `verify.spottgeo.com` deep link) inside SpottDrop, the PWA MUST gracefully parse the payload, extract the underlying `geofence_id` if valid for consumer reward claims, or execute a smooth deep-link handoff to `apps/verify` (`SpottVerify`) without raising unhandled syntax or runtime execution errors.
 
 ---
 
@@ -36,13 +38,16 @@ Located in `packages/api-contracts/src/drop.schema.ts` and consumed directly by 
 import { z } from "zod";
 
 // 1. QR Payload & Scanner Input Schemas
-// The PWA accepts QR codes, NFC tags, BLE beacon payloads, deep-link URLs, and manual aliases.
+// The PWA accepts QR codes, NFC tags, BLE beacon payloads, dynamic HMAC payloads, deep-link URLs, and manual aliases.
 // All input mechanisms resolve to a geofence_id (UUID) or alias before dispatching a ping.
 export const QrScanPayloadSchema = z.object({
   geofence_id: z.string().uuid("Invalid QR Code: geofence_id must be a valid UUID v4"),
   tenant_id: z.string().uuid().optional(),
   campaign_id: z.string().uuid().optional(),
   checksum: z.string().min(8).optional(),
+  timestamp: z.number().int().positive("timestamp must be a positive integer unix epoch").optional(),
+  nonce: z.string().min(8, "nonce must be at least 8 characters").optional(),
+  hmac: z.string().length(64, "hmac must be a 64-character SHA-256 hex string").optional(),
 });
 
 export type QrScanPayload = z.infer<typeof QrScanPayloadSchema>;
@@ -68,6 +73,8 @@ export const LocalClaimRecordSchema = z.object({
   claimed_at: z.string().datetime(),
   payout_status: z.enum(["QUEUED", "PROCESSING", "COMPLETED", "FAILED"]),
   redemption_code: z.string().optional(),
+  scanned_at: z.number().int().positive().optional(),
+  monotonic_delta_ms: z.number().nonnegative().optional(),
 });
 
 export type LocalClaimRecord = z.infer<typeof LocalClaimRecordSchema>;
@@ -161,9 +168,36 @@ export async function getOrCreateDeviceId(): Promise<string> {
       QR Parsed
                v
 +-----------------------------------------------------------------+
-| Dispatch POST /api/v1/engine/verify Payload to SpottEngine            |
-| { device_id, latitude, longitude, accuracy_meters, node_id }    |
+| Calculate Client Monotonic Clock Delta                          |
+| monotonic_delta_ms = window.performance.now() - scan_start_time |
+| Capture scanned_at timestamp (ISO 8601 / Unix epoch ms)        |
 +--------------+--------------------------------------------------+
+               |
+    Network Status Check
+      /          \
+  Online         Offline
+    /              \
+   v                v
++-----------------------------+   +---------------------------------------+
+| Dispatch POST               |   | Check Offline Sync Window Expiration  |
+| /api/v1/engine/verify       |   | - Flash Drop Node: <= 15 minutes      |
+| { device_id, latitude,      |   | - Standard Node:   <= 24 hours        |
+|   longitude, accuracy_m,    |   +-------------------+-------------------+
+|   node_id, scanned_at,      |                       |
+|   monotonic_delta_ms,       |              Valid    |    Expired (> Window)
+|   hmac, nonce }             |          +------------+------------+
++--------------+--------------+          |                         |
+               |                         v                         v
+               |          +----------------------------+ +-----------------+
+               |          | Encrypt & Save to IndexedDB| | Reject Claim    |
+               |          | Service Worker retries     | | "Offline claim  |
+               |          | sync with monotonic_delta  | | expired. Daily  |
+               |          | to preserve loyalty streak | | streak reset."  |
+               |          +-------------+--------------+ +-----------------+
+               |                        |
+               |                Online Restored
+               |                        |
+               +------------------------+
                |
       Response Received
                v
@@ -173,10 +207,12 @@ export async function getOrCreateDeviceId(): Promise<string> {
   |                         |
   v                         v
 +----------------------+  +---------------------------------------+
-| Display Success Screen| | Display Specific Fraud Error:         |
-| - Play Haptic Bump   |  | ERR_IMPOSSIBLE_SPEED -> Speed warning |
-| - Show Reward Badge  |  | ERR_DUPLICATE_CLAIM -> Already claimed|
-| - Save to Local Wallet| | ERR_OUT_OF_BOUNDS  -> Too far away    |
+| Display Success Screen| | Display Specific Fraud/System Error:  |
+| - Play Haptic Bump   |  | REJECTED_SPOOF -> Clock/GPS anomaly   |
+| - Show Reward Badge  |  | REJECTED_EXPIRED_PAYLOAD -> QR > 60s  |
+| - Save to Local Wallet| | REJECTED_RATE_LIMIT -> Max 5 req/60s  |
+| - Update Loyalty     |  | ERR_DUPLICATE_CLAIM -> Already claimed|
+|   Streak             |  | ERR_OUT_OF_BOUNDS  -> Too far away    |
 +----------------------+  +---------------------------------------+
 ```
 
@@ -184,4 +220,14 @@ export async function getOrCreateDeviceId(): Promise<string> {
 
 ## 5. System Prompt Directive for AI Agents
 
-> "You are building the SpottDrop consumer PWA inside apps/drop following spottdrop_sdd_spec.md. Always capture GPS coordinates via HTML5 navigator.geolocation with enableHighAccuracy: true and enforce the $\le 50.0\text{m}$ accuracy filter on the client before calling SpottEngine. Read and write client device identifiers using getOrCreateDeviceId() from @/lib/fingerprint. Validate incoming QR code payloads using QrScanPayloadSchema from @spottgeo/api-contracts. Ensure all user UI screens load in under 1 second on 3G network connections by deferring Leaflet map rendering until explicitly toggled."
+> "You are building the SpottDrop consumer PWA inside apps/drop following spottdrop_sdd_spec.md. Always capture GPS coordinates via HTML5 navigator.geolocation with enableHighAccuracy: true and enforce the $\le 50.0\text{m}$ accuracy filter on the client before calling SpottEngine. Read and write client device identifiers using getOrCreateDeviceId() from @/lib/fingerprint. Validate incoming QR code payloads using QrScanPayloadSchema from @spottgeo/api-contracts. Support dynamic HMAC QR payloads ({ geofence_id, timestamp, nonce, hmac }) and offline sync windows (15 minutes for Flash Drops, 24 hours for standard drops) with client monotonic clock delta tracking (monotonic_delta_ms) to preserve daily loyalty streaks. Enforce minimum withdrawal thresholds (₦50 airtime/data via VTpass, ₦500 Paystack bank transfer with fee disclosure). Ensure all user UI screens load in under 1 second on 3G network connections by deferring Leaflet map rendering until explicitly toggled."
+
+---
+
+## 6. Related Documents
+
+- [SpottGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_sdd_spec.md)
+- [SpottEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md)
+- [SpottConsole SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md)
+- [SpottVerify SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md)
+- [SpottGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_frd.md)
