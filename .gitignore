@@ -5,3 +5,9 @@ dist
 .turbo
 *.log
 *.tsbuildinfo
+
+# Superpowers artifacts & internal tracking
+.superpowers
+.superpower
+docs/superpowers
+docs/superpower
