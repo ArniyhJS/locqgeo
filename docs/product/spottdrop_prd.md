@@ -2,9 +2,11 @@
 
 ## 1. Overview
 
-**SpottDrop** is the reward-first consumer Progressive Web App (PWA) for the SpottGeo Verified Presence Platform. Users scan QR codes at physical locations — billboards, stores, event gates, and campaign nodes — to prove their presence and earn rewards such as airtime, mobile data, cash, or vouchers.
+**SpottDrop** is the consumer **Rewards & Gamification Portal** Progressive Web App (PWA) for the SpottGeo Verified Presence Platform. It powers consumer engagement through advertising campaigns, billboard drops, loyalty punch cards, and instant rewards (airtime, mobile data, cash, or vouchers). Users scan QR codes at physical locations — billboards, retail stores, transit stops, and campaign nodes — to prove their presence and earn rewards.
 
-SpottDrop is the **consumer-facing distribution channel** that makes physical-world engagement measurable and rewardable for brands, agencies, and billboard operators.
+SpottDrop serves as the **consumer-facing distribution channel** that makes physical-world marketing and brand engagement measurable and rewardable.
+
+> **Ecosystem Positioning:** While **SpottVerify** is strictly dedicated to utility check-ins, workforce verification, and credential attendance, **SpottDrop** focuses exclusively on consumer rewards, gamified loyalty campaigns, ad monetization, and instant payouts.
 
 ### 1.1 Product Vision
 
@@ -122,24 +124,29 @@ SpottDrop is the **consumer-facing distribution channel** that makes physical-wo
 
 ### 4.3 Wallet & Redemptions
 
-| Feature                         | Description                                                  | Priority |
-| ------------------------------- | ------------------------------------------------------------ | -------- |
-| Airtime / data top-up           | Convert wallet balance to airtime or mobile data via VTpass. | High     |
-| Bank transfer / cash withdrawal | Withdraw cash balance to bank account via Paystack.          | High     |
-| Voucher codes                   | Display redeemable voucher codes from partners.              | Medium   |
-| Transaction history             | Detailed list of credits, debits, and statuses.              | High     |
-| Minimum withdrawal threshold    | e.g., ₦500 minimum cash-out.                                 | Medium   |
-| Withdrawal fees                 | Transparent fee structure for cash withdrawals.              | Medium   |
+| Feature                         | Description                                                                                          | Priority |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------- | -------- |
+| Airtime / data top-up           | Convert wallet balance to airtime or mobile data via VTpass (Minimum ₦50 threshold).                | High     |
+| Bank transfer / cash withdrawal | Withdraw cash balance to bank account via Paystack (Minimum ₦500 threshold).                        | High     |
+| Voucher codes                   | Display redeemable voucher codes from partners.                                                      | Medium   |
+| Transaction history             | Detailed list of credits, debits, and statuses.                                                      | High     |
+| Minimum withdrawal thresholds   | Explicit policy enforcement: ₦50 for airtime/data top-ups, ₦500 for bank transfers.                 | High     |
+| Fee disclosures                 | Upfront transparency for cash withdrawal fees to offset payment gateway transaction costs.           | High     |
+
+#### Withdrawal & Fee Rules
+- **Airtime & Data Top-ups (VTpass):** Minimum redemption threshold of **₦50**. No processing fees charged to the consumer.
+- **Bank Transfers (Paystack):** Minimum withdrawal threshold of **₦500**. Transparent fee disclosures are shown prior to confirmation to offset gateway transaction fees.
 
 ### 4.4 User Identity & Account
 
-| Feature              | Description                            | Priority |
-| -------------------- | -------------------------------------- | -------- |
-| Anonymous mode       | Scan and earn without registration.    | Current  |
-| Phone number linking | Link account to phone for withdrawals. | High     |
-| Email linking        | Alternative identity anchor.           | Medium   |
-| Multiple device sync | Same account across phone and tablet.  | Medium   |
-| Profile management   | Name, avatar, preferred reward type.   | Low      |
+| Feature                     | Description                                                                                       | Priority |
+| --------------------------- | ------------------------------------------------------------------------------------------------- | -------- |
+| Anonymous mode              | Scan and earn without registration.                                                               | Current  |
+| Phone number linking        | Link account to phone for withdrawals.                                                            | High     |
+| Email linking               | Alternative identity anchor.                                                                      | Medium   |
+| Multiple device sync        | Same account across phone and tablet.                                                             | Medium   |
+| Profile management          | Name, avatar, preferred reward type.                                                              | Low      |
+| Offline streak preservation | Scans captured offline maintain daily loyalty streaks if synced within 24 hours of `scanned_at`.  | High     |
 
 ### 4.5 Engagement & Gamification
 
@@ -170,6 +177,8 @@ SpottDrop is the **consumer-facing distribution channel** that makes physical-wo
 - **Secure storage**: device_id stored in a way that is hard to reset intentionally.
 - **Background sync**: use service worker background sync where supported.
 - **Push notifications**: optional, for campaign alerts and reward confirmations.
+- **Offline Streak Preservation**: Offline verifications store client `scanned_at` timestamps alongside monotonic clock deltas. Scans synced within 24 hours of `scanned_at` preserve daily loyalty streaks and reward progress once validated by SpottEngine.
+- **Cross-PWA Deep-Link & Payload Handling**: When a user scans a QR payload from SpottVerify within SpottDrop, SpottDrop parses the payload signature. It seamlessly extracts the underlying `geofence_id` to process the scan locally or executes a smooth deep-link redirect to SpottVerify without displaying syntax or execution errors.
 
 ---
 
