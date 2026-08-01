@@ -1,4 +1,45 @@
-export default function NodesListPage() {
+import { getGeofencesAction } from "@/app/actions/geofences";
+import { DEMO_TENANT_ID } from "@/lib/constants";
+
+function formatCurrency(amount: number | null, currency: string | null): string {
+  if (amount == null) return "—";
+  const cur = currency ?? "NGN";
+  return `${cur === "NGN" ? "₦" : cur} ${amount.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function getStatusBadge(isActive: boolean, spent: number, limit: number | null) {
+  if (!isActive) {
+    return (
+      <span className="px-2 py-0.5 rounded bg-gray-500/10 text-gray-400 font-semibold border border-gray-500/20">
+        INACTIVE
+      </span>
+    );
+  }
+  if (limit != null && spent >= limit) {
+    return (
+      <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
+        DEPLETED
+      </span>
+    );
+  }
+  return (
+    <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20">
+      ACTIVE
+    </span>
+  );
+}
+
+const rewardColors: Record<string, string> = {
+  AIRTIME: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  DATA: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+  CASH: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  VOUCHER: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+};
+
+export default async function NodesListPage() {
+  const result = await getGeofencesAction(DEMO_TENANT_ID);
+  const nodes = result.success && result.data ? result.data : [];
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -25,70 +66,56 @@ export default function NodesListPage() {
       </div>
 
       <div className="glass-card p-6 space-y-4">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-gray-300">
-            <thead className="border-b border-gray-800 text-gray-400 font-semibold uppercase">
-              <tr>
-                <th className="pb-3">Node Title</th>
-                <th className="pb-3">Coordinates (Lat, Lng)</th>
-                <th className="pb-3">Geofence Radius</th>
-                <th className="pb-3">Reward Type</th>
-                <th className="pb-3">Daily Budget Spent / Cap</th>
-                <th className="pb-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-800/60">
-              <tr>
-                <td className="py-3.5 font-medium text-white">Lagos Island Tech Drop #04</td>
-                <td>6.5244°, 3.3792°</td>
-                <td>50.0 meters</td>
-                <td>
-                  <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 font-semibold border border-blue-500/20">
-                    AIRTIME
-                  </span>
-                </td>
-                <td>₦ 12,500.00 / ₦ 50,000.00</td>
-                <td>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20">
-                    ACTIVE
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3.5 font-medium text-white">Victoria Island Mall Drop #02</td>
-                <td>6.4281°, 3.4219°</td>
-                <td>100.0 meters</td>
-                <td>
-                  <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-semibold border border-cyan-500/20">
-                    DATA
-                  </span>
-                </td>
-                <td>₦ 50,000.00 / ₦ 50,000.00</td>
-                <td>
-                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
-                    DEPLETED
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3.5 font-medium text-white">Ikeja City Mall Drop #01</td>
-                <td>6.6018°, 3.3515°</td>
-                <td>75.0 meters</td>
-                <td>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20">
-                    CASH
-                  </span>
-                </td>
-                <td>₦ 8,000.00 / ₦ 25,000.00</td>
-                <td>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20">
-                    ACTIVE
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {nodes.length === 0 ? (
+          <div className="text-center py-12 space-y-3">
+            <div className="text-4xl">📍</div>
+            <p className="text-gray-400 text-sm">No campaign nodes yet.</p>
+            <a
+              href="/nodes/new"
+              className="inline-block glass-button px-4 py-2 rounded-lg text-sm font-medium text-white shadow-lg"
+            >
+              + Create Your First Node
+            </a>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-gray-300">
+              <thead className="border-b border-gray-800 text-gray-400 font-semibold uppercase">
+                <tr>
+                  <th className="pb-3">Node Title</th>
+                  <th className="pb-3">Coordinates (Lat, Lng)</th>
+                  <th className="pb-3">Geofence Radius</th>
+                  <th className="pb-3">Reward Type</th>
+                  <th className="pb-3">Daily Budget Spent / Cap</th>
+                  <th className="pb-3">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-800/60">
+                {nodes.map((node) => {
+                  const colorClass = rewardColors[node.reward_type ?? ""] ?? "bg-gray-500/10 text-gray-400 border-gray-500/20";
+                  return (
+                    <tr key={node.id}>
+                      <td className="py-3.5 font-medium text-white">{node.title}</td>
+                      <td>{node.latitude.toFixed(4)}°, {node.longitude.toFixed(4)}°</td>
+                      <td>{node.radius_meters} meters</td>
+                      <td>
+                        <span className={`px-2 py-0.5 rounded font-semibold border ${colorClass}`}>
+                          {node.reward_type ?? node.action_type}
+                        </span>
+                      </td>
+                      <td>
+                        {formatCurrency(node.daily_budget_spent, node.reward_currency)} / {formatCurrency(node.daily_budget_limit, node.reward_currency)}
+                      </td>
+                      <td>
+                        {getStatusBadge(node.is_active, node.daily_budget_spent, node.daily_budget_limit)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

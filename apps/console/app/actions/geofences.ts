@@ -33,7 +33,6 @@ export async function createGeofenceAction(tenantId: string, rawInput: CreateGeo
         title,
         latitude,
         longitude,
-        location,
         radius_meters,
         action_type,
         reward_type,
@@ -47,7 +46,6 @@ export async function createGeofenceAction(tenantId: string, rawInput: CreateGeo
         ${title},
         ${latitude},
         ${longitude},
-        ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326)::geography,
         ${radius_meters},
         ${action_type},
         ${reward_type ?? null},
@@ -59,6 +57,7 @@ export async function createGeofenceAction(tenantId: string, rawInput: CreateGeo
       )
       RETURNING id, title, created_at;
     `)) as unknown as Array<{ id: string; title: string; created_at: Date }>;
+
 
     revalidatePath("/nodes");
 
@@ -84,22 +83,34 @@ export async function getGeofencesAction(tenantId: string) {
       SELECT
         id,
         title,
+        latitude,
+        longitude,
+        radius_meters,
         action_type,
         reward_type,
         reward_amount,
         reward_currency,
-        is_active
+        daily_budget_limit,
+        daily_budget_spent,
+        is_active,
+        created_at
       FROM geofences
       WHERE tenant_id = ${tenantId}
-      ORDER BY title ASC;
+      ORDER BY created_at DESC;
     `)) as unknown as Array<{
       id: string;
       title: string;
+      latitude: number;
+      longitude: number;
+      radius_meters: number;
       action_type: string;
       reward_type: string | null;
       reward_amount: string | null;
       reward_currency: string | null;
+      daily_budget_limit: string | null;
+      daily_budget_spent: string | null;
       is_active: boolean;
+      created_at: string;
     }>;
 
     return {
@@ -107,11 +118,17 @@ export async function getGeofencesAction(tenantId: string) {
       data: result.map((g) => ({
         id: g.id,
         title: g.title,
+        latitude: g.latitude,
+        longitude: g.longitude,
+        radius_meters: g.radius_meters,
         action_type: g.action_type,
         reward_type: g.reward_type,
         reward_amount: g.reward_amount ? Number(g.reward_amount) : null,
         reward_currency: g.reward_currency,
+        daily_budget_limit: g.daily_budget_limit ? Number(g.daily_budget_limit) : null,
+        daily_budget_spent: g.daily_budget_spent ? Number(g.daily_budget_spent) : 0,
         is_active: g.is_active,
+        created_at: new Date(g.created_at).toISOString(),
       })),
     };
   } catch (error) {

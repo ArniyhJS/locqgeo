@@ -64,8 +64,8 @@ export async function getCampaignsAction(tenantId: string) {
       title: r.title,
       description: r.description ?? undefined,
       action_type: r.action_type,
-      starts_at: r.starts_at.toISOString(),
-      ends_at: r.ends_at.toISOString(),
+      starts_at: new Date(r.starts_at).toISOString(),
+      ends_at: new Date(r.ends_at).toISOString(),
       daily_budget_limit: r.daily_budget_limit ? Number(r.daily_budget_limit) : undefined,
       total_budget_limit: r.total_budget_limit ? Number(r.total_budget_limit) : undefined,
       total_budget_spent: Number(r.total_budget_spent),
@@ -78,7 +78,7 @@ export async function getCampaignsAction(tenantId: string) {
         visit_weight: g.visit_weight,
         required_visit_order: g.required_visit_order ?? undefined,
       })),
-      created_at: r.created_at.toISOString(),
+      created_at: new Date(r.created_at).toISOString(),
     }));
 
     return { success: true, data };
@@ -150,8 +150,8 @@ export async function getCampaignByIdAction(campaignId: string) {
       title: c.title,
       description: c.description ?? undefined,
       action_type: c.action_type,
-      starts_at: c.starts_at.toISOString(),
-      ends_at: c.ends_at.toISOString(),
+      starts_at: new Date(c.starts_at).toISOString(),
+      ends_at: new Date(c.ends_at).toISOString(),
       daily_budget_limit: c.daily_budget_limit ? Number(c.daily_budget_limit) : undefined,
       total_budget_limit: c.total_budget_limit ? Number(c.total_budget_limit) : undefined,
       total_budget_spent: Number(c.total_budget_spent),
@@ -164,7 +164,7 @@ export async function getCampaignByIdAction(campaignId: string) {
         visit_weight: g.visit_weight,
         required_visit_order: g.required_visit_order ?? undefined,
       })),
-      created_at: c.created_at.toISOString(),
+      created_at: new Date(c.created_at).toISOString(),
     };
 
     return { success: true, data };
@@ -205,7 +205,7 @@ export async function getCampaignLeaderboardAction(campaignId: string, limit = 2
         total_points: r.total_points,
         total_visits: r.total_visits,
         streak_count: r.streak_count,
-        last_visit_at: r.last_visit_at?.toISOString(),
+        last_visit_at: r.last_visit_at ? new Date(r.last_visit_at).toISOString() : undefined,
       })),
     };
   } catch (error) {
