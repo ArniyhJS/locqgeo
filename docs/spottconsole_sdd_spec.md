@@ -1,6 +1,6 @@
 # SpottConsole Enterprise B2B Dashboard — Spec-Driven Development (SDD) Technical Specification
 
-Document Version: 1.0.0
+Document Version: 3.3.0
 
 Workspace Path: `apps/console`
 
@@ -16,9 +16,9 @@ Every Next.js Page, Server Action, API Route, and Database Access Function insid
 
 1. **Strict Multi-Tenancy Boundary**: Every database query executed within SpottConsole MUST include `tenant_id = session.tenant_id`. Cross-tenant data leakage is a critical security violation.
 2. **API Key Cryptographic Hashing**: API keys generated for enterprise B2B SDK integrations MUST be stored using SHA-256 digests (`api_key_hash`). Plaintext keys are shown strictly once upon generation.
-3. **Daily Budget Depletion Guard**: If a campaign node's cumulative daily claims reach or exceed its assigned budget cap, the system MUST automatically flip `is_active` to `FALSE` for that node:
+3. **Daily Budget & Tenant Float Reservation Guard**: If a campaign node's cumulative daily claims reach or exceed its assigned budget cap, OR if the tenant's pre-funded float balance (`balance_ngn - reserved_ngn`) is insufficient to cover reward payouts, the system MUST automatically flip `is_active` to `FALSE` for that node or reject claim attempts with `INSUFFICIENT_FLOAT`:
 
-$$\text{daily\_budget\_spent\_ngn} \ge \text{daily\_budget\_limit\_ngn} \implies \text{is\_active} = \text{FALSE}$$
+$$\text{daily\_budget\_spent\_ngn} \ge \text{daily\_budget\_limit\_ngn} \lor \text{balance\_ngn} - \text{reserved\_ngn} < \text{reward\_amount\_ngn} \implies \text{is\_active} = \text{FALSE}$$
 
 4. **Calculated Conversion Rate Invariant**: Conversion rates on analytics dashboards MUST be computed strictly as:
 
@@ -119,6 +119,32 @@ export const CreateApiKeySchema = z.object({
 });
 
 export type CreateApiKeyInput = z.infer<typeof CreateApiKeySchema>;
+
+export const ApiKeyRevocationSchema = z.object({
+  key_id: z.string().uuid("key_id must be a valid UUID v4"),
+  tenant_id: z.string().uuid("tenant_id must be a valid UUID v4"),
+});
+
+export type ApiKeyRevocationInput = z.infer<typeof ApiKeyRevocationSchema>;
+
+// 4. Tenant Float Funding & Webhook DLQ Management Schemas
+export const TenantFloatFundingSchema = z.object({
+  tenant_id: z.string().uuid("tenant_id must be a valid UUID v4"),
+  amount_ngn: z
+    .number()
+    .min(1000.0, "Minimum float funding amount is NGN 1,000")
+    .max(10000000.0, "Maximum float funding amount is NGN 10,000,000"),
+  payment_reference: z.string().min(1, "Payment reference is required"),
+});
+
+export type TenantFloatFundingInput = z.infer<typeof TenantFloatFundingSchema>;
+
+export const WebhookDlqRetrySchema = z.object({
+  dlq_id: z.string().uuid("dlq_id must be a valid UUID v4"),
+  tenant_id: z.string().uuid("tenant_id must be a valid UUID v4"),
+});
+
+export type WebhookDlqRetryInput = z.infer<typeof WebhookDlqRetrySchema>;
 ```
 
 ---
@@ -165,10 +191,44 @@ CREATE TABLE budget_resets_log (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT unique_node_daily_reset UNIQUE(node_id, reset_date)
 );
+
+-- Table: tenant_floats (Pre-funded campaign float balances)
+CREATE TABLE tenant_floats (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    tenant_id UUID NOT NULL UNIQUE REFERENCES tenants(id) ON DELETE CASCADE,
+    balance_ngn NUMERIC(12, 2) NOT NULL DEFAULT 0.00 CHECK (balance_ngn >= 0),
+    reserved_ngn NUMERIC(12, 2) NOT NULL DEFAULT 0.00 CHECK (reserved_ngn >= 0),
+    currency VARCHAR(3) NOT NULL DEFAULT 'NGN',
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Table: webhook_dead_letters (Dead Letter Queue for failed webhooks)
+CREATE TABLE webhook_dead_letters (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    tenant_id UUID REFERENCES tenants(id) ON DELETE SET NULL,
+    event_type VARCHAR(100) NOT NULL,
+    payload JSONB NOT NULL,
+    error_trace TEXT,
+    retry_count INT NOT NULL DEFAULT 0,
+    next_retry_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 ```
 
 ---
 
 ## 4. System Prompt Directive for AI Agents
 
-> "You are building the SpottConsole Enterprise B2B Dashboard inside apps/console following spottconsole_sdd_spec.md. Always enforce multi-tenancy isolation by including tenant_id filters on every SQL query and Server Action. Validate user inputs using CreateCampaignNodeSchema and CreateApiKeySchema from @spottgeo/api-contracts. Ensure all PostGIS geography points format location inputs strictly as ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography (note: longitude comes before latitude). Build interactive forms using React Hook Form paired with Zod schemas. Display telemetry charts using Recharts, with conversion percentages dynamically calculated via $(\text{verified\_claims} / \text{total\_pings}) \times 100$."
+> "You are building the SpottConsole Enterprise B2B Dashboard inside apps/console following spottconsole_sdd_spec.md. Always enforce multi-tenancy isolation by including tenant_id filters on every SQL query and Server Action. Validate user inputs using CreateCampaignNodeSchema, CreateApiKeySchema, TenantFloatFundingSchema, WebhookDlqRetrySchema, and ApiKeyRevocationSchema from @spottgeo/api-contracts. Mandate tenant float balance reservation checks and provide DLQ UI management interfaces for reviewing and retrying failed webhooks. Ensure all PostGIS geography points format location inputs strictly as ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography (note: longitude comes before latitude). Build interactive forms using React Hook Form paired with Zod schemas. Display telemetry charts using Recharts, with conversion percentages dynamically calculated via $(\text{verified\_claims} / \text{total\_pings}) \times 100$."
+
+---
+
+## 5. Related Specification Cross-References
+
+- [spottgeo_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_sdd_spec.md) — Master Architecture Specification
+- [spottengine_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md) — SpottEngine Core Engine SDD Specification
+- [spottconsole_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md) — SpottConsole B2B Dashboard SDD Specification
+- [spottdrop_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottdrop_sdd_spec.md) — SpottDrop Consumer PWA SDD Specification
+- [spottverify_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md) — SpottVerify Verification PWA SDD Specification
+- [spottgeo_frd.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_frd.md) — Functional Requirements Document
+
