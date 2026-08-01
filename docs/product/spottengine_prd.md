@@ -67,7 +67,9 @@ The central presence-verification endpoint.
   "latitude": 6.5244,
   "longitude": 3.3792,
   "accuracy_meters": 8.5,
-  "velocity_mps": 0.0
+  "velocity_mps": 0.0,
+  "scanned_at": "2026-07-25T09:58:30Z (optional client scan time)",
+  "monotonic_delta_ms": 1200
 }
 ```
 
@@ -117,18 +119,36 @@ The central presence-verification endpoint.
 - Exactly one of `geofence_id` or `alias` must be provided.
 - `geofence_id`, `campaign_id`, `user_id`, and `tenant_id` must be valid UUIDs when supplied.
 - `alias` maps case-insensitively to `geofences.creative_code` and resolves to a concrete geofence before anti-cheat checks.
+- `scanned_at` (optional ISO 8601 timestamp string) must adhere to offline sync validation windows (max 24 hours for standard campaigns, max 15 minutes for Flash Drops).
+- `monotonic_delta_ms` (optional integer) used to validate client clock monotonicity against server `received_at`.
+
+**Rate Limiting Rules:**
+
+- **Per Device ID:** Maximum 5 verification requests per 60 seconds (`REJECTED_RATE_LIMIT`).
+- **Per IP Address:** Maximum 100 verification requests per 60 seconds (`REJECTED_RATE_LIMIT`).
+- **Per Tenant API Key:** Throttled based on tenant tier (Default 1,000 req/sec).
+
+**Offline Timestamp & Clock Integrity Validation:**
+
+- Every ping records both `scanned_at` (client scan time) and `received_at` (server arrival time).
+- **Standard Campaigns:** Verification pings must be synced within 24 hours of `scanned_at`.
+- **Flash Drops / Time-Limited Campaigns:** Scans must be synced within **15 minutes** of `scanned_at`.
+- **Clock Tampering Protection:** Client PWAs store monotonic time deltas alongside system timestamps. Server compares `received_at - scanned_at` drift against monotonic deltas; suspicious negative deltas (client clock rewind) or excessive drift trigger `REJECTED_SPOOF`.
 
 **Anti-fraud pipeline:**
 
-1. Input schema validation.
-2. GPS accuracy check: reject if accuracy > 50m (`REJECTED_ACCURACY`).
-3. Geofence existence and active status check.
-4. Campaign eligibility check (if `campaign_id` provided).
-5. Velocity / teleportation check against last ping.
-6. Duplicate verification check: 24h rolling window per device + geofence.
-7. Distance check: user must be within geofence radius.
-8. Device reputation check (future).
-9. Persist verification and trigger campaign/reward logic.
+1. Input schema validation (Zod).
+2. Rate limiting check (Device: max 5 req/60s, IP: max 100 req/60s, Tenant key tier limit). Reject with `REJECTED_RATE_LIMIT`.
+3. Offline timestamp and clock integrity check (`scanned_at` vs `received_at` drift check, monotonic clock delta check). Reject with `REJECTED_SPOOF`.
+4. Hardware attestation & dynamic QR payload check (Google Play Integrity / iOS App Attest, time-varying HMAC validation). Reject with `REJECTED_SPOOF`.
+5. GPS accuracy check: reject if accuracy > 50m (`REJECTED_ACCURACY`).
+6. Geofence existence and active status check (`REJECTED_INACTIVE_GEOFENCE`).
+7. Campaign eligibility check (if `campaign_id` provided).
+8. Velocity / teleportation check against last ping (`REJECTED_VELOCITY`).
+9. Duplicate verification check: 24h rolling window per device + geofence (`REJECTED_DUPLICATE`).
+10. Distance check: user must be within geofence radius (`REJECTED_OUT_OF_BOUNDS`).
+11. Device reputation check (future).
+12. Persist verification and trigger campaign/reward logic.
 
 ---
 
@@ -208,16 +228,16 @@ Key tables already defined in the SpottGeo schema:
 
 ## 5. Verification States
 
-| Status                       | Meaning                                                |
-| ---------------------------- | ------------------------------------------------------ |
-| `VERIFIED`                   | Presence proved; reward/attendance processed.          |
-| `REJECTED_ACCURACY`          | GPS accuracy too low or payload invalid.               |
-| `REJECTED_DUPLICATE`         | Already verified here in the last 24 hours.            |
-| `REJECTED_VELOCITY`          | Impossible travel speed calculated from delta.         |
-| `REJECTED_SPOOF`             | High mock location risk or timing manipulation.        |
-| `REJECTED_RATE_LIMIT`        | Exceeded max 5 verifications per 60 seconds per device |
-| `REJECTED_OUT_OF_BOUNDS`     | User outside geofence radius.                          |
-| `REJECTED_INACTIVE_GEOFENCE` | Geofence missing or inactive, or campaign ineligible.  |
+| Status                       | Meaning                                                                                                                                                |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `VERIFIED`                   | Presence proved; reward/attendance processed.                                                                                                          |
+| `REJECTED_ACCURACY`          | GPS accuracy too low (> 50m) or payload invalid.                                                                                                       |
+| `REJECTED_DUPLICATE`         | Already verified here in the last 24 hours.                                                                                                            |
+| `REJECTED_VELOCITY`          | Impossible travel speed calculated from delta.                                                                                                         |
+| `REJECTED_SPOOF`             | Detected location spoofing, timing manipulation/clock drift, hardware attestation failure (rooted device), or dynamic HMAC signature validation failure. |
+| `REJECTED_RATE_LIMIT`        | Exceeded rate limit threshold (max 5 req/60s per device_id, max 100 req/60s per IP, or tenant API key rate limit).                                    |
+| `REJECTED_OUT_OF_BOUNDS`     | User outside geofence radius.                                                                                                                          |
+| `REJECTED_INACTIVE_GEOFENCE` | Geofence missing or inactive, or campaign ineligible.                                                                                                  |
 
 ---
 
@@ -225,17 +245,19 @@ Key tables already defined in the SpottGeo schema:
 
 Current baseline:
 
-- GPS accuracy threshold.
+- GPS accuracy threshold (< 50m).
 - Distance-based geofence check.
 - Velocity check against previous pings.
 - 24-hour duplicate window.
-- Schema validation.
+- Schema validation via Zod.
 
 Planned fraud layers:
 
+- **Hardware Attestation Layer:** Integration with Google Play Integrity API (Android) and DeviceCheck / App Attest (iOS) to reject rooted/jailbroken devices running fake GPS injectors.
+- **Time-varying Dynamic HMAC Signed QR Code Validation:** Time-varying dynamic QR code validation (`expires_at`, `nonce`, `hmac`) for digital displays to eliminate screenshot sharing and remote fraud.
 - Device fingerprinting and reputation scoring.
 - IP geolocation comparison.
-- Rate limiting per device and IP.
+- Rate limiting per device (5 req/60s), IP (100 req/60s), and tenant API key.
 - Behavioral anomaly detection (scan bursts, device farms).
 - Machine-learning-based risk scoring.
 
@@ -248,10 +270,10 @@ See `docs/strategy/fraud_detection_roadmap.md` for the full plan.
 When a verified event has a reward:
 
 1. Determine reward amount, currency, and provider from geofence or campaign.
-2. Check budget caps.
+2. **Atomic Tenant Float Reservation & Allocation Lock:** Execute an **atomic check-and-lock transaction** (`SELECT ... FOR UPDATE` on tenant float balances or Redis transaction lock) against tenant float reserves and campaign allocation caps before queuing payout jobs to prevent double-spending.
 3. Queue a payout job.
 4. Worker processes payout via VTpass, Paystack, bank transfer, or voucher provider.
-5. Update `verifications.payout_status` and `user_wallets`.
+5. Update `verifications.payout_status`, `campaigns.total_budget_spent`, and `user_wallets`.
 6. Emit webhook events.
 
 Payout statuses:
@@ -266,14 +288,14 @@ Payout statuses:
 
 ## 8. Performance and Scalability Requirements
 
-| Metric                               | Target                                    |
-| ------------------------------------ | ----------------------------------------- |
-| Median verification latency          | < 200ms at p50                            |
-| p99 verification latency             | < 1 second                                |
-| Throughput                           | ≥ 1,000 verifications/second per instance |
-| Availability                         | 99.9% uptime                              |
-| Database query time per verification | < 50ms                                    |
-| Offline sync tolerance               | Hours to days with eventual consistency   |
+| Metric                               | Target                                                                                                    |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Median verification latency          | < 200ms at p50                                                                                            |
+| p99 verification latency             | < 1 second                                                                                                |
+| Throughput                           | ≥ 1,000 verifications/second per instance                                                                 |
+| Availability                         | 99.9% uptime                                                                                              |
+| Database query time per verification | < 50ms                                                                                                    |
+| Offline sync tolerance               | 24h window for standard campaigns, 15-minute window for Flash Drops with monotonic clock drift validation |
 
 **Scaling strategy:**
 
