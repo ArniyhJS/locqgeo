@@ -37,19 +37,19 @@ spottgeo-monorepo/
 
 ## Tech Stack
 
-| Layer         | Technology                                                |
-| ------------- | --------------------------------------------------------- |
-| Monorepo      | pnpm 11 workspaces, Turborepo 2                           |
-| Runtime       | Node.js 24 LTS                                            |
-| Frontend      | Next.js 16, React 19, Tailwind CSS 4                      |
-| API           | Fastify 5                                                 |
-| ORM           | Drizzle ORM 0.45 + drizzle-kit                            |
-| Validation    | Zod 4                                                     |
-| Database      | PostgreSQL 16 + PostGIS 3.4                               |
-| Cache / Queue | Redis 7 (feature gate caching & atomic budget checks)     |
-| Testing       | Vitest 4                                                  |
-| CI/CD         | GitHub Actions (`.github/workflows/ci.yml`)              |
-| Infrastructure| Docker Compose v2 (`postgis/postgis:16-3.4`, `redis:7-alpine`) |
+| Layer          | Technology                                                     |
+| -------------- | -------------------------------------------------------------- |
+| Monorepo       | pnpm 11 workspaces, Turborepo 2                                |
+| Runtime        | Node.js 24 LTS                                                 |
+| Frontend       | Next.js 16, React 19, Tailwind CSS 4                           |
+| API            | Fastify 5                                                      |
+| ORM            | Drizzle ORM 0.45 + drizzle-kit                                 |
+| Validation     | Zod 4                                                          |
+| Database       | PostgreSQL 16 + PostGIS 3.4                                    |
+| Cache / Queue  | Redis 7 (feature gate caching & atomic budget checks)          |
+| Testing        | Vitest 4                                                       |
+| CI/CD          | GitHub Actions (`.github/workflows/ci-cd.yml`)                 |
+| Infrastructure | Docker Compose v2 (`postgis/postgis:16-3.4`, `redis:7-alpine`) |
 
 ## Core Features
 
@@ -66,9 +66,18 @@ spottgeo-monorepo/
 - pnpm 11.17.0 (enabled via Corepack)
 - PostgreSQL 16 with `postgis` extension **or** Docker Compose v2
 
+### Environment Setup
+
+Set up your environment variables (e.g. in `.env` at root or export in your shell):
+
+```env
+DATABASE_URL="postgresql://spottgeo:spottgeopass@localhost:5433/spottgeo_dev"
+REDIS_URL="redis://localhost:6379"
+```
+
 ### Option A: Docker Compose (Recommended for Local Development)
 
-1. Start PostgreSQL (PostGIS 3.4) and Redis 7 containers:
+1. Start PostgreSQL (PostGIS 3.4 exposed on host port `5433`) and Redis 7 (port `6379`) containers:
 
    ```bash
    docker compose up -d
@@ -81,6 +90,7 @@ spottgeo-monorepo/
    ```
 
 The applications will be available at:
+
 - **SpottConsole**: `http://localhost:3000`
 - **SpottDrop**: `http://localhost:3001`
 - **SpottVerify**: `http://localhost:3002`
@@ -96,28 +106,45 @@ The applications will be available at:
 
 2. Start PostgreSQL and Redis, set `DATABASE_URL` and `REDIS_URL`.
 
-3. Seed database:
+3. Database setup:
 
    ```bash
-   pnpm --filter @spottgeo/database db:seed
+   pnpm run db:generate # Generate Drizzle schema migrations
+   pnpm run db:migrate  # Run database migrations
+   pnpm --filter @spottgeo/database db:seed # Seed initial features and demo data
    ```
 
 4. Start all apps and services in dev mode:
 
    ```bash
    pnpm run dev
+   # OR use Makefile
+   make dev
    ```
+
+### Targeted Application Dev Commands
+
+You can run individual applications or services independently:
+
+- `pnpm run dev:console` (or `make dev-console`) — SpottConsole B2B Dashboard (`:3000`)
+- `pnpm run dev:drop` (or `make dev-drop`) — SpottDrop Consumer PWA (`:3001`)
+- `pnpm run dev:verify` (or `make dev-verify`) — SpottVerify Attendance PWA (`:3002`)
+- `pnpm run dev:engine` (or `make dev-engine`) — SpottEngine Fastify API (`:8080`)
+- `pnpm run dev:payout-worker` (or `make dev-payout-worker`) — Payout Worker process
+- `pnpm run dev:webhook-dispatcher` (or `make dev-webhook-dispatcher`) — Webhook Dispatcher process
+- `pnpm run dev:analytics-worker` (or `make dev-analytics-worker`) — Telemetry Analytics Aggregator process
 
 ## Quality & CI/CD Workflow
 
 Root-level quality commands:
 
-- `pnpm run check-types` — Run type verification across all workspace packages.
-- `pnpm run test` — Run Vitest unit tests.
-- `pnpm run lint` — Run ESLint flat config checks.
-- `pnpm run build` — Build all packages and apps via Turborepo.
+- `pnpm run check-types` (`make check-types`) — Run type verification across all workspace packages.
+- `pnpm run test` (`make test`) — Run Vitest unit tests.
+- `pnpm run lint` (`make lint`) — Run ESLint flat config checks.
+- `pnpm run build` (`make build`) — Build all packages and apps via Turborepo.
+- `make help` — Display all available Makefile targets.
 
-A GitHub Actions workflow (`.github/workflows/ci.yml`) automatically executes `check-types` and `test` on every push and pull request to `main`.
+A GitHub Actions workflow ([`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml)) automatically executes `check-types`, `lint`, `test`, `build`, database migrations, and production deployments on pushes to `main`.
 
 ## Documentation
 
