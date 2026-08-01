@@ -1,6 +1,6 @@
 # SpottGeo
 
-SpottGeo is a **proof-of-presence platform** that lets businesses verify that a real person was physically at a real location — and then reward, audit, or trigger workflows from that verification. It is built as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**.
+SpottGeo is a **proof-of-presence platform** that lets businesses verify that a real person was physically at a real location — and then reward, audit, or trigger workflows from that verification. It is built as a **Unified Monorepo** managed with **pnpm workspaces** and **Turborepo**.
 
 Our vision is to make physical-world presence measurable, rewardable, and trustworthy for any business that cares about real-world engagement.
 
@@ -10,7 +10,7 @@ The SpottGeo platform is composed of four core products:
 
 - **SpottConsole**: The enterprise control plane for B2B operators. Campaign managers, operations teams, and developers use it to configure geofences, launch reward campaigns, manage progressive user identities, top-up wallets, manage subscriptions, grant feature overrides, and inspect real-time fraud telemetry.
 - **SpottDrop**: A reward-first consumer Progressive Web App (PWA) with Cyber-Gamified Dark Mode, dynamic flame streak counters, active multiplier dials, squad quest progress cards, 3D gift box mystery drops, and referral rewards.
-- **SpottVerify**: A standalone mobile verification PWA featuring a 3D circular GPS radar scanner (`RadarScanner.tsx`), floating signal telemetry header, instant feedback drawer, and verification history timeline.
+- **SpottVerify**: A standalone mobile verification PWA featuring a 3D circular GPS radar scanner, floating signal telemetry header, instant feedback drawer, and verification history timeline.
 - **SpottEngine**: The core Node.js + Fastify API and verification engine. Validates presence claims, enforces campaign budget limits via atomic Redis-Lua scripts, executes the 3-tier Anti-Cheat AI scoring pipeline, streams real-time SSE telemetry, and handles signed payment webhooks.
 
 ## Repository Layout
@@ -30,8 +30,8 @@ spottgeo-monorepo/
 │   ├── database/         # PostgreSQL + PostGIS client, Drizzle ORM schemas & seed script
 │   ├── feature-gate/     # Cache-backed feature resolver and gating checker
 │   ├── sdk/              # Client-side developer SDK (@spottgeo/sdk)
-│   ├── api-contracts/    # Shared Zod v4 schemas and TypeScript types
-│   └── config/           # Shared tsconfig, ESLint 9, and Prettier configs
+│   ├── api-contracts/    # Shared Zod v4 schemas and type definitions
+│   └── config/           # Shared compiler, ESLint 9, and Prettier configs
 └── docs/                 # PRDs, architecture, strategy, vertical guides, specs, and plans
 ```
 
@@ -41,7 +41,7 @@ spottgeo-monorepo/
 | ------------- | --------------------------------------------------------- |
 | Monorepo      | pnpm 11 workspaces, Turborepo 2                           |
 | Runtime       | Node.js 24 LTS                                            |
-| Language      | TypeScript 5.9 (ES2022, `NodeNext` module resolution)     |
+| Language      | JavaScript / ES2022                                       |
 | Frontend      | Next.js 16, React 19, Tailwind CSS 4                      |
 | API           | Fastify 5                                                 |
 | ORM           | Drizzle ORM 0.45 + drizzle-kit                            |
@@ -56,9 +56,9 @@ spottgeo-monorepo/
 
 ### Applications (Client Layer)
 
-- **`apps/console`**: SpottConsole dashboard. Uses Next.js App Router, React Server Actions (`billing.ts`, `fraud.ts`, `feature-overrides.ts`), real-time SSE telemetry hook (`useTelemetryStream`), and Recharts analytics.
-- **`apps/drop`**: SpottDrop consumer PWA. Includes Cyber-Gamified Dark Mode, streak hero flame counter (`StreakHero.tsx`), squad quest progress cards (`SquadQuestCard.tsx`), and 3D mystery drop unboxing modal (`MysteryDropModal.tsx`).
-- **`apps/verify`**: SpottVerify consumer PWA. Features 3D circular GPS radar scanner (`RadarScanner.tsx`), floating signal telemetry header, instant feedback drawer (`VerificationFeedbackDrawer.tsx`), and verification history timeline (`VerificationHistory.tsx`).
+- **`apps/console`**: SpottConsole dashboard. Uses Next.js App Router, React Server Actions, real-time SSE telemetry hook (`useTelemetryStream`), and Recharts analytics.
+- **`apps/drop`**: SpottDrop consumer PWA. Includes Cyber-Gamified Dark Mode, streak hero flame counter, squad quest progress cards, and 3D mystery drop unboxing modal.
+- **`apps/verify`**: SpottVerify consumer PWA. Features 3D circular GPS radar scanner, floating signal telemetry header, instant feedback drawer, and verification history timeline.
 
 ### Services (API & Worker Layer)
 
@@ -73,7 +73,7 @@ spottgeo-monorepo/
 - **`packages/feature-gate`**: Cache-backed feature resolver and checker providing `hasFeature()`, `getFeatureLimit()`, `resolveAllFeatures()`, and `invalidateFeatureCache()` with 5-minute Redis TTL caching.
 - **`packages/sdk`**: Developer client library (`@spottgeo/sdk`) for integrating location presence verification into 3rd-party apps via `SpottGeoClient`.
 - **`packages/api-contracts`**: Shared Zod v4 request/response schemas ensuring zero type drift between backend routes and frontend components.
-- **`packages/config`**: Shared `tsconfig.base.json`, ESLint 9 flat config, and Prettier config.
+- **`packages/config`**: Shared build configuration, ESLint 9 flat config, and Prettier config.
 
 ## Core Feature Modules
 
@@ -160,7 +160,7 @@ The console will be available at `http://localhost:3000`, SpottDrop at `http://l
 
 Root-level quality commands:
 
-- `pnpm run check-types` — Run `tsc --noEmit` across all 13 workspace packages.
+- `pnpm run check-types` — Run type verification across all 13 workspace packages.
 - `pnpm run test` — Run Vitest unit tests (140+ tests across 29 test files).
 - `pnpm run lint` — Run ESLint flat config checks.
 - `pnpm run build` — Build all packages and apps via Turborepo.
