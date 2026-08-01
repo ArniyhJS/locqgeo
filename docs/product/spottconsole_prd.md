@@ -194,29 +194,30 @@ SpottConsole sits between:
 
 ### 3.6 Reward & Payout Operations
 
-**Purpose:** Control how rewards are funded, queued, and disbursed.
+**Purpose:** Control how rewards are funded, queued, and disbursed across tenants and campaigns with strict financial float isolation and reservation caps.
 
 **User Stories:**
 
-- As a Finance Manager, I want to see total prefunded reward balance.
-- As an Operations Manager, I want to retry a failed payout.
-- As a Campaign Manager, I want to see how much of my campaign budget has been spent.
-- As a Finance Manager, I want to reconcile payouts by provider.
+- As a Finance Manager, I want to view and top up the pre-funded Tenant Float balance.
+- As a Campaign Manager, I want campaign budget caps to act as reservation limits against the tenant float without risking float overdraws.
+- As an Operations Manager, I want to monitor payout status and manually retry failed payout jobs.
+- As a Finance Manager, I want to reconcile payouts by provider and inspect budget burn rates across active campaigns.
 
 **Features:**
 
-- Reward float / wallet dashboard
-- Payout queue status: pending, processing, completed, failed
-- Provider configuration: VTpass, Paystack, bank transfer, voucher codes
-- Retry failed payouts
-- Payout logs with reference IDs, timestamps, failure reasons
-- Budget burn chart per campaign
+- **Tenant Float Management:** Centralized pre-funded float pool held at the Tenant level in `tenant_floats` / `user_wallets`.
+- **Atomic Budget Reservation:** Real-time budget deduction using database atomic transaction locks (`SELECT ... FOR UPDATE`) or Redis transactions before queuing any payout job. Individual campaign budgets serve as reservation caps against the tenant float.
+- **Payout Queue & Telemetry:** Status tracking for payout jobs (pending, processing, completed, failed) with provider-specific references.
+- **Provider Configuration:** Integration management for payout rails (VTpass, Paystack, bank transfers, digital voucher codes).
+- **Manual Retry & Reconciliations:** Single-click manual retry for failed payouts and downloadable transaction logs with error details.
+- **Budget Burn Chart:** Visual tracking of campaign budget cap allocation vs. total tenant float consumption.
 
 **Acceptance Criteria:**
 
-- Payout status updates within 60 seconds of provider response.
+- All reward disbursements deduct directly from the Tenant Float (`tenant_floats`) using atomic transaction locks (`SELECT ... FOR UPDATE`).
+- If tenant float or campaign reservation cap is insufficient, reward allocation fails synchronously with `INSUFFICIENT_FLOAT` or `BUDGET_EXCEEDED` before queuing.
+- Payout status updates within 60 seconds of receiving webhook responses from payment providers.
 - Failed payouts can be retried manually from the UI.
-- Campaign budget caps are enforced before payouts are queued.
 
 ---
 
@@ -249,28 +250,28 @@ SpottConsole sits between:
 
 ### 3.8 API Keys & Developer integrations
 
-**Purpose:** Allow external developers and systems to integrate with SpottEngine securely.
+**Purpose:** Allow external developers and systems to integrate with SpottEngine securely, manage event subscriptions, and monitor webhook delivery health.
 
 **User Stories:**
 
-- As a Developer, I want to generate API keys for staging and production.
-- As a Developer, I want to rotate or revoke an API key.
-- As a Developer, I want to configure webhooks for verification events.
+- As a Developer, I want to generate API keys for staging and production environments.
+- As a Developer, I want to rotate or revoke an API key instantly.
+- As a Developer, I want to configure webhooks for verification and reward events with customizable retry policies.
+- As a Developer, I want a Webhook Dead-Letter Queue (DLQ) UI to inspect, debug, and manually replay failed payload deliveries.
 
 **Features:**
 
-- API key creation with label and environment
-- Key prefix visibility, full key shown only once
-- Revocation and rotation
-- Webhook endpoint configuration
-- Webhook event selection: verification.created, reward.queued, reward.completed, reward.failed, fraud.flagged
-- Webhook retry and delivery logs
+- **API Key Lifecycle Management:** Key creation with labels, environment tagging (staging/production), prefix display, and instant key revocation/rotation.
+- **Webhook Subscriptions:** Configurable endpoints for events (`verification.created`, `reward.queued`, `reward.completed`, `reward.failed`, `fraud.flagged`).
+- **Retry Logs & Backoff Configuration:** Real-time delivery logs, latency metrics, and exponential backoff retry schedules (up to 5 automatic retry attempts).
+- **Dead-Letter Queue (DLQ) UI:** Inspection panel for exhausted/failed webhook payloads showing raw JSON payload, response HTTP status, error stack trace, and manual redelivery/replay buttons.
 
 **Acceptance Criteria:**
 
-- API keys are hashed before storage.
-- Revoked keys are rejected immediately.
-- Webhooks retry failed deliveries up to 5 times with exponential backoff.
+- API keys are securely hashed (e.g. SHA-256) before database storage; full keys are shown only once upon creation.
+- Revoked keys are invalidated and rejected immediately across all engine endpoints.
+- Webhook delivery attempts use exponential backoff (e.g., 1s, 5s, 25s, 125s, 625s) for up to 5 retries.
+- Undeliverable payloads exceeding max retries are automatically routed to the Webhook Dead-Letter Queue (DLQ) for inspection and manual re-triggering.
 
 ---
 
@@ -317,10 +318,12 @@ SpottConsole sits between:
 ## 5. Open Questions
 
 1. Should campaigns support squads/teams, or only individual leaderboards?
-2. Should payout float be managed at tenant level or campaign level?
+2. **[RESOLVED]** Should payout float be managed at tenant level or campaign level?
+   - **Resolution:** Managed strictly at the Tenant level in `tenant_floats`. Individual campaign budgets act as reservation caps against the pre-funded tenant float, enforced via atomic transaction locks (`SELECT ... FOR UPDATE`).
 3. Should the console white-label per client (for agencies) or only per tenant?
 4. Which OAuth providers will be supported for tenant user login? (Email, Google, SSO?)
-5. Should audit logs be stored in PostgreSQL or shipped to an immutable store?
+5. **[RESOLVED]** Should audit logs be stored in PostgreSQL or shipped to an immutable store?
+   - **Resolution:** Stored in PostgreSQL with append-only application constraints and immutable archival option (e.g., S3 Glacier / WORM store) for long-term audit compliance.
 
 ---
 
@@ -347,8 +350,8 @@ SpottConsole sits between:
 - Enforced RBAC on server actions
 - Full audit log UI
 - Payout operations dashboard
-- Reward float management
-- Webhook management
+- Tenant Float management (`tenant_floats` & budget reservation caps)
+- Webhook management & Dead-Letter Queue (DLQ) UI
 
 ### Phase 4 — Scale & Ecosystem
 
