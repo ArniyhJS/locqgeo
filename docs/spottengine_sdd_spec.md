@@ -385,3 +385,15 @@ FOR UPDATE;
 | `/api/v1/engine/telemetry/stream` | `GET` | SSE (`text/event-stream`) | Real-time broadcast stream emitting presence verification telemetry frames (`VERIFIED`, `VERIFIED_FLAGGED`, `REJECTED_SPOOF`) to SpottConsole |
 | `/docs/json` | `GET` | None (Public Developer Spec) | Exposes OpenAPI 3.0.3 JSON schema definition for 3rd-party `@spottgeo/sdk` consumers |
 
+---
+
+## 8. Related Documents
+
+- [SpottGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_sdd_spec.md)
+- [SpottEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md)
+- [SpottConsole Enterprise Dashboard SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md)
+- [SpottDrop Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottdrop_sdd_spec.md)
+- [SpottVerify Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md)
+- [SpottGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_frd.md)
+
+

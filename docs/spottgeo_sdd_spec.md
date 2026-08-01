@@ -72,3 +72,15 @@ If `balance_ngn - reserved_ngn < reward_amount`, the claim transaction is aborte
 - **Flutterwave**: Secondary provider fallback if primary payout provider fails.
 - **User Wallet Credit (`user_wallets`)**: Internal fallback credit to user balance if all external payout channels fail.
 
+---
+
+## 5. Related Documents
+
+- [SpottGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_sdd_spec.md)
+- [SpottEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md)
+- [SpottConsole Enterprise Dashboard SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md)
+- [SpottDrop Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottdrop_sdd_spec.md)
+- [SpottVerify Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md)
+- [SpottGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_frd.md)
+
+
