@@ -391,4 +391,15 @@ SpottConsole sits between:
 
 ---
 
+## 9. Related Documents
+
+- `docs/product/spottdrop_prd.md`
+- `docs/product/spottengine_prd.md`
+- `docs/product/spottverify_prd.md`
+- `docs/strategy/fraud_detection_roadmap.md`
+- `docs/architecture/system_architecture.md`
+
+---
+
 _This PRD should be reviewed quarterly and updated as SpottConsole moves through each roadmap phase._
+

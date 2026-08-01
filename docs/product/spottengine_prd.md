@@ -140,7 +140,7 @@ The central presence-verification endpoint.
 1. Input schema validation (Zod).
 2. Rate limiting check (Device: max 5 req/60s, IP: max 100 req/60s, Tenant key tier limit). Reject with `REJECTED_RATE_LIMIT`.
 3. Offline timestamp and clock integrity check (`scanned_at` vs `received_at` drift check, monotonic clock delta check). Reject with `REJECTED_SPOOF`.
-4. Hardware attestation & dynamic QR payload check (Google Play Integrity / iOS App Attest, time-varying HMAC validation). Reject with `REJECTED_SPOOF`.
+4. Hardware attestation & dynamic QR payload check (Google Play Integrity / iOS App Attest, time-varying HMAC validation, 60-second expiration check). Reject with `REJECTED_SPOOF` or `REJECTED_EXPIRED_PAYLOAD`.
 5. GPS accuracy check: reject if accuracy > 50m (`REJECTED_ACCURACY`).
 6. Geofence existence and active status check (`REJECTED_INACTIVE_GEOFENCE`).
 7. Campaign eligibility check (if `campaign_id` provided).
@@ -235,6 +235,7 @@ Key tables already defined in the SpottGeo schema:
 | `REJECTED_DUPLICATE`         | Already verified here in the last 24 hours.                                                                                                            |
 | `REJECTED_VELOCITY`          | Impossible travel speed calculated from delta.                                                                                                         |
 | `REJECTED_SPOOF`             | Detected location spoofing, timing manipulation/clock drift, hardware attestation failure (rooted device), or dynamic HMAC signature validation failure. |
+| `REJECTED_EXPIRED_PAYLOAD`   | Dynamic HMAC QR payload timestamp is older than the strict 60-second expiration window relative to server time upon receipt.                             |
 | `REJECTED_RATE_LIMIT`        | Exceeded rate limit threshold (max 5 req/60s per device_id, max 100 req/60s per IP, or tenant API key rate limit).                                    |
 | `REJECTED_OUT_OF_BOUNDS`     | User outside geofence radius.                                                                                                                          |
 | `REJECTED_INACTIVE_GEOFENCE` | Geofence missing or inactive, or campaign ineligible.                                                                                                  |
@@ -270,7 +271,7 @@ See `docs/strategy/fraud_detection_roadmap.md` for the full plan.
 When a verified event has a reward:
 
 1. Determine reward amount, currency, and provider from geofence or campaign.
-2. **Atomic Tenant Float Reservation & Allocation Lock:** Execute an **atomic check-and-lock transaction** (`SELECT ... FOR UPDATE` on tenant float balances or Redis transaction lock) against tenant float reserves and campaign allocation caps before queuing payout jobs to prevent double-spending.
+2. **Atomic Tenant Float Reservation & Allocation Lock:** Execute an **atomic check-and-lock transaction** (`SELECT ... FOR UPDATE` on tenant float balances or Redis transaction lock) against tenant float reserves and campaign allocation caps before queuing payout jobs to prevent double-spending. If tenant float or campaign cap is insufficient, reward allocation fails synchronously with `INSUFFICIENT_FLOAT` or `BUDGET_EXCEEDED` before queuing.
 3. Queue a payout job.
 4. Worker processes payout via VTpass, Paystack, bank transfer, or voucher provider.
 5. Update `verifications.payout_status`, `campaigns.total_budget_spent`, and `user_wallets`.

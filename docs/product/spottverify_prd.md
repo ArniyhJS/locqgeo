@@ -181,6 +181,7 @@ SpottVerify is designed for contexts where **verification itself is the primary 
 - **Deep linking**: allow QR scanning from external camera app via URL scheme.
 - **Push notifications**: optional alerts for verification success or identity required.
 - **Accessibility**: simple, high-contrast UI for diverse users.
+- **Offline Sync & Clock Integrity**: Offline check-ins record client `scanned_at` timestamps alongside monotonic clock deltas, validated by SpottEngine against server `received_at` within 24-hour standard (or 15-minute Flash Drop) sync windows.
 
 ---
 
@@ -288,6 +289,7 @@ https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
 ## 10. Related Documents
 
 - `docs/product/spottdrop_prd.md`
+- `docs/product/spottengine_prd.md`
 - `docs/product/spottconsole_prd.md`
 - `docs/strategy/fraud_detection_roadmap.md`
 - `docs/verticals/index.md`

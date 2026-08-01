@@ -177,7 +177,7 @@ SpottDrop serves as the **consumer-facing distribution channel** that makes phys
 - **Secure storage**: device_id stored in a way that is hard to reset intentionally.
 - **Background sync**: use service worker background sync where supported.
 - **Push notifications**: optional, for campaign alerts and reward confirmations.
-- **Offline Streak Preservation**: Offline verifications store client `scanned_at` timestamps alongside monotonic clock deltas. Scans synced within 24 hours of `scanned_at` preserve daily loyalty streaks and reward progress once validated by SpottEngine.
+- **Offline Streak Preservation**: Offline verifications store client `scanned_at` timestamps alongside monotonic clock deltas. Standard campaign scans synced within 24 hours of `scanned_at` (or within 15 minutes for time-limited Flash Drops) preserve daily loyalty streaks and reward progress once validated by SpottEngine.
 - **Cross-PWA Deep-Link & Payload Handling**: When a user scans a QR payload from SpottVerify within SpottDrop, SpottDrop parses the payload signature. It seamlessly extracts the underlying `geofence_id` to process the scan locally or executes a smooth deep-link redirect to SpottVerify without displaying syntax or execution errors.
 
 ---
@@ -256,6 +256,7 @@ Users should never pay to scan or earn.
 ## 10. Related Documents
 
 - `docs/product/spottconsole_prd.md`
+- `docs/product/spottengine_prd.md`
 - `docs/product/spottverify_prd.md`
 - `docs/strategy/fraud_detection_roadmap.md`
 - `docs/strategy/competitive_landscape.md`
