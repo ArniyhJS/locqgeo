@@ -2,9 +2,13 @@
 
 ## 1. Overview
 
-**SpottVerify** is the proof-of-presence verifier consumer Progressive Web App (PWA) for the SpottGeo platform. It allows users to scan QR codes at physical locations to prove attendance, check-in, audit completion, or access authorization — with or without an associated reward campaign.
+**SpottVerify** is the **Utility Check-in & Credential Verifier** Progressive Web App (PWA) for the SpottGeo platform. It allows users to scan QR codes at physical locations to prove attendance, workforce check-in, CPE credits, site inspections, audit completion, or access authorization — with or without an associated reward campaign.
 
-SpottVerify is designed for contexts where **verification itself is the value**: events, classes, workforce check-ins, inspections, access control, and attendance tracking.
+SpottVerify is designed for contexts where **verification itself is the primary value**: high-throughput event attendance, enterprise workforce check-ins, compliance inspections, continuing education (CPE/CEU) credit issuance, and secure access control.
+
+> **Ecosystem Positioning & Sister App Relationship**  
+> While **SpottDrop** serves as the *Consumer Rewards & Gamification Portal* (billboard drops, ad campaigns, loyalty punch cards, instant cash/airtime payouts), **SpottVerify** is strictly optimized as the *Utility Check-in & Credential Verifier*.  
+> **Cross-PWA Deep-Linking:** If a SpottVerify QR code is scanned inside SpottDrop (or vice-versa), the PWA intelligently parses the payload header/format and offers a seamless deep-link redirect to SpottVerify or processes the underlying `geofence_id` directly without throwing format errors.
 
 ### 1.1 Product Vision
 
@@ -140,7 +144,7 @@ SpottVerify is designed for contexts where **verification itself is the value**:
 
 | Feature             | Description                                                            | Priority |
 | ------------------- | ---------------------------------------------------------------------- | -------- |
-| Organizer scanner   | Allow authorized staff to scan attendee QR codes instead of self-scan. | Medium   |
+| Organizer scanner   | Allow authorized staff to scan attendee QR codes instead of self-scan. | High     |
 | Bulk check-in       | Verify a list of registered attendees at once.                         | Low      |
 | Attendee search     | Find a user by name or ticket ID.                                      | Low      |
 | Real-time headcount | Live count of verified attendees.                                      | Medium   |
@@ -182,9 +186,11 @@ SpottVerify is designed for contexts where **verification itself is the value**:
 
 ## 6. Verification Payloads
 
-SpottVerify should support multiple QR payload formats:
+SpottVerify supports multiple QR payload formats depending on physical deployment medium (static posters vs. dynamic digital screens):
 
-### JSON payload (recommended for campaigns)
+### 6.1 Static Poster Payload (Recommended for physical print / campaigns)
+
+Used for printed posters, billboards, and permanent physical markers. Relies on client-side GPS geofence checks and server-side verification to prevent remote spoofing.
 
 ```json
 {
@@ -194,13 +200,29 @@ SpottVerify should support multiple QR payload formats:
 }
 ```
 
-### Raw geofence UUID (for standalone events)
+### 6.2 Dynamic HMAC Signed QR Payload (Recommended for digital displays & kiosks)
+
+Used for dynamic screens, digital signage, TV monitors, or organizer tablets at check-in gates. To eliminate photo re-sharing and remote scanning fraud, dynamic screens refresh their displayed QR code periodically with an HMAC signature.
+
+```json
+{
+  "geofence_id": "uuid",
+  "timestamp": 1785500000,
+  "nonce": "a8fbc302",
+  "hmac": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
+```
+
+- **HMAC Signature:** Generated using `HMAC-SHA256(geofence_id + ":" + timestamp + ":" + nonce, tenant_secret)`.
+- **Anti-Replay Expiration Window:** Dynamic payloads carry a strict **60-second expiration window**. If `timestamp` is older than 60 seconds relative to server time upon receipt, SpottEngine rejects the check-in attempt with `REJECTED_EXPIRED_PAYLOAD`.
+
+### 6.3 Raw Geofence UUID (For standalone events)
 
 ```text
 a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
 ```
 
-### URL payload (for marketing / deep links)
+### 6.4 URL Payload (For marketing / deep links / cross-PWA routing)
 
 ```text
 https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
@@ -241,12 +263,12 @@ https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
 - Verification history
 - Offline queue and sync
 
-### Phase 2 — Identity & Credentials
+### Phase 2 — Identity & Credentials & Gate Throughput
 
 - Phone/email linking
+- Organizer Scanner Mode (primary feature for high-throughput event gate check-in)
 - Verification export / share
 - Digital attendance badges
-- Organizer scanner mode
 
 ### Phase 3 — Scale
 
