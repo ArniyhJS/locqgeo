@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { ThemeProvider } from "../components/theme/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "LocqConsole | Enterprise Presence Management Console",
@@ -12,9 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className="min-h-screen bg-[#0b0c0e] text-gray-100 antialiased"
+        className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] antialiased transition-colors duration-150"
       >
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
