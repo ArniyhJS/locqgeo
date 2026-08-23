@@ -1,5 +1,8 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+
 interface NodeItem {
   id: string;
   title: string;
@@ -20,44 +23,46 @@ export function NodeDetailsSheet({ node, onClose, onScanClick }: NodeDetailsShee
   if (!node) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end justify-center p-4">
-      <div className="w-full max-w-md glass-card p-6 rounded-3xl space-y-6 border border-emerald-500/30 shadow-2xl animate-in slide-in-from-bottom">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end justify-center p-4">
+      <div className="w-full max-w-md bg-[var(--bg-surface)] p-6 rounded-3xl space-y-6 border border-emerald-500/30 shadow-2xl animate-in slide-in-from-bottom">
         <div className="flex items-center justify-between">
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-extrabold tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+          <Badge variant="success">
             {node.rewardType} DROP
-          </span>
+          </Badge>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white text-xs font-bold px-2 py-1"
+            className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-bold px-2 py-1"
           >
             ✕ Close
           </button>
         </div>
 
         <div className="space-y-1">
-          <h3 className="text-xl font-extrabold text-white leading-snug">{node.title}</h3>
-          <p className="text-xs text-gray-400">
+          <h3 className="text-xl font-extrabold text-[var(--text-primary)] leading-snug">{node.title}</h3>
+          <p className="text-xs text-[var(--text-secondary)]">
             Coordinates: {node.lat.toFixed(4)}°, {node.lng.toFixed(4)}°
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-gray-900/60 border border-gray-800">
+        <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)]">
           <div>
-            <span className="text-[10px] text-gray-400 uppercase font-semibold">Reward Amount</span>
-            <div className="text-lg font-black text-emerald-400">₦ {node.rewardAmount}</div>
+            <span className="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Reward Amount</span>
+            <div className="text-lg font-black text-emerald-600 dark:text-emerald-400">₦ {node.rewardAmount}</div>
           </div>
           <div>
-            <span className="text-[10px] text-gray-400 uppercase font-semibold">Proximity</span>
-            <div className="text-lg font-black text-cyan-400">~{node.distanceMeters}m</div>
+            <span className="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Proximity</span>
+            <div className="text-lg font-black text-indigo-600 dark:text-indigo-400">~{node.distanceMeters}m</div>
           </div>
         </div>
 
-        <button
+        <Button
           onClick={() => onScanClick(node.id)}
-          className="w-full glass-button py-3.5 rounded-2xl font-bold text-sm text-white shadow-xl shadow-emerald-500/20 cursor-pointer"
+          variant="default"
+          size="lg"
+          className="w-full py-3.5 text-sm font-bold shadow-lg shadow-emerald-500/20"
         >
           📷 Scan Billboard QR & Claim Reward
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export interface SquadMemberItem {
   id: string;
@@ -33,15 +35,15 @@ export function SquadQuestCard({
   const percentage = Math.min(100, Math.round((currentCheckins / targetCheckins) * 100));
 
   return (
-    <div className="glass-card p-6 space-y-6 text-white relative overflow-hidden">
+    <Card className="p-6 space-y-6 relative overflow-hidden border-indigo-500/30">
       {/* Cyber-glass squad banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#00F2FE]/20 text-[#00F2FE] border border-[#00F2FE]/30">
+          <Badge variant="default">
             ⚡ Squad Quest
-          </div>
-          <h3 className="text-xl font-bold tracking-tight">{squadName}</h3>
-          <p className="text-xs text-gray-400">Collaborative geofence check-in quest</p>
+          </Badge>
+          <h3 className="text-xl font-bold tracking-tight text-[var(--text-primary)]">{squadName}</h3>
+          <p className="text-xs text-[var(--text-secondary)]">Collaborative geofence check-in quest</p>
         </div>
 
         {/* Member Avatars Stack */}
@@ -49,7 +51,7 @@ export function SquadQuestCard({
           {members.map((m) => (
             <div
               key={m.id}
-              className="inline-block h-8 w-8 rounded-full ring-2 ring-[#0A0D14] bg-gradient-to-tr from-[#00F2FE] to-[#4FACFE] text-[#0A0D14] font-black text-xs flex items-center justify-center shadow-md"
+              className="inline-block h-8 w-8 rounded-full ring-2 ring-[var(--bg-surface)] bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-black text-xs flex items-center justify-center shadow-md"
               title={m.name}
             >
               {m.name.charAt(0).toUpperCase()}
@@ -61,26 +63,26 @@ export function SquadQuestCard({
       {/* Animated Milestone Progress Bar */}
       <div className="space-y-2">
         <div className="flex justify-between items-center text-xs">
-          <span className="font-semibold text-gray-300">Squad Quest Milestone</span>
-          <span className="font-mono font-bold text-[#FF9F43]">
+          <span className="font-semibold text-[var(--text-secondary)]">Squad Quest Milestone</span>
+          <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
             {`${currentCheckins}/${targetCheckins} Geofence Check-ins`}
           </span>
         </div>
 
-        <div className="w-full bg-white/10 rounded-full h-3.5 overflow-hidden p-0.5 border border-white/10">
+        <div className="w-full bg-[var(--bg-surface-elevated)] rounded-full h-3.5 overflow-hidden p-0.5 border border-[var(--border-subtle)]">
           <div
-            className="h-full rounded-full animate-shimmer transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-violet-500 transition-all duration-500"
             style={{ width: `${percentage}%` }}
           />
         </div>
-        <p className="text-[11px] text-gray-400 text-right font-mono">
+        <p className="text-[11px] text-[var(--text-muted)] text-right font-mono">
           {`${percentage}% Complete`}
         </p>
       </div>
 
       {/* Ranked Squad Contributor Leaderboard */}
       <div className="space-y-3 pt-2">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
           Top Contributors Leaderboard
         </h4>
 
@@ -88,21 +90,21 @@ export function SquadQuestCard({
           {members.map((member) => (
             <div
               key={member.id}
-              className="flex items-center justify-between p-3 rounded-xl glass-card hover:bg-white/5 transition-colors text-xs"
+              className="flex items-center justify-between p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] hover:bg-[var(--border-subtle)] transition-colors text-xs"
             >
               <div className="flex items-center gap-3">
-                <span className={`w-5 font-mono font-bold text-center ${member.rank === 1 ? "text-[#FF9F43]" : member.rank === 2 ? "text-gray-300" : "text-gray-500"}`}>
+                <span className={`w-5 font-mono font-bold text-center ${member.rank === 1 ? "text-amber-500" : member.rank === 2 ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}`}>
                   {`#${member.rank}`}
                 </span>
-                <div className="font-semibold text-white">{member.name}</div>
+                <div className="font-semibold text-[var(--text-primary)]">{member.name}</div>
               </div>
-              <div className="font-mono font-bold text-[#00F2FE]">
+              <div className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
                 {`${member.checkins} check-ins`}
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

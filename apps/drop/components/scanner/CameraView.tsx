@@ -46,16 +46,16 @@ export function CameraView({ onScanSuccess }: CameraViewProps) {
   }, [onScanSuccess]);
 
   return (
-    <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-[#ff6b00]/60 shadow-2xl bg-black flex items-center justify-center">
+    <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-indigo-500/60 shadow-2xl bg-black flex items-center justify-center">
       {error ? (
         <div className="p-6 text-center text-xs text-rose-400 font-medium">⚠️ {error}</div>
       ) : (
         <>
           <video ref={videoRef} className="w-full h-full object-cover" />
           {/* Animated Overlay Reticle */}
-          <div className="absolute inset-0 border-4 border-dashed border-[#ff6b00]/70 rounded-3xl pointer-events-none animate-pulse" />
+          <div className="absolute inset-0 border-4 border-dashed border-indigo-500/70 rounded-3xl pointer-events-none animate-pulse" />
           <div className="absolute top-4 left-4 right-4 text-center">
-            <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#0b0c0e]/80 text-[#ff6b00] border border-[#ff6b00]/30 backdrop-blur-md">
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-black/70 text-white border border-white/20 backdrop-blur-md">
               Point Camera at Billboard QR
             </span>
           </div>

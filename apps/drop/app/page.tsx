@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useLocqScanner } from "@/hooks/useLocqScanner";
 import { AccuracyBadge } from "@/components/scanner/AccuracyBadge";
 import { RadarMap } from "@/components/radar/RadarMap";
 import { NodeDetailsSheet } from "@/components/radar/NodeDetailsSheet";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface NodeItem {
   id: string;
@@ -27,34 +31,36 @@ export default function RadarPage() {
   return (
     <div className="space-y-5">
       {/* Hero Welcome & GPS Banner */}
-      <div className="p5 glass-card rounded-2xl p-4 border border-[#ff6b00]/30 bg-gradient-to-b from-[#ff6b00]/10 to-transparent relative overflow-hidden">
+      <Card className="border-indigo-500/30 bg-indigo-500/5 dark:bg-indigo-500/10 relative overflow-hidden">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#ff6b00]/20 text-[#ff6b00] border border-[#ff6b00]/30">
+            <Badge variant="default">
               📍 Proof of Spatial Presence
-            </span>
-            <h1 className="text-xl font-black text-white tracking-tight">Nearby Drops Radar</h1>
-            <p className="text-xs text-gray-300">
+            </Badge>
+            <h1 className="text-xl font-black text-[var(--text-primary)] tracking-tight">Nearby Drops Radar</h1>
+            <p className="text-xs text-[var(--text-secondary)]">
               Walk into a geofence zone & scan the billboard code to unlock airtime & data rewards.
             </p>
           </div>
-          <button
+          <Button
             onClick={() => captureLocation()}
             disabled={isLocating}
-            className="p-2.5 rounded-xl bg-[#0b0c0e] border border-[#ff6b00]/40 text-xs font-bold text-[#ff6b00] hover:bg-[#ff6b00]/20 transition-all cursor-pointer disabled:opacity-50 shrink-0 shadow-lg shadow-[#ff6b00]/10"
+            variant="secondary"
+            size="sm"
+            className="shrink-0 font-bold"
             title="Refresh GPS"
           >
             {isLocating ? "Locating..." : "🔄 GPS"}
-          </button>
+          </Button>
         </div>
 
         <div className="mt-3 flex items-center gap-2">
           <AccuracyBadge accuracyMeters={currentLocation?.accuracy || null} />
         </div>
-      </div>
+      </Card>
 
       {gpsError && (
-        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center gap-2">
+        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-medium flex items-center gap-2">
           <span>⚠️</span>
           <span>{gpsError}</span>
         </div>
@@ -63,23 +69,48 @@ export default function RadarPage() {
       {/* Main Interactive Radar Map */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
             Live Spatial Map
           </h2>
-          <span className="text-[10px] font-semibold text-[#ff6b00]">Tap a node to inspect</span>
+          <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">Tap a node to inspect</span>
         </div>
         <RadarMap userLocation={currentLocation} onSelectNode={(node) => setSelectedNode(node)} />
       </div>
 
+      {/* Gamification shortcuts */}
+      <div className="grid grid-cols-2 gap-3 pt-1">
+        <Link href="/streaks">
+          <Card className="p-4 flex items-center gap-3 hover:border-indigo-500 transition-colors cursor-pointer" interactive>
+            <span className="text-2xl animate-flame-flicker">🔥</span>
+            <div>
+              <p className="text-xs font-bold text-[var(--text-primary)]">Daily Streaks</p>
+              <p className="text-[10px] text-[var(--text-muted)]">1.3x Multiplier Tier</p>
+            </div>
+          </Card>
+        </Link>
+        <Link href="/squads">
+          <Card className="p-4 flex items-center gap-3 hover:border-indigo-500 transition-colors cursor-pointer" interactive>
+            <span className="text-2xl">⚡</span>
+            <div>
+              <p className="text-xs font-bold text-[var(--text-primary)]">Squad Quests</p>
+              <p className="text-[10px] text-[var(--text-muted)]">85% Completed</p>
+            </div>
+          </Card>
+        </Link>
+      </div>
+
       {/* 1-Tap Camera Scan Action Button */}
       <div className="pt-1">
-        <a
-          href="/scan"
-          className="w-full glass-button py-4 rounded-2xl font-black text-sm text-[#0b0c0e] flex items-center justify-center gap-2 shadow-xl shadow-[#ff6b00]/30 transition-transform active:scale-95"
-        >
-          <span className="text-base">📷</span>
-          <span>Open Camera & Scan Billboard QR</span>
-        </a>
+        <Link href="/scan" className="block w-full">
+          <Button
+            variant="default"
+            size="lg"
+            className="w-full py-4 text-sm font-bold shadow-lg shadow-indigo-500/30 gap-2"
+          >
+            <span className="text-base">📷</span>
+            <span>Open Camera & Scan Billboard QR</span>
+          </Button>
+        </Link>
       </div>
 
       {/* Selected Drop Details Sheet */}

@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { StreakHero } from "@/components/StreakHero";
 import { MysteryDropModal } from "@/components/MysteryDropModal";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function StreaksPage() {
   const [isMysteryDropOpen, setIsMysteryDropOpen] = useState(false);
@@ -22,13 +24,13 @@ export default function StreaksPage() {
   });
 
   return (
-    <div className="p-6 max-w-md mx-auto min-h-screen space-y-6 text-white">
+    <div className="space-y-6 text-[var(--text-primary)]">
       {/* Page Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-black gradient-text-amber tracking-tight uppercase">
+        <h1 className="text-2xl font-black text-amber-500 dark:text-amber-400 tracking-tight uppercase">
           Daily Streak Dashboard
         </h1>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-[var(--text-secondary)]">
           Check in daily by completing verified physical claims to escalate your reward multiplier!
         </p>
       </div>
@@ -42,18 +44,20 @@ export default function StreaksPage() {
       />
 
       {/* Mystery Drop Trigger CTA */}
-      <div className="glass-card p-5 text-center space-y-3 border-[#FF9F43]/30">
-        <h3 className="font-bold text-sm text-[#FF9F43]">🎁 Unopened Mystery Drop Available</h3>
-        <p className="text-xs text-gray-400">
+      <Card className="p-5 text-center space-y-3 border-amber-500/30">
+        <h3 className="font-bold text-sm text-amber-600 dark:text-amber-400">🎁 Unopened Mystery Drop Available</h3>
+        <p className="text-xs text-[var(--text-secondary)]">
           You earned 1 mystery drop box from your 14-day geofence streak!
         </p>
-        <button
+        <Button
           onClick={() => setIsMysteryDropOpen(true)}
-          className="w-full py-3 rounded-xl glass-card border-[#FF9F43]/50 text-xs font-bold uppercase tracking-wider text-[#FF9F43] hover:bg-[#FF9F43]/10 transition-colors"
+          variant="default"
+          size="default"
+          className="w-full text-xs font-bold uppercase tracking-wider bg-amber-500 hover:bg-amber-600 text-black"
         >
           Open Mystery Drop
-        </button>
-      </div>
+        </Button>
+      </Card>
 
       {/* Mystery Drop Modal */}
       <MysteryDropModal

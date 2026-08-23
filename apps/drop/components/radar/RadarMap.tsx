@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface NodeItem {
   id: string;
@@ -49,21 +50,21 @@ export function RadarMap({ userLocation: _userLocation, onSelectNode }: RadarMap
   ]);
 
   return (
-    <div className="relative w-full h-80 rounded-3xl overflow-hidden glass-card border border-emerald-500/20 p-6 flex flex-col justify-between">
+    <div className="relative w-full h-80 rounded-3xl overflow-hidden border border-emerald-500/20 bg-[var(--bg-surface)] p-6 flex flex-col justify-between shadow-sm">
       {/* Background Radar Scanning Grid Animation */}
-      <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] opacity-20" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0d131f] via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] opacity-15" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-canvas)] via-transparent to-transparent pointer-events-none" />
 
       <div className="relative z-10 flex items-center justify-between">
         <div>
-          <span className="text-[10px] uppercase font-extrabold tracking-widest text-emerald-400">
+          <span className="text-[10px] uppercase font-extrabold tracking-widest text-emerald-600 dark:text-emerald-400">
             Live PostGIS Radar
           </span>
-          <h3 className="text-lg font-bold text-white leading-tight">Nearby Active Drops</h3>
+          <h3 className="text-lg font-bold text-[var(--text-primary)] leading-tight">Nearby Active Drops</h3>
         </div>
-        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+        <Badge variant="success">
           ● 3 Nodes in Range
-        </span>
+        </Badge>
       </div>
 
       {/* Interactive Drops Grid List */}
@@ -72,23 +73,23 @@ export function RadarMap({ userLocation: _userLocation, onSelectNode }: RadarMap
           <div
             key={node.id}
             onClick={() => onSelectNode(node)}
-            className="glass-card p-3 rounded-xl hover:border-emerald-500/40 cursor-pointer transition-all flex items-center justify-between group"
+            className="p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] hover:border-emerald-500/40 cursor-pointer transition-all flex items-center justify-between group shadow-xs"
           >
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-bold text-xs text-emerald-400 group-hover:scale-110 transition-transform">
+              <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-bold text-xs text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
                 📍
               </div>
               <div>
-                <p className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors">
+                <p className="text-xs font-semibold text-[var(--text-primary)] group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors">
                   {node.title}
                 </p>
-                <p className="text-[10px] text-gray-400">
-                  Geofence Distance: ~{node.distanceMeters}m
+                <p className="text-[10px] text-[var(--text-muted)]">
+                  Geofence Proximity: ~{node.distanceMeters}m
                 </p>
               </div>
             </div>
 
-            <span className="text-xs font-extrabold text-emerald-400">₦ {node.rewardAmount}</span>
+            <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">₦ {node.rewardAmount}</span>
           </div>
         ))}
       </div>

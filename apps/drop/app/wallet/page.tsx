@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import type { LocalVerificationRecord } from "@locqgeo/api-contracts";
 import { getLocalVerifications } from "@/lib/db-store";
 import { VerificationCard } from "@/components/wallet/VerificationCard";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function WalletPage() {
   const [records, setRecords] = useState<LocalVerificationRecord[]>([]);
@@ -13,7 +15,6 @@ export default function WalletPage() {
       if (stored.length > 0) {
         setRecords(stored);
       } else {
-        // Fallback demo records
         setRecords([
           {
             verification_id: "11111111-1111-1111-1111-111111111111",
@@ -25,7 +26,7 @@ export default function WalletPage() {
             reward_currency: "NGN",
             verified_at: new Date().toISOString(),
             payout_status: "COMPLETED",
-            redemption_code: "SPT-8A91F2",
+            redemption_code: "LOCQ-8A91F2",
           },
           {
             verification_id: "33333333-3333-3333-3333-333333333333",
@@ -37,7 +38,7 @@ export default function WalletPage() {
             reward_currency: "NGN",
             verified_at: new Date(Date.now() - 86400000).toISOString(),
             payout_status: "COMPLETED",
-            redemption_code: "SPT-3C10E4",
+            redemption_code: "LOCQ-3C10E4",
           },
         ]);
       }
@@ -49,31 +50,31 @@ export default function WalletPage() {
   return (
     <div className="space-y-5">
       <div>
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#ff6b00]/10 text-[#ff6b00] border border-[#ff6b00]/30">
+        <Badge variant="default">
           👛 Offline Vault
-        </span>
-        <h1 className="text-xl font-extrabold text-white mt-1">Verification Wallet</h1>
-        <p className="text-xs text-gray-400">
+        </Badge>
+        <h1 className="text-xl font-extrabold text-[var(--text-primary)] mt-1">Verification Wallet</h1>
+        <p className="text-xs text-[var(--text-secondary)]">
           Offline-cached proof records & reward redemption codes.
         </p>
       </div>
 
       {/* Earnings Overview Card */}
-      <div className="glass-card p-5 rounded-2xl space-y-2 border border-[#ff6b00]/40 bg-gradient-to-tr from-[#ff6b00]/15 to-transparent relative overflow-hidden shadow-xl shadow-[#ff6b00]/10">
-        <span className="text-[10px] uppercase tracking-widest font-black text-[#ff6b00]">
+      <Card className="p-5 space-y-2 border-indigo-500/40 bg-indigo-500/5 dark:bg-indigo-500/10 relative overflow-hidden shadow-sm">
+        <span className="text-[10px] uppercase tracking-widest font-black text-indigo-600 dark:text-indigo-400">
           Total Verified Earnings
         </span>
-        <div className="text-3xl font-black text-white">NGN {totalRewards.toLocaleString()}</div>
-        <p className="text-xs text-gray-300">Airtime, Data & Voucher Claims</p>
-      </div>
+        <div className="text-3xl font-black text-[var(--text-primary)]">NGN {totalRewards.toLocaleString()}</div>
+        <p className="text-xs text-[var(--text-secondary)]">Airtime, Data & Voucher Claims</p>
+      </Card>
 
       {/* History List */}
       <div className="space-y-3">
         <div className="flex items-center justify-between px-1">
-          <h3 className="font-bold text-xs uppercase tracking-wider text-gray-400">
+          <h3 className="font-bold text-xs uppercase tracking-wider text-[var(--text-muted)]">
             Claims History ({records.length})
           </h3>
-          <span className="text-[10px] text-[#ff6b00] font-semibold">IndexedDB Cache Active</span>
+          <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold">IndexedDB Cache Active</span>
         </div>
 
         {records.map((record) => (

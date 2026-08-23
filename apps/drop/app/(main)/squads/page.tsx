@@ -18,13 +18,13 @@ export default function SquadsPage() {
   });
 
   return (
-    <div className="p-6 max-w-md mx-auto min-h-screen space-y-6 text-white">
+    <div className="space-y-6 text-[var(--text-primary)]">
       {/* Page Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-black gradient-text-cyan tracking-tight uppercase">
+        <h1 className="text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight uppercase">
           Squad Quest Dashboard
         </h1>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-[var(--text-secondary)]">
           Form 4-person squads and complete 100 geofence check-ins to unlock shared cash pools!
         </p>
       </div>
