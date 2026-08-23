@@ -1,4 +1,7 @@
 import { getUsersAction } from "@/app/actions/users";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export const dynamic = "force-dynamic";
 
@@ -9,24 +12,23 @@ export default async function UsersPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">Users</h1>
-        <p className="text-sm text-gray-400 mt-1">
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Users</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
           Progressively linked identities and wallet balances.
         </p>
       </div>
 
-      <div className="glass-card p-6 space-y-4">
+      <Card>
         {users.length === 0 ? (
-          <div className="text-center py-12 text-gray-400 text-sm">
-            No users have linked an account yet.{" "}
-            <span className="text-gray-500">
-              Scans are still anonymous until a device is linked via phone/email.
-            </span>
-          </div>
+          <EmptyState
+            icon={<span className="text-3xl">👤</span>}
+            title="No users have linked an account yet"
+            description="Scans remain anonymous until a device is linked via phone or email."
+          />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-gray-300">
-              <thead className="border-b border-gray-800 text-gray-400 font-semibold uppercase">
+            <table className="w-full text-left text-xs text-[var(--text-secondary)]">
+              <thead className="border-b border-[var(--border-subtle)] text-[var(--text-muted)] font-semibold uppercase tracking-wider">
                 <tr>
                   <th className="pb-3">User</th>
                   <th className="pb-3">Contact</th>
@@ -36,33 +38,27 @@ export default async function UsersPage() {
                   <th className="pb-3">Linked At</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/60">
+              <tbody className="divide-y divide-[var(--border-subtle)]">
                 {users.map((u) => (
-                  <tr key={u.id}>
-                    <td className="py-3.5 font-medium text-white">
+                  <tr key={u.id} className="hover:bg-[var(--bg-surface-elevated)] transition-colors">
+                    <td className="py-3.5 font-semibold text-[var(--text-primary)]">
                       {u.full_name || "Anonymous"}
-                      <p className="text-[10px] text-gray-500 font-mono mt-0.5">{u.id}</p>
+                      <p className="text-[10px] text-[var(--text-muted)] font-mono mt-0.5">{u.id}</p>
                     </td>
-                    <td className="py-3.5 text-gray-300">
+                    <td className="py-3.5 text-[var(--text-secondary)]">
                       {u.phone_number && <div>{u.phone_number}</div>}
-                      {u.email && <div className="text-gray-500">{u.email}</div>}
+                      {u.email && <div className="text-[var(--text-muted)]">{u.email}</div>}
                     </td>
                     <td className="py-3.5">{u.device_count}</td>
-                    <td className="py-3.5 text-gray-300">
+                    <td className="py-3.5 font-medium text-[var(--text-primary)]">
                       {u.currency} {u.balance.toLocaleString()}
                     </td>
                     <td className="py-3.5">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                          u.is_verified
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            : "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                        }`}
-                      >
+                      <Badge variant={u.is_verified ? "success" : "warning"}>
                         {u.is_verified ? "VERIFIED" : "PENDING"}
-                      </span>
+                      </Badge>
                     </td>
-                    <td className="py-3.5 text-gray-400">
+                    <td className="py-3.5 text-[var(--text-muted)]">
                       {new Date(u.created_at).toLocaleDateString()}
                     </td>
                   </tr>
@@ -71,7 +67,7 @@ export default async function UsersPage() {
             </table>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

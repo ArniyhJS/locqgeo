@@ -6,6 +6,8 @@ import { KpiSummaryCards } from "@/components/analytics/KpiSummaryCards";
 import { FraudBreakdownChart } from "@/components/analytics/FraudBreakdownChart";
 import { HourlyTrendChart } from "@/components/analytics/HourlyTrendChart";
 import { DEMO_TENANT_ID } from "@/lib/constants";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function DashboardOverviewPage() {
   const [data, setData] = useState<TelemetrySummaryResponse | null>(null);
@@ -37,10 +39,9 @@ export default function DashboardOverviewPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">Executive Dashboard</h1>
-        <p className="text-sm text-gray-400 mt-1">
-          Real-time overview of active geofences, presence verifications, and anti-cheat fraud
-          breakdowns.
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Executive Dashboard</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
+          Real-time overview of active geofences, presence verifications, and anti-cheat fraud breakdowns.
         </p>
       </div>
 
@@ -52,26 +53,36 @@ export default function DashboardOverviewPage() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="glass-card p-6 lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-200">Verification Velocity (Hourly Trend)</h3>
-            <span className="text-xs text-blue-400 font-medium">Recharts Live Feed</span>
-          </div>
-          <HourlyTrendChart data={timeSeries} />
-        </div>
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div>
+              <CardTitle>Verification Velocity (Hourly Trend)</CardTitle>
+              <CardDescription>24-hour verification and scan event velocity</CardDescription>
+            </div>
+            <Badge variant="default">Recharts Live Feed</Badge>
+          </CardHeader>
+          <CardContent>
+            <HourlyTrendChart data={timeSeries} />
+          </CardContent>
+        </Card>
 
-        <div className="glass-card p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-200">Blocked Fraud Breakdown</h3>
-            <span className="text-xs text-rose-400 font-medium">Anti-Cheat Rules</span>
-          </div>
-          <FraudBreakdownChart
-            rejectedAccuracy={fraud.rejected_accuracy}
-            rejectedVelocity={fraud.rejected_velocity}
-            rejectedOutOfBounds={fraud.rejected_out_of_bounds}
-            rejectedDuplicate={fraud.rejected_duplicate}
-          />
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div>
+              <CardTitle>Blocked Fraud Breakdown</CardTitle>
+              <CardDescription>Risk scoring rules classification</CardDescription>
+            </div>
+            <Badge variant="destructive">Anti-Cheat Rules</Badge>
+          </CardHeader>
+          <CardContent>
+            <FraudBreakdownChart
+              rejectedAccuracy={fraud.rejected_accuracy}
+              rejectedVelocity={fraud.rejected_velocity}
+              rejectedOutOfBounds={fraud.rejected_out_of_bounds}
+              rejectedDuplicate={fraud.rejected_duplicate}
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

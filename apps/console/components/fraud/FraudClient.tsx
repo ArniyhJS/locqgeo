@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { unblockDeviceAction } from "@/src/actions/fraud";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 interface FraudAlertItem {
   id: string;
@@ -69,14 +73,10 @@ const INITIAL_ALERTS: FraudAlertItem[] = [
 
 export function FraudClient() {
   const [alerts, setAlerts] = useState<FraudAlertItem[]>(INITIAL_ALERTS);
-
-  // Unblock Modal State
   const [selectedDevice, setSelectedDevice] = useState<FraudAlertItem | null>(null);
   const [unblockReason, setUnblockReason] = useState("");
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(
-    null
-  );
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   const handleUnblockSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +97,6 @@ export function FraudClient() {
           message: `Device ${res.targetDeviceId} unblocked successfully and trust score reset to 100!`,
         });
 
-        // Update local state to mark device as HEALTHY and reset trust score
         setAlerts((prev) =>
           prev.map((item) =>
             item.deviceId === res.targetDeviceId
@@ -108,8 +107,8 @@ export function FraudClient() {
                   actionTaken: "VERIFIED",
                   spoofScore: 0,
                 }
-              : item
-          )
+              : item,
+          ),
         );
 
         setSelectedDevice(null);
@@ -138,17 +137,17 @@ export function FraudClient() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-white">
-              Fraud Telemetry & Anti-Cheat AI
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
+              Fraud Center & Anti-Cheat AI
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
-              ● 3-Tier Risk Action Protocol Active
-            </span>
+            <Badge variant="destructive">
+              ● 3-Tier Risk Protocol Active
+            </Badge>
           </div>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             Real-time composite spoof score calculation, VPN/Proxy intelligence, and 1-click device reputation unblock controls.
           </p>
         </div>
@@ -159,8 +158,8 @@ export function FraudClient() {
         <div
           className={`p-4 rounded-xl border text-sm flex items-center justify-between ${
             feedback.type === "success"
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-              : "bg-rose-500/10 border-rose-500/30 text-rose-300"
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
+              : "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300"
           }`}
         >
           <div className="flex items-center gap-2">
@@ -169,7 +168,7 @@ export function FraudClient() {
           </div>
           <button
             onClick={() => setFeedback(null)}
-            className="text-gray-400 hover:text-white text-xs font-bold"
+            className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-bold"
           >
             Dismiss
           </button>
@@ -178,221 +177,216 @@ export function FraudClient() {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="p-6 rounded-xl bg-gradient-to-br from-[#10121a] to-[#151926] border border-gray-800 shadow-xl relative overflow-hidden">
-          <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">
+        <Card className="border-rose-500/30 bg-rose-500/5 dark:bg-rose-500/10">
+          <span className="text-[11px] uppercase font-bold text-rose-600 dark:text-rose-400 tracking-wider">
             Total Spoofs Blocked
           </span>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-rose-400 font-mono">1,492</span>
-            <span className="text-xs font-semibold text-rose-400/80">REJECTED_SPOOF</span>
+            <span className="text-3xl font-black text-rose-600 dark:text-rose-400 font-mono">1,492</span>
+            <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400">REJECTED_SPOOF</span>
           </div>
-          <div className="mt-4 pt-4 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
-            <span>Spoof Score Limit:</span>
-            <span className="font-mono text-rose-400 font-semibold">≥ 60 (Hard Block)</span>
+          <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+            <span>Spoof Limit:</span>
+            <span className="font-mono text-rose-600 dark:text-rose-400 font-bold">≥ 60 (Hard Block)</span>
           </div>
-        </div>
+        </Card>
 
-        <div className="p-6 rounded-xl bg-gradient-to-br from-[#10121a] to-[#151926] border border-gray-800 shadow-xl relative overflow-hidden">
-          <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">
+        <Card className="border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10">
+          <span className="text-[11px] uppercase font-bold text-amber-600 dark:text-amber-400 tracking-wider">
             Flagged Payout Holds
           </span>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-amber-400 font-mono">184</span>
-            <span className="text-xs font-semibold text-amber-400/80">VERIFIED_FLAGGED</span>
+            <span className="text-3xl font-black text-amber-600 dark:text-amber-400 font-mono">184</span>
+            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">VERIFIED_FLAGGED</span>
           </div>
-          <div className="mt-4 pt-4 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
+          <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
             <span>Hold Duration:</span>
-            <span className="font-mono text-amber-400 font-semibold">24 Hours</span>
+            <span className="font-mono text-amber-600 dark:text-amber-400 font-bold">24 Hours</span>
           </div>
-        </div>
+        </Card>
 
-        <div className="p-6 rounded-xl bg-gradient-to-br from-[#10121a] to-[#151926] border border-gray-800 shadow-xl relative overflow-hidden">
-          <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">
+        <Card className="border-indigo-500/30 bg-indigo-500/5 dark:bg-indigo-500/10">
+          <span className="text-[11px] uppercase font-bold text-indigo-600 dark:text-indigo-400 tracking-wider">
             VPN / Proxy Detection Rate
           </span>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-indigo-400 font-mono">99.4%</span>
+            <span className="text-3xl font-black text-indigo-600 dark:text-indigo-400 font-mono">99.4%</span>
           </div>
-          <div className="mt-4 pt-4 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
+          <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
             <span>IP Intelligence:</span>
-            <span className="text-emerald-400 font-semibold">Cached 24h</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-bold">Cached 24h</span>
           </div>
-        </div>
+        </Card>
 
-        <div className="p-6 rounded-xl bg-gradient-to-br from-[#10121a] to-[#151926] border border-gray-800 shadow-xl relative overflow-hidden">
-          <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">
+        <Card className="border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-500/10">
+          <span className="text-[11px] uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
             Healthy Verified Devices
           </span>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-emerald-400 font-mono">48,210</span>
+            <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono">48,210</span>
           </div>
-          <div className="mt-4 pt-4 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
+          <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
             <span>Avg Trust Score:</span>
-            <span className="text-emerald-400 font-semibold">97.8 / 100</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-bold">97.8 / 100</span>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Fraud Alerts Table */}
-      <div className="p-6 rounded-xl bg-[#10121a] border border-gray-800 space-y-4">
-        <div className="flex items-center justify-between border-b border-gray-800 pb-4">
-          <div>
-            <h2 className="text-lg font-bold text-white">Device Reputation & Fraud Alerts</h2>
-            <p className="text-xs text-gray-400">
-              Composite spoof score factors: Accuracy (35%), Velocity (30%), Network (20%), Device Trust (15%).
-            </p>
-          </div>
-        </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Device Reputation & Fraud Alerts</CardTitle>
+          <CardDescription>
+            Composite spoof score factors: Accuracy (35%), Velocity (30%), Network (20%), Device Trust (15%).
+          </CardDescription>
+        </CardHeader>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-gray-300">
-            <thead className="border-b border-gray-800 text-gray-400 font-semibold uppercase tracking-wider">
-              <tr>
-                <th className="pb-3">Device ID</th>
-                <th className="pb-3">Trust Score</th>
-                <th className="pb-3">Last IP / Network</th>
-                <th className="pb-3">Spoof Score</th>
-                <th className="pb-3">Action Taken</th>
-                <th className="pb-3">Status</th>
-                <th className="pb-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-800/60">
-              {alerts.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-800/20 transition-colors">
-                  <td className="py-3.5 font-mono text-white font-medium max-w-[200px] truncate" title={item.deviceId}>
-                    {item.deviceId}
-                  </td>
-                  <td className="py-3.5">
-                    <span
-                      className={`font-mono font-bold px-2 py-0.5 rounded text-xs ${
-                        item.trustScore >= 80
-                          ? "bg-emerald-500/10 text-emerald-400"
-                          : item.trustScore >= 40
-                          ? "bg-amber-500/10 text-amber-400"
-                          : "bg-rose-500/10 text-rose-400"
-                      }`}
-                    >
-                      {item.trustScore} / 100
-                    </span>
-                  </td>
-                  <td className="py-3.5 font-mono text-gray-400">
-                    {item.lastSeenIp}{" "}
-                    {item.isVpnOrProxy && (
-                      <span className="px-1.5 py-0.2 rounded text-[10px] bg-rose-500/20 text-rose-300 font-sans ml-1">
-                        VPN
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3.5 font-mono font-bold text-white">
-                    {item.spoofScore}
-                  </td>
-                  <td className="py-3.5">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
-                        item.actionTaken === "VERIFIED"
-                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                          : item.actionTaken === "VERIFIED_FLAGGED"
-                          ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                          : "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                      }`}
-                    >
-                      {item.actionTaken}
-                    </span>
-                  </td>
-                  <td className="py-3.5">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                        item.status === "HEALTHY"
-                          ? "text-emerald-400"
-                          : item.status === "FLAGGED"
-                          ? "text-amber-400"
-                          : "text-rose-400"
-                      }`}
-                    >
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="py-3.5 text-right">
-                    {item.status !== "HEALTHY" ? (
-                      <button
-                        onClick={() => {
-                          setSelectedDevice(item);
-                          setUnblockReason(`Verified identity and hardware fingerprint for ${item.deviceId.substring(0, 16)}`);
-                        }}
-                        className="px-3 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-xs border border-emerald-500/30 transition-all"
-                      >
-                        Unblock Device
-                      </button>
-                    ) : (
-                      <span className="text-gray-500 text-[11px]">No action needed</span>
-                    )}
-                  </td>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-[var(--text-secondary)]">
+              <thead className="border-b border-[var(--border-subtle)] text-[var(--text-muted)] font-semibold uppercase tracking-wider">
+                <tr>
+                  <th className="pb-3">Device ID</th>
+                  <th className="pb-3">Trust Score</th>
+                  <th className="pb-3">Last IP / Network</th>
+                  <th className="pb-3">Spoof Score</th>
+                  <th className="pb-3">Action Taken</th>
+                  <th className="pb-3">Status</th>
+                  <th className="pb-3 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody className="divide-y divide-[var(--border-subtle)]">
+                {alerts.map((item) => (
+                  <tr key={item.id} className="hover:bg-[var(--bg-surface-elevated)] transition-colors">
+                    <td className="py-3.5 font-mono text-[var(--text-primary)] font-medium max-w-[200px] truncate" title={item.deviceId}>
+                      {item.deviceId}
+                    </td>
+                    <td className="py-3.5">
+                      <Badge
+                        variant={
+                          item.trustScore >= 80
+                            ? "success"
+                            : item.trustScore >= 40
+                            ? "warning"
+                            : "destructive"
+                        }
+                      >
+                        {item.trustScore} / 100
+                      </Badge>
+                    </td>
+                    <td className="py-3.5 font-mono text-[var(--text-secondary)]">
+                      {item.lastSeenIp}{" "}
+                      {item.isVpnOrProxy && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-600 dark:text-rose-300 font-sans ml-1 font-bold">
+                          VPN
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3.5 font-mono font-bold text-[var(--text-primary)]">
+                      {item.spoofScore}
+                    </td>
+                    <td className="py-3.5">
+                      <Badge
+                        variant={
+                          item.actionTaken === "VERIFIED"
+                            ? "success"
+                            : item.actionTaken === "VERIFIED_FLAGGED"
+                            ? "warning"
+                            : "destructive"
+                        }
+                      >
+                        {item.actionTaken}
+                      </Badge>
+                    </td>
+                    <td className="py-3.5 font-semibold">
+                      {item.status}
+                    </td>
+                    <td className="py-3.5 text-right">
+                      {item.status !== "HEALTHY" ? (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedDevice(item);
+                            setUnblockReason(`Verified identity and hardware fingerprint for ${item.deviceId.substring(0, 16)}`);
+                          }}
+                        >
+                          Unblock Device
+                        </Button>
+                      ) : (
+                        <span className="text-[var(--text-muted)] text-[11px]">No action needed</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Unblock Device Modal */}
       {selectedDevice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl bg-[#10121a] border border-gray-800 p-6 shadow-2xl space-y-6">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <Card className="w-full max-w-lg shadow-2xl space-y-6">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
-                <h3 className="text-lg font-bold text-white">Unblock Device Reputation</h3>
-                <p className="text-xs text-gray-400">Resets device trust score to 100 and removes payout hold.</p>
+                <CardTitle>Unblock Device Reputation</CardTitle>
+                <CardDescription>Resets device trust score to 100 and removes payout hold.</CardDescription>
               </div>
               <button
                 onClick={() => setSelectedDevice(null)}
-                className="text-gray-400 hover:text-white p-1 rounded-lg"
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-1 rounded-lg"
               >
                 ✕
               </button>
-            </div>
+            </CardHeader>
 
-            <form onSubmit={handleUnblockSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-300">Target Device ID</label>
-                <input
-                  type="text"
-                  readOnly
-                  value={selectedDevice.deviceId}
-                  className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-400 font-mono text-xs cursor-not-allowed"
-                />
-              </div>
+            <CardContent>
+              <form onSubmit={handleUnblockSubmit} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-[var(--text-secondary)]">Target Device ID</label>
+                  <Input
+                    type="text"
+                    readOnly
+                    value={selectedDevice.deviceId}
+                    className="font-mono cursor-not-allowed opacity-75"
+                  />
+                </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-300">Audit Unblock Reason</label>
-                <textarea
-                  rows={3}
-                  required
-                  placeholder="Provide audit reason for unblocking (e.g. Verified support ticket #1234)"
-                  value={unblockReason}
-                  onChange={(e) => setUnblockReason(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white font-sans text-xs focus:outline-none focus:border-emerald-500"
-                />
-              </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-[var(--text-secondary)]">Audit Unblock Reason</label>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="Provide audit reason for unblocking (e.g. Verified support ticket #1234)"
+                    value={unblockReason}
+                    onChange={(e) => setUnblockReason(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-strong)] text-[var(--text-primary)] font-sans text-xs focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-800">
-                <button
-                  type="button"
-                  onClick={() => setSelectedDevice(null)}
-                  className="px-4 py-2 rounded-lg text-xs text-gray-400 hover:text-white font-semibold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50"
-                >
-                  {loading ? "Unblocking..." : "Confirm Unblock Device"}
-                </button>
-              </div>
-            </form>
-          </div>
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="default"
+                    onClick={() => setSelectedDevice(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="default"
+                    size="default"
+                    loading={loading}
+                  >
+                    Confirm Unblock Device
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

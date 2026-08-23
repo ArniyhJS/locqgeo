@@ -11,8 +11,8 @@ export default async function NewCampaignPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">Create Campaign</h1>
-        <p className="text-sm text-gray-400 mt-1">
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Create Campaign</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
           Link billboards, set the rules, and launch a presence challenge.
         </p>
       </div>

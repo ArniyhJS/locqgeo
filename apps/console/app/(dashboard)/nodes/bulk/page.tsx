@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Papa from "papaparse";
 import { BulkGeofenceCsvRowSchema } from "@locqgeo/api-contracts";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface ParsedRow {
   title: string;
@@ -20,6 +22,7 @@ export default function BulkUploadPage() {
   const [rows, setRows] = useState<ParsedRow[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [successMsg, setSuccessMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,8 +55,6 @@ export default function BulkUploadPage() {
     });
   };
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const handleBatchImport = async () => {
     if (rows.length === 0) return;
     setIsSubmitting(true);
@@ -62,7 +63,6 @@ export default function BulkUploadPage() {
 
     try {
       const engineUrl = process.env.NEXT_PUBLIC_ENGINE_URL || "http://localhost:8080";
-      // Demo tenant ID fallback or active session tenant ID
       const tenantId = "00000000-0000-0000-0000-000000000001";
 
       const res = await fetch(`${engineUrl}/api/v1/engine/geofences/bulk`, {
@@ -89,91 +89,99 @@ export default function BulkUploadPage() {
   return (
     <div className="space-y-8 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">CSV Bulk Geofence Import</h1>
-        <p className="text-sm text-gray-400 mt-1">
-          Upload a CSV spreadsheet containing multiple presence targets (rewards, check-ins, audits,
-          etc.).
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">CSV Bulk Geofence Import</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
+          Upload a CSV spreadsheet containing multiple presence targets (rewards, check-ins, audits, etc.).
         </p>
       </div>
 
-      <div className="glass-card p-8 space-y-6">
-        <div className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-blue-500 transition-colors">
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileUpload}
-            className="hidden"
-            id="csv-input"
-          />
-          <label htmlFor="csv-input" className="cursor-pointer space-y-2 block">
-            <span className="text-3xl">📄</span>
-            <p className="text-sm font-semibold text-gray-200">Click to upload CSV file</p>
-            <p className="text-xs text-gray-400">
-              Required headers: title, latitude, longitude, radius_meters, action_type, reward_type,
-              reward_amount, reward_currency, daily_budget_limit
-            </p>
-          </label>
-        </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Spreadsheet Upload</CardTitle>
+          <CardDescription>
+            Required headers: title, latitude, longitude, radius_meters, action_type, reward_type, reward_amount, reward_currency, daily_budget_limit
+          </CardDescription>
+        </CardHeader>
 
-        {errors.length > 0 && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs space-y-1">
-            <p className="font-bold text-sm">Validation Errors ({errors.length}):</p>
-            {errors.map((err, i) => (
-              <p key={i}>{err}</p>
-            ))}
+        <CardContent className="space-y-6">
+          <div className="border-2 border-dashed border-[var(--border-strong)] rounded-2xl p-8 text-center hover:border-indigo-500 transition-colors bg-[var(--bg-surface-elevated)]">
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileUpload}
+              className="hidden"
+              id="csv-input"
+            />
+            <label htmlFor="csv-input" className="cursor-pointer space-y-2 block">
+              <span className="text-3xl block">📄</span>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">Click to upload CSV file</p>
+              <p className="text-xs text-[var(--text-muted)]">
+                Supports standard comma-separated tabular geofence datasets.
+              </p>
+            </label>
           </div>
-        )}
 
-        {successMsg && (
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-medium">
-            {successMsg}
-          </div>
-        )}
-
-        {rows.length > 0 && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-white">
-                Parsed Preview ({rows.length} Valid Geofences)
-              </h3>
-              <button
-                onClick={handleBatchImport}
-                disabled={isSubmitting}
-                className="glass-button px-5 py-2 rounded-lg text-xs font-semibold text-white disabled:opacity-50"
-              >
-                {isSubmitting ? "Importing..." : `Import ${rows.length} Geofences to PostGIS`}
-              </button>
+          {errors.length > 0 && (
+            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs space-y-1">
+              <p className="font-bold text-sm">Validation Errors ({errors.length}):</p>
+              {errors.map((err, i) => (
+                <p key={i}>{err}</p>
+              ))}
             </div>
+          )}
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-gray-300">
-                <thead className="border-b border-gray-800 text-gray-400 uppercase">
-                  <tr>
-                    <th className="pb-2">Title</th>
-                    <th className="pb-2">Lat, Lng</th>
-                    <th className="pb-2">Radius</th>
-                    <th className="pb-2">Action</th>
-                    <th className="pb-2">Reward</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-800/60">
-                  {rows.map((r, i) => (
-                    <tr key={i}>
-                      <td className="py-2 text-white font-medium">{r.title}</td>
-                      <td>
-                        {r.latitude}, {r.longitude}
-                      </td>
-                      <td>{r.radius_meters}m</td>
-                      <td>{r.action_type}</td>
-                      <td>{r.reward_amount ? `${r.reward_amount} ${r.reward_currency}` : "—"}</td>
+          {successMsg && (
+            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-sm font-medium">
+              {successMsg}
+            </div>
+          )}
+
+          {rows.length > 0 && (
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-sm text-[var(--text-primary)]">
+                  Parsed Preview ({rows.length} Valid Geofences)
+                </h3>
+                <Button
+                  onClick={handleBatchImport}
+                  loading={isSubmitting}
+                  variant="default"
+                  size="sm"
+                >
+                  Import {rows.length} Geofences
+                </Button>
+              </div>
+
+              <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)]">
+                <table className="w-full text-left text-xs text-[var(--text-secondary)]">
+                  <thead className="border-b border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] font-semibold uppercase">
+                    <tr>
+                      <th className="p-3">Title</th>
+                      <th className="p-3">Lat, Lng</th>
+                      <th className="p-3">Radius</th>
+                      <th className="p-3">Action</th>
+                      <th className="p-3">Reward</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border-subtle)]">
+                    {rows.map((r, i) => (
+                      <tr key={i} className="hover:bg-[var(--bg-surface-elevated)]">
+                        <td className="p-3 font-semibold text-[var(--text-primary)]">{r.title}</td>
+                        <td className="p-3 font-mono">
+                          {r.latitude}, {r.longitude}
+                        </td>
+                        <td className="p-3">{r.radius_meters}m</td>
+                        <td className="p-3">{r.action_type}</td>
+                        <td className="p-3">{r.reward_amount ? `${r.reward_amount} ${r.reward_currency}` : "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

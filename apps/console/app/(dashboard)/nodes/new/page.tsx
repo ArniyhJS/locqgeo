@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createGeofenceAction } from "../../../actions/geofences";
 import { DEMO_TENANT_ID } from "@/lib/constants";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function NewGeofencePage() {
   const [title, setTitle] = useState("");
@@ -49,172 +53,174 @@ export default function NewGeofencePage() {
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">Create Geofence</h1>
-        <p className="text-sm text-gray-400 mt-1">
-          Configure a generic presence target. It can trigger a reward, attendance record, audit
-          log, access gate, or simple check-in.
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Create Geofence</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
+          Configure a generic presence target. It can trigger a reward, attendance record, audit log, access gate, or simple check-in.
         </p>
       </div>
 
-      <div className="glass-card p-8 space-y-6">
-        {message && (
-          <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-300 text-sm font-medium">
-            {message}
-          </div>
-        )}
+      <Card>
+        <CardHeader>
+          <CardTitle>Geofence Properties</CardTitle>
+          <CardDescription>Specify geographic coordinates and validation rules</CardDescription>
+        </CardHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                Geofence Title
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Lekki Toll Gate Check-In"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm"
-              />
+        <CardContent>
+          {message && (
+            <div className="mb-6 p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-sm font-medium">
+              {message}
             </div>
+          )}
 
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                  Latitude (-90 to 90)
+                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                  Geofence Title
                 </label>
-                <input
-                  type="number"
-                  step="any"
+                <Input
+                  type="text"
                   required
-                  value={latitude}
-                  onChange={(e) => setLatitude(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm font-mono"
+                  placeholder="e.g. Lekki Toll Gate Check-In"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                  Longitude (-180 to 180)
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  required
-                  value={longitude}
-                  onChange={(e) => setLongitude(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm font-mono"
-                />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                  Radius (10m to 500m)
-                </label>
-                <input
-                  type="number"
-                  required
-                  value={radiusMeters}
-                  onChange={(e) => setRadiusMeters(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                  Action Type
-                </label>
-                <select
-                  value={actionType}
-                  onChange={(e) => setActionType(e.target.value as typeof actionType)}
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm"
-                >
-                  <option value="REWARD">Reward</option>
-                  <option value="CHECKIN">Check-in</option>
-                  <option value="ATTENDANCE">Attendance</option>
-                  <option value="AUDIT">Audit</option>
-                  <option value="ACCESS">Access</option>
-                </select>
-              </div>
-            </div>
-
-            {showRewardFields && (
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                    Reward Type
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                    Latitude (-90 to 90)
+                  </label>
+                  <Input
+                    type="number"
+                    step="any"
+                    required
+                    value={latitude}
+                    onChange={(e) => setLatitude(Number(e.target.value))}
+                    className="font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                    Longitude (-180 to 180)
+                  </label>
+                  <Input
+                    type="number"
+                    step="any"
+                    required
+                    value={longitude}
+                    onChange={(e) => setLongitude(Number(e.target.value))}
+                    className="font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                    Radius (10m to 500m)
+                  </label>
+                  <Input
+                    type="number"
+                    required
+                    value={radiusMeters}
+                    onChange={(e) => setRadiusMeters(Number(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                    Action Type
                   </label>
                   <select
-                    value={rewardType}
-                    onChange={(e) => setRewardType(e.target.value as typeof rewardType)}
-                    className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm"
+                    value={actionType}
+                    onChange={(e) => setActionType(e.target.value as typeof actionType)}
+                    className="h-10 w-full rounded-xl border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 py-2 text-xs text-[var(--text-primary)] focus-visible:outline-none focus-visible:border-indigo-500 transition-colors"
                   >
-                    <option value="AIRTIME">AIRTIME</option>
-                    <option value="DATA">DATA</option>
-                    <option value="CASH">CASH</option>
-                    <option value="VOUCHER">VOUCHER</option>
+                    <option value="REWARD">Reward</option>
+                    <option value="CHECKIN">Check-in</option>
+                    <option value="ATTENDANCE">Attendance</option>
+                    <option value="AUDIT">Audit</option>
+                    <option value="ACCESS">Access</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                    Amount
-                  </label>
-                  <input
-                    type="number"
-                    required={showRewardFields}
-                    value={rewardAmount}
-                    onChange={(e) => setRewardAmount(Number(e.target.value))}
-                    className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                    Currency
-                  </label>
-                  <input
-                    type="text"
-                    required={showRewardFields}
-                    maxLength={3}
-                    value={rewardCurrency}
-                    onChange={(e) => setRewardCurrency(e.target.value.toUpperCase())}
-                    className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm font-mono"
-                  />
-                </div>
               </div>
-            )}
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                Daily Budget Limit
-              </label>
-              <input
-                type="number"
-                required
-                value={dailyBudget}
-                onChange={(e) => setDailyBudget(Number(e.target.value))}
-                className="w-full px-4 py-2.5 rounded-lg bg-gray-900/80 border border-gray-700 text-white focus:outline-none focus:border-blue-500 text-sm"
-              />
+              {showRewardFields && (
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                      Reward Type
+                    </label>
+                    <select
+                      value={rewardType}
+                      onChange={(e) => setRewardType(e.target.value as typeof rewardType)}
+                      className="h-10 w-full rounded-xl border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 py-2 text-xs text-[var(--text-primary)] focus-visible:outline-none focus-visible:border-indigo-500 transition-colors"
+                    >
+                      <option value="AIRTIME">AIRTIME</option>
+                      <option value="DATA">DATA</option>
+                      <option value="CASH">CASH</option>
+                      <option value="VOUCHER">VOUCHER</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                      Amount
+                    </label>
+                    <Input
+                      type="number"
+                      required={showRewardFields}
+                      value={rewardAmount}
+                      onChange={(e) => setRewardAmount(Number(e.target.value))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                      Currency
+                    </label>
+                    <Input
+                      type="text"
+                      required={showRewardFields}
+                      maxLength={3}
+                      value={rewardCurrency}
+                      onChange={(e) => setRewardCurrency(e.target.value.toUpperCase())}
+                      className="font-mono"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                  Daily Budget Limit
+                </label>
+                <Input
+                  type="number"
+                  required
+                  value={dailyBudget}
+                  onChange={(e) => setDailyBudget(Number(e.target.value))}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="pt-4 border-t border-gray-800 flex justify-end gap-3">
-            <a
-              href="/nodes"
-              className="px-5 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              Cancel
-            </a>
-            <button
-              type="submit"
-              disabled={loading}
-              className="glass-button px-6 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer disabled:opacity-50"
-            >
-              {loading ? "Registering PostGIS Geofence..." : "Save Geofence"}
-            </button>
-          </div>
-        </form>
-      </div>
+            <div className="pt-4 border-t border-[var(--border-subtle)] flex justify-end gap-3">
+              <Link href="/nodes">
+                <Button variant="ghost" size="default" type="button">
+                  Cancel
+                </Button>
+              </Link>
+              <Button
+                type="submit"
+                variant="default"
+                size="default"
+                loading={loading}
+              >
+                Save Geofence
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
