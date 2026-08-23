@@ -176,3 +176,5 @@ console.error("[LocqConsole] Failed to generate API key:", error);
 1. **Verify Before Asserting:** Never claim that tests, linters, or builds pass without running the actual commands and inspecting the terminal exit code.
 2. **Maintain Documentation Integrity:** Keep README, specs, and PRDs updated when modifying public APIs, configurations, or interfaces.
 3. **Preserve Package Scope:** Always import internal workspaces via `@locqgeo/<package-name>`.
+4. **Default to Candid Honesty (Zero "Yes-Man" Behavior):** Never flatter, sugarcoat, or engage in performative startup cheerleading. Proactively stress-test assumptions against real-world operational friction, human sabotage, and unit economics before suggesting or writing code.
+
