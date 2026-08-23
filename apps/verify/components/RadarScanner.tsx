@@ -19,25 +19,29 @@ export function RadarScanner({
   isVerifying = false,
 }: RadarScannerProps) {
   return (
-    <div className="flex flex-col items-center justify-between min-h-[70vh] p-4 text-[var(--text-primary)] w-full max-w-md mx-auto">
+    <div className="flex flex-col items-center justify-between min-h-[70vh] p-4 text-(--text-primary) w-full max-w-md mx-auto">
       {/* Floating Header displaying Telemetry */}
-      <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] px-4 py-3 w-full flex items-center justify-between text-xs font-medium tracking-wide shadow-xs">
+      <div className="rounded-2xl border border-(--border-subtle) bg-(--bg-surface-elevated) px-4 py-3 w-full flex items-center justify-between text-xs font-medium tracking-wide shadow-xs">
         {/* GPS Accuracy */}
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[var(--text-muted)]">GPS:</span>
-          <span className="font-mono text-indigo-600 dark:text-indigo-400 font-bold">±{accuracyMeters.toFixed(1)}m</span>
+          <span className="text-(--text-muted)">GPS:</span>
+          <span className="font-mono text-indigo-600 dark:text-indigo-400 font-bold">
+            ±{accuracyMeters.toFixed(1)}m
+          </span>
         </div>
 
         {/* 4-bar Signal Strength Indicator */}
         <div className="flex items-center gap-1">
-          <span className="text-[var(--text-muted)] mr-1 text-[10px] uppercase font-bold">Signal</span>
+          <span className="text-(--text-muted) mr-1 text-[10px] uppercase font-bold">Signal</span>
           <div className="flex items-end gap-0.5 h-3">
             {[1, 2, 3, 4].map((bar) => (
               <span
                 key={bar}
                 className={`w-1 rounded-xs transition-colors ${
-                  bar <= signalStrengthBars ? "bg-indigo-600 dark:bg-indigo-400 shadow-xs" : "bg-[var(--border-strong)]"
+                  bar <= signalStrengthBars
+                    ? "bg-indigo-600 dark:bg-indigo-400 shadow-xs"
+                    : "bg-(--border-strong)"
                 }`}
                 style={{ height: `${bar * 25}%` }}
               />
@@ -48,7 +52,9 @@ export function RadarScanner({
         {/* Residential IP Status Badge */}
         <div className="flex items-center gap-1 bg-indigo-500/10 px-2 py-0.5 rounded-lg border border-indigo-500/30">
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-          <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{ipStatus}</span>
+          <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+            {ipStatus}
+          </span>
         </div>
       </div>
 
