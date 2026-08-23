@@ -45,7 +45,7 @@ describe("Fraud Server Actions - unblockDeviceAction", () => {
   });
 
   it("returns error for empty or invalid payload", async () => {
-    const input = {} as unknown as { targetDeviceId: string; reason?: string };
+    const input = {} as unknown as Parameters<typeof unblockDeviceAction>[0];
 
     const result = await unblockDeviceAction(input);
 

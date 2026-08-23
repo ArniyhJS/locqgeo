@@ -3,7 +3,7 @@ import postgres from "postgres";
 import * as schema from "./schema.js";
 
 const connectionString =
-  process.env.DATABASE_URL || "postgres://postgres:postgres@localhost:5432/locqgeo";
+  process.env.DATABASE_URL || "postgresql://locqgeo:locqgeopass@localhost:5433/locqgeo_dev";
 
 // Configure parameterized query client
 export const queryClient = postgres(connectionString, {
