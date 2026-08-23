@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { RadarScanner } from "@/components/RadarScanner";
 import { VerificationFeedbackDrawer } from "@/components/VerificationFeedbackDrawer";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function HomePage() {
   const [isVerifying, setIsVerifying] = useState(false);
@@ -30,20 +32,20 @@ export default function HomePage() {
     <div className="space-y-6 pt-2 pb-8">
       {/* Header Title */}
       <div className="text-center space-y-1">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#00F2FE]/10 text-[#00F2FE] border border-[#00F2FE]/30">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#00F2FE] animate-pulse" />
+        <Badge variant="default">
+          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
           Proof of Spatial Presence
-        </span>
-        <h1 className="text-2xl font-black text-white tracking-tight gradient-text-cyan">
+        </Badge>
+        <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tight">
           3D GPS Telemetry Verification
         </h1>
-        <p className="text-xs text-gray-400 px-4">
+        <p className="text-xs text-[var(--text-secondary)] px-4">
           Sub-50ms cryptographic presence proof & geofence validation.
         </p>
       </div>
 
       {/* Interactive 3D Radar Scanner */}
-      <div className="glass-card p-4 rounded-3xl border border-[#00F2FE]/20 shadow-2xl">
+      <Card className="p-4 border-indigo-500/20 shadow-xl">
         <RadarScanner
           accuracyMeters={3.8}
           ipStatus="Residential Clean"
@@ -51,25 +53,23 @@ export default function HomePage() {
           onVerify={handleVerify}
           isVerifying={isVerifying}
         />
-      </div>
+      </Card>
 
       {/* Quick Navigation Cards */}
       <div className="grid grid-cols-2 gap-4">
-        <Link
-          href="/scan"
-          className="glass-card p-4 rounded-2xl border border-white/10 hover:border-[#00F2FE]/50 transition-all text-center space-y-1 block"
-        >
-          <div className="text-xl">📷</div>
-          <div className="text-xs font-bold text-white">QR / NFC Scanner</div>
-          <div className="text-[10px] text-gray-400">Scan event tags</div>
+        <Link href="/scan">
+          <Card className="p-4 hover:border-indigo-500/50 transition-all text-center space-y-1 block" interactive>
+            <div className="text-xl">📷</div>
+            <div className="text-xs font-bold text-[var(--text-primary)]">QR / NFC Scanner</div>
+            <div className="text-[10px] text-[var(--text-muted)]">Scan event tags</div>
+          </Card>
         </Link>
-        <Link
-          href="/history"
-          className="glass-card p-4 rounded-2xl border border-white/10 hover:border-[#00F2FE]/50 transition-all text-center space-y-1 block"
-        >
-          <div className="text-xl">📜</div>
-          <div className="text-xs font-bold text-white">Timeline Feed</div>
-          <div className="text-[10px] text-gray-400">Verification log</div>
+        <Link href="/history">
+          <Card className="p-4 hover:border-indigo-500/50 transition-all text-center space-y-1 block" interactive>
+            <div className="text-xl">📜</div>
+            <div className="text-xs font-bold text-[var(--text-primary)]">Timeline Feed</div>
+            <div className="text-[10px] text-[var(--text-muted)]">Verification log</div>
+          </Card>
         </Link>
       </div>
 

@@ -20,7 +20,6 @@ export default function HistoryPage() {
     timestamp: new Date(record.verified_at).toLocaleString(),
   }));
 
-  // Fallback demo items if no local records stored yet
   const displayItems =
     historyItems.length > 0
       ? historyItems
@@ -51,10 +50,10 @@ export default function HistoryPage() {
   return (
     <div className="space-y-6 pb-8">
       <div>
-        <h1 className="text-xl font-extrabold text-white gradient-text-cyan">
+        <h1 className="text-xl font-extrabold text-[var(--text-primary)]">
           Verification History
         </h1>
-        <p className="text-xs text-gray-400">Offline-cached presence records & telemetry log.</p>
+        <p className="text-xs text-[var(--text-secondary)]">Offline-cached presence records & telemetry log.</p>
       </div>
 
       <VerificationHistory items={displayItems} />

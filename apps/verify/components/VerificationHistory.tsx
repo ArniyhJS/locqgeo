@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export interface VerificationItem {
   id: string;
@@ -13,49 +15,47 @@ export interface VerificationItem {
 export function VerificationHistory({ items }: { items: VerificationItem[] }) {
   if (items.length === 0) {
     return (
-      <div className="glass-card p-8 text-center text-xs text-gray-400">
+      <Card className="p-8 text-center text-xs text-[var(--text-muted)]">
         No verification history found.
-      </div>
+      </Card>
     );
   }
 
   return (
     <div className="space-y-3 w-full">
       {items.map((item) => {
-        let badgeStyle = "bg-[#00E676]/20 text-[#00E676] border-[#00E676]/40";
+        let badgeVariant: "success" | "warning" | "destructive" = "success";
         if (item.status === "VERIFIED_FLAGGED") {
-          badgeStyle = "bg-[#FF9F43]/20 text-[#FF9F43] border-[#FF9F43]/40";
+          badgeVariant = "warning";
         } else if (item.status.includes("REJECTED")) {
-          badgeStyle = "bg-[#FF1744]/20 text-[#FF1744] border-[#FF1744]/40";
+          badgeVariant = "destructive";
         }
 
         return (
-          <div
+          <Card
             key={item.id}
-            className="glass-card p-4 flex items-center justify-between transition-all duration-200 hover:border-white/20"
+            className="p-4 flex items-center justify-between transition-all duration-200 hover:border-indigo-500/40 shadow-xs"
           >
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span
-                  className={`text-[10px] px-2 py-0.5 rounded font-mono font-extrabold uppercase border ${badgeStyle}`}
-                >
+                <Badge variant={badgeVariant}>
                   {item.status}
-                </span>
+                </Badge>
                 {item.geofenceTitle && (
-                  <span className="text-xs font-bold text-white truncate max-w-[150px]">
+                  <span className="text-xs font-bold text-[var(--text-primary)] truncate max-w-[150px]">
                     {item.geofenceTitle}
                   </span>
                 )}
               </div>
-              <div className="text-[10px] text-gray-400 font-mono">{item.timestamp}</div>
+              <div className="text-[10px] text-[var(--text-muted)] font-mono">{item.timestamp}</div>
             </div>
             <div className="text-right">
-              <div className="text-xs font-mono font-bold text-[#00F2FE]">
+              <div className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
                 {item.distanceMeters.toFixed(1)}m delta
               </div>
-              <div className="text-[10px] text-gray-500 font-mono">GPS Verified</div>
+              <div className="text-[10px] text-[var(--text-muted)] font-mono">GPS Verified</div>
             </div>
-          </div>
+          </Card>
         );
       })}
     </div>

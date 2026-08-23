@@ -13,6 +13,9 @@ import { useVerifier } from "@/hooks/useVerifier";
 import { CameraView } from "@/components/scanner/CameraView";
 import { RadarScanner } from "@/components/RadarScanner";
 import { VerificationFeedbackDrawer } from "@/components/VerificationFeedbackDrawer";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import type { PingResponseSuccess, PingResponseError } from "@locqgeo/api-contracts";
 
 function ScanContent() {
@@ -116,26 +119,26 @@ function ScanContent() {
   return (
     <div className="space-y-6 max-w-sm mx-auto pb-8">
       <div className="text-center space-y-1">
-        <h1 className="text-xl font-extrabold text-white gradient-text-cyan">Scan & Verify</h1>
-        <p className="text-xs text-gray-400">
+        <h1 className="text-xl font-extrabold text-[var(--text-primary)]">Scan & Verify</h1>
+        <p className="text-xs text-[var(--text-secondary)]">
           Scan QR, tap NFC, or verify presence via 3D radar.
         </p>
       </div>
 
       {gpsError && (
-        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium text-center">
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-medium text-center">
           {gpsError}
         </div>
       )}
 
       {hardwareMessage && (
-        <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-medium text-center">
+        <div className="p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-medium text-center">
           {hardwareMessage}
         </div>
       )}
 
       {/* Radar Scanner Component */}
-      <div className="glass-card p-2 rounded-3xl border border-[#00F2FE]/30 shadow-xl">
+      <Card className="p-2 border-indigo-500/30 shadow-xl">
         <RadarScanner
           accuracyMeters={currentLocation?.accuracy || 4.2}
           ipStatus="Residential Clean"
@@ -150,54 +153,57 @@ function ScanContent() {
             })
           }
         />
-      </div>
+      </Card>
 
       <div className="space-y-4">
         <CameraView onScanSuccess={handleDecodedRaw} />
 
         {/* Manual alias fallback */}
         <form onSubmit={handleManualAliasSubmit} className="space-y-2">
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
             Or enter location code
           </label>
           <div className="flex gap-2">
-            <input
+            <Input
               type="text"
               value={manualAlias}
               onChange={(e) => setManualAlias(e.target.value)}
               placeholder="e.g. LAGOS-IKEJA-01"
               disabled={isSubmitting}
-              className="flex-1 bg-[#0b0c0e] border border-[#00F2FE]/30 rounded-2xl px-4 py-3 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-[#00F2FE]"
+              className="flex-1"
             />
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting || !manualAlias.trim()}
-              className="glass-card px-4 rounded-2xl font-bold text-xs text-[#00F2FE] border-[#00F2FE]/40 disabled:opacity-50 cursor-pointer"
+              variant="default"
+              size="default"
             >
               Verify
-            </button>
+            </Button>
           </div>
         </form>
 
         {/* Hardware scanners */}
         <div className="grid grid-cols-2 gap-3">
           {nfcSupported && (
-            <button
+            <Button
               onClick={handleNfcTap}
               disabled={isSubmitting}
-              className="py-3 rounded-2xl text-xs font-bold text-white border border-[#00F2FE]/30 hover:bg-[#00F2FE]/10 transition-colors disabled:opacity-50 cursor-pointer"
+              variant="outline"
+              size="default"
             >
               Tap NFC Tag
-            </button>
+            </Button>
           )}
           {bluetoothSupported && (
-            <button
+            <Button
               onClick={handleBluetoothBeacon}
               disabled={isSubmitting}
-              className="py-3 rounded-2xl text-xs font-bold text-white border border-[#00F2FE]/30 hover:bg-[#00F2FE]/10 transition-colors disabled:opacity-50 cursor-pointer"
+              variant="outline"
+              size="default"
             >
               Scan BLE Beacon
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -232,7 +238,7 @@ function ScanContent() {
 export default function ScanPage() {
   return (
     <Suspense
-      fallback={<div className="p-8 text-center text-xs text-[#00F2FE]">Loading Scanner...</div>}
+      fallback={<div className="p-8 text-center text-xs text-indigo-600 dark:text-indigo-400 font-semibold">Loading Scanner...</div>}
     >
       <ScanContent />
     </Suspense>
