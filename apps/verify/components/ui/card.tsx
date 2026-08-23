@@ -1,18 +1,22 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        "rounded-2xl border border-white/10 bg-[#12141a]/85 backdrop-blur-xl text-gray-100 shadow-xl transition-all hover:border-[#ff6b00]/35 hover:shadow-[#ff6b00]/10",
-        className,
-      )}
-      {...props}
-    />
-  ),
-);
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & { interactive?: boolean; elevated?: boolean }
+>(({ className, interactive, elevated, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-xs transition-all duration-200",
+      elevated && "shadow-lg bg-[var(--bg-surface-elevated)]",
+      interactive &&
+        "hover:border-[var(--brand-primary)] hover:shadow-md hover:-translate-y-0.5 cursor-pointer active:translate-y-0",
+      className,
+    )}
+    {...props}
+  />
+));
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
@@ -26,7 +30,7 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HT
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn("text-base font-extrabold text-white tracking-tight", className)}
+      className={cn("text-base font-bold text-[var(--text-primary)] tracking-tight", className)}
       {...props}
     />
   ),
@@ -37,7 +41,7 @@ const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn("text-xs text-gray-400 leading-relaxed", className)} {...props} />
+  <p ref={ref} className={cn("text-xs text-[var(--text-secondary)] leading-relaxed", className)} {...props} />
 ));
 CardDescription.displayName = "CardDescription";
 
