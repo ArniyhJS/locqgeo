@@ -1,8 +1,8 @@
 # LocqGeo
 
-LocqGeo is a **proof-of-presence platform** that lets businesses verify that a real person was physically at a real location — and then reward, audit, or trigger workflows from that verification. It is built as a **Unified Monorepo** managed with **pnpm workspaces** and **Turborepo**.
+LocqGeo is a **location-aware field-verification platform** that helps businesses collect visit evidence, review operational exceptions, and trigger workflows from recorded verification events. Its initial commercial focus is B2B field operations in Nigeria, starting with Abuja. It is built as a **Unified Monorepo** managed with **pnpm workspaces** and **Turborepo**.
 
-Our vision is to make physical-world presence measurable, rewardable, and trustworthy for any business that cares about real-world engagement.
+Our long-term vision is to make physical-world activity more measurable and useful for businesses. The initial product does not claim to prove identity, task completion, or eliminate fraud from a single GPS or QR event.
 
 ## Product Suite
 
@@ -53,7 +53,7 @@ locqgeo-monorepo/
 
 ## Core Features
 
-- **Anti-Cheat & Fraud Detection**: Multi-factor composite risk scoring (accuracy, velocity, network, device) with a 3-tier decision protocol (`VERIFIED`, `VERIFIED_FLAGGED`, `REJECTED_SPOOF`).
+- **Risk-Scored Verification**: Configurable signals (accuracy, velocity, network, device, freshness, and duplication) that support operational review; a verification event is evidence, not proof of identity or task completion.
 - **Enterprise Billing & Wallet Ledger**: Dual-entry balance accounting with atomic budget gating for daily campaign caps.
 - **Consumer Gamification**: Consecutive streak multipliers, squad quest milestones, mystery drops, and viral referral rewards.
 - **Dynamic Feature Gating**: Multi-tenant feature assignment and tier gating with automated cache invalidation.

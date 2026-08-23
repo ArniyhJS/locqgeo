@@ -16,7 +16,7 @@ LocqVerify is designed for contexts where **verification itself is the primary v
 
 ### 1.2 Goals
 
-1. Provide a lightweight, trustless way to verify physical presence.
+1. Provide a lightweight way to collect location-aware evidence associated with a check-in.
 2. Support both campaign-based gamification and standalone verification use cases.
 3. Work reliably offline and in low-connectivity environments.
 4. Keep user identity optional until a functional need requires linking.
@@ -151,16 +151,16 @@ LocqVerify is designed for contexts where **verification itself is the primary v
 
 ### 4.5 Scanner Enhancements
 
-| Feature                             | Description                                                                               | Priority |
-| ----------------------------------- | ----------------------------------------------------------------------------------------- | -------- |
-| Manual alias input                  | Type a short location code (e.g., `LAGOS-IKEJA-01`) when camera access is unavailable.   | High     |
-| Barcode / Data Matrix / PDF417      | Decode 1D/2D barcodes on tickets, badges, and posters that resolve to a `geofence_id`.   | Medium   |
-| NFC verification                    | Tap an NFC tag to verify.                                                                 | Low      |
-| Bluetooth beacon verification       | Indoor verification where GPS is weak.                                                    | Low      |
-| Deep-link / URL scheme verification | Open the app from SMS, email, or social links carrying `geofence_id` and `campaign_id`.   | High     |
-| Audio / ultrasonic beacon           | Listen for inaudible audio signatures broadcast at venues, kiosks, or media placements.   | Low      |
-| Wi-Fi / magnetic fingerprint        | Use known Wi-Fi signatures or geomagnetic patterns as an indoor presence hint.            | Low      |
-| Auto-scan toggle                    | Continuous scanning for events with high throughput.                                      | Low      |
+| Feature                             | Description                                                                             | Priority |
+| ----------------------------------- | --------------------------------------------------------------------------------------- | -------- |
+| Manual alias input                  | Type a short location code (e.g., `LAGOS-IKEJA-01`) when camera access is unavailable.  | High     |
+| Barcode / Data Matrix / PDF417      | Decode 1D/2D barcodes on tickets, badges, and posters that resolve to a `geofence_id`.  | Medium   |
+| NFC verification                    | Tap an NFC tag to verify.                                                               | Low      |
+| Bluetooth beacon verification       | Indoor verification where GPS is weak.                                                  | Low      |
+| Deep-link / URL scheme verification | Open the app from SMS, email, or social links carrying `geofence_id` and `campaign_id`. | High     |
+| Audio / ultrasonic beacon           | Listen for inaudible audio signatures broadcast at venues, kiosks, or media placements. | Low      |
+| Wi-Fi / magnetic fingerprint        | Use known Wi-Fi signatures or geomagnetic patterns as an indoor presence hint.          | Low      |
+| Auto-scan toggle                    | Continuous scanning for events with high throughput.                                    | Low      |
 
 ### 4.6 Trust & Safety
 

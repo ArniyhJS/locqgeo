@@ -64,7 +64,7 @@ Inter-app communication in LocqGeo uses four distinct patterns depending on late
 - **Protocols**: HTTP/1.1 (JSON)
 - **Primary Endpoint**: `POST /api/v1/engine/verify` hosted by `LocqEngine` on port 8080.
 - **Participants**: `LocqDrop` (Consumer PWA) and `LocqVerify` (Attendance PWA) invoke `LocqEngine`.
-- **Purpose**: Real-time verification of physical presence claims, anti-cheat evaluation, and instant decision feedback (sub-50ms latency).
+- **Purpose**: Real-time evaluation of location-aware verification claims and configured risk signals. Server latency is measured against a defined benchmark; mobile end-to-end latency depends on device, GPS, and network conditions.
 
 ### 2. Real-Time Telemetry Event Streaming (SSE)
 
@@ -181,12 +181,12 @@ sequenceDiagram
 
 ## 🔌 Port & Protocol Matrix
 
-| Service / App                      | Role                                  | Port            | Transport Protocol                       | Connected Services                                        |
-| :--------------------------------- | :------------------------------------ | :-------------- | :--------------------------------------- | :-------------------------------------------------------- |
+| Service / App                     | Role                                  | Port            | Transport Protocol                       | Connected Services                                        |
+| :-------------------------------- | :------------------------------------ | :-------------- | :--------------------------------------- | :-------------------------------------------------------- |
 | **`@locqgeo/console`**            | Next.js Enterprise Admin Dashboard    | `3000`          | HTTP / Next.js Server Actions            | PostgreSQL Database, Browser Clients                      |
-| **`@locqgeo/drop`**               | Next.js Consumer Gamification PWA     | `3001`          | HTTP (Fetch Client)                      | `LocqEngine` (`:8080/api/v1/engine/verify`)              |
-| **`@locqgeo/verify`**             | Next.js Standalone Check-In PWA       | `3002`          | HTTP (Fetch Client)                      | `LocqEngine` (`:8080/api/v1/engine/verify`)              |
-| **`@locqgeo/engine`**             | Node.js Fastify Core Verification API | `8080`          | REST API / PostgreSQL Client             | `LocqDrop`, `LocqVerify`, PostgreSQL Database           |
+| **`@locqgeo/drop`**               | Next.js Consumer Gamification PWA     | `3001`          | HTTP (Fetch Client)                      | `LocqEngine` (`:8080/api/v1/engine/verify`)               |
+| **`@locqgeo/verify`**             | Next.js Standalone Check-In PWA       | `3002`          | HTTP (Fetch Client)                      | `LocqEngine` (`:8080/api/v1/engine/verify`)               |
+| **`@locqgeo/engine`**             | Node.js Fastify Core Verification API | `8080`          | REST API / PostgreSQL Client             | `LocqDrop`, `LocqVerify`, PostgreSQL Database             |
 | **`@locqgeo/payout-worker`**      | Asynchronous Payout Processor         | Background Loop | PostgreSQL Polling / HTTPS External      | PostgreSQL Database, Paystack / VTpass / Flutterwave APIs |
 | **`@locqgeo/webhook-dispatcher`** | HMAC Webhook Dispatcher               | Background Loop | PostgreSQL Polling / HTTP POST           | PostgreSQL Database, External Client Webhook Endpoints    |
 | **`@locqgeo/analytics-worker`**   | Telemetry Aggregator                  | Background Loop | PostgreSQL Polling / SQL Pre-Aggregation | PostgreSQL Database                                       |
@@ -208,7 +208,7 @@ sequenceDiagram
      ```
 
 3. **Multi-Tenancy Isolation**:
-   - All geofences, campaigns, API keys, and verification logs are partitioned by `tenant_id` (UUID) across database tables to guarantee enterprise data isolation.
+  - All tenant-owned records must be scoped by authenticated tenant context and covered by authorization tests. Database partitioning alone is not a guarantee of enterprise data isolation.
 
 ---
 

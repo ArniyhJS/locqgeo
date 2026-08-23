@@ -1,6 +1,8 @@
 # Vertical Use Cases Overview
 
-LocqGeo is a generic Proof-of-Presence platform. A single engine can verify that a person was physically at a location, while the engagement layer turns that verification into business value. This guide maps how different industries can use the system.
+LocqGeo is developing a location-aware verification platform. A single engine can collect evidence associated with a site and time, while customer workflows turn that evidence into operational value. This guide records possible applications; none should be treated as validated demand until a customer pays for and uses a pilot.
+
+The current product center is the [Abuja Field Verification MVP](../02-abuja-field-verification-mvp-prd.md). Rewards, public campaigns, credentials, and other vertical applications are deferred or exploratory until the initial workflow is proven.
 
 ---
 
@@ -20,6 +22,21 @@ Once that proof exists, it can be used for:
 - Gamified consumer engagement
 
 ---
+
+## Validation Order
+
+Use this order as a commercial hypothesis, revising it based on access, urgency, deployment friction, measurable value, and renewal:
+
+1. Agent banking and POS networks
+2. Workforce and field operations
+3. Solar, telecom, and distributed infrastructure maintenance
+4. Facilities and private security
+5. Agrifinance and agricultural inspections
+6. Delivery, logistics, and construction
+7. Events, attendance, and credentials
+8. OOH advertising, loyalty, rewards, and other regulated workflows
+
+Each vertical should be evaluated with a named buyer, operational user, existing workflow, evidence requirement, privacy constraints, pricing hypothesis, pilot design, and falsifiable success metric.
 
 ## Verticals
 

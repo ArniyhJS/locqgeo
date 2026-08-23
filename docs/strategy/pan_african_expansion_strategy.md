@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-LocqGeo is built on a core infrastructure primitive: **verifiable, anti-cheat proof-of-presence at sub-50ms latency**. While launched initially with deep technical integrations for Nigeria (Paystack, VTPass, Flutterwave, and CBN 70m POS geofencing compliance), LocqGeo's generic spatial engine ([LocqEngine](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/services/engine)) is designed to scale across all major African economic corridors.
+LocqGeo is being developed around a location-aware field-verification capability for Nigerian operations. The initial commercial hypothesis is Abuja-first B2B field verification; payment integrations, consumer rewards, and cross-border expansion remain dependent on customer evidence, legal review, and operational readiness.
 
 This document outlines the market viability, regulatory catalysts, competitive moats, technical architecture modifications, and regional rollout roadmap for expanding LocqGeo from Nigeria to West Africa, East Africa, Southern Africa, and North Africa.
 
@@ -10,10 +10,10 @@ This document outlines the market viability, regulatory catalysts, competitive m
 
 ## 1. Phase 1 Launchpad: Nigeria Market Analysis
 
-### A. Regulatory Catalyst: CBN POS Geofencing Mandate
-* **Requirement**: The Central Bank of Nigeria (CBN) mandated that all Point of Sale (POS) terminals operating across Nigeria must be **geo-tagged and geo-fenced within a 70-meter radius** of their registered business location by **August 1, 2026** (with compliance proof due July 31, 2026).
-* **Market Scale**: Nigeria has **2.76 million+ POS agents** and **5.9 million+ active POS terminals** across Payment Service Providers (OPay, Moniepoint, PalmPay, Firstmonie, Baxi, Quickteller).
-* **LocqGeo Solution**: LocqGeo provides an emergency turnkey compliance bridge. Payment switches connect to [LocqEngine](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/services/engine) via API keys ([`CreateApiKeySchema`](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/packages/api-contracts/src/os.schema.ts#L88-L92)) or bulk CSV imports ([`BulkGeofenceCsvRowSchema`](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/packages/api-contracts/src/os.schema.ts#L34-L44)) to validate the 70m perimeter and export audit logs ([`TelemetrySummaryResponseSchema`](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/packages/api-contracts/src/os.schema.ts#L58-L83)) in under 2 hours without rebuilding spatial infrastructure.
+### A. Regulatory Catalyst: POS Geofencing Hypothesis
+The strategy has referenced a CBN requirement involving POS geotagging or geofencing and a 70-metre radius. The primary instrument, scope, effective date, evidence standard, and applicability must be verified before this is used in sales material. See [Regulatory Assumptions](../06-regulatory-assumptions.md).
+
+Until confirmed by the relevant source and a customer compliance function, LocqGeo must not present itself as an emergency compliance bridge or imply that a PWA record will satisfy a regulator.
 
 ### B. Market Size & Additional Sectors
 * **Out-of-Home (OOH) Advertising ($170M+ Market)**: Converts static billboards along high-density corridors (Lekki-Epe, Ikeja, Abuja Central) into interactive engagement channels using QR scans and instant airtime/data rewards via [LocqDrop](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/apps/drop).
@@ -26,16 +26,16 @@ This document outlines the market viability, regulatory catalysts, competitive m
 
 While niche players exist in isolated sub-verticals across Africa, **no single platform offers a unified proof-of-presence engine combining anti-cheat telemetry, consumer rewards, and operational verification**:
 
-| Competitor Segment | Key Players in Africa | Core Focus | Missing Capability vs LocqGeo |
-| :--- | :--- | :--- | :--- |
-| **Market Research Task Apps** | GeoPoll, SagaPoll | B2C survey panels & basic store check-ins | Lacks B2B developer API, sub-50ms engine, and 4-step anti-cheat pipeline. |
-| **OOH Ad Verification** | Retinaad, Seedooh, OOH TRACE | Screen Proof-of-Play & billboard camera audits | Lacks consumer QR micro-rewards, wallet payouts, and field workforce tracking. |
-| **Workforce Attendance** | FieldPro, Sevikr Pro, AITime | Geofenced employee clock-in timesheets | Lacks consumer engagement tools, multi-tenant reward floats, and API webhooks. |
-| **Payment & Telco APIs** | Africa's Talking, Beem, Onafriq | Raw communication and payment rails | Provides rails only; no spatial PostGIS database, geofence builder, or fraud detection. |
+| Competitor Segment            | Key Players in Africa           | Core Focus                                     | Missing Capability vs LocqGeo                                                           |
+| :---------------------------- | :------------------------------ | :--------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| **Market Research Task Apps** | GeoPoll, SagaPoll               | B2C survey panels & basic store check-ins      | Lacks B2B developer API, sub-50ms engine, and 4-step anti-cheat pipeline.               |
+| **OOH Ad Verification**       | Retinaad, Seedooh, OOH TRACE    | Screen Proof-of-Play & billboard camera audits | Lacks consumer QR micro-rewards, wallet payouts, and field workforce tracking.          |
+| **Workforce Attendance**      | FieldPro, Sevikr Pro, AITime    | Geofenced employee clock-in timesheets         | Lacks consumer engagement tools, multi-tenant reward floats, and API webhooks.          |
+| **Payment & Telco APIs**      | Africa's Talking, Beem, Onafriq | Raw communication and payment rails            | Provides rails only; no spatial PostGIS database, geofence builder, or fraud detection. |
 
 ### LocqGeo's Core Competitive Moat
 1. **Unified Infrastructure Primitive**: Single engine ([LocqEngine](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/services/engine)) powering B2C consumer drops ([LocqDrop](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/apps/drop)), B2B field verification ([LocqVerify](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/apps/verify)), and enterprise management ([LocqConsole](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/apps/console)).
-2. **Sub-50ms 4-Step Anti-Cheat Pipeline**: Real-time filtering of mock locations, developer mode exploits, velocity/teleportation anomalies, and device fingerprint spoofing.
+2. **Configurable risk signals**: Location, freshness, velocity, duplication, and device signals can help prioritize review; performance and detection quality must be benchmarked for each deployment.
 3. **Closed-Loop Payout Integration**: Automated payout worker ([services/payout-worker](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/services/payout-worker)) linking spatial proof directly to instant disbursements with a 3-layer fallback cascade (Primary -> Secondary -> Internal Wallet Credit).
 
 ---
@@ -109,15 +109,14 @@ Extend [LocqDrop](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub
 
 ---
 
-## 5. Commercial Roadmap & Milestones
+## 5. Evidence-Gated Commercial Roadmap
 
-| Timeline | Milestone | Key Focus |
-| :--- | :--- | :--- |
-| **Q3 2026** | **Nigeria Market Capture** | Execute emergency POS compliance onboarding for Nigerian MMOs & Super Agents prior to August 2026 CBN deadline. Launch OOH brand campaigns in Lagos & Abuja. |
-| **Q4 2026** | **East Africa Launch (Kenya & Uganda)** | Integrate Africa's Talking airtime API & Safaricom M-Pesa. Partner with PAYGO solar providers and Nairobi retail brands. |
-| **Q1 2027** | **Francophone West Africa (Côte d'Ivoire & Senegal)** | Integrate Onafriq, Wave, & Orange Money. Release French PWA localization for LocqDrop & LocqVerify. |
-| **Q2 2027** | **Southern Africa Expansion (South Africa & Zambia)** | Integrate Kazang/Ozow payment rails. Target mining HSE operations and retail loyalty networks. |
-| **Q3 2027** | **Pan-African Enterprise Platform** | Launch multi-country enterprise management in [LocqConsole](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/apps/console), allowing global FMCGs & NGOs to run unified cross-border campaigns. |
+| Gate                      | Evidence required                                                                                    | Decision                                                      |
+| :------------------------ | :--------------------------------------------------------------------------------------------------- | :------------------------------------------------------------ |
+| 1. Abuja pilot            | Paid pilot with a named operational owner and baseline data                                          | Continue only if the workflow is used and value is measurable |
+| 2. Nigerian repeatability | At least three pilots, documented deployment playbook, acceptable false-positive rate                | Expand to another Nigerian region or segment                  |
+| 3. Product readiness      | Security review, retention policy, support process, stable pricing, and renewal or expansion         | Invest in broader platform capabilities                       |
+| 4. Country expansion      | Country-specific buyer, legal/privacy review, payment and language plan, and local operating partner | Evaluate one country at a time                                |
 
 ---
 

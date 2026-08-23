@@ -29,9 +29,9 @@ Document Version: 3.3.0
 
 ### 1.4 Core Engine & Microservices (LocqEngine)
 
-- **FRD-ENGINE-01**: Fastify HTTP server capable of handling sub-50ms ping responses.
+- **FRD-ENGINE-01**: Fastify HTTP server with a documented latency target measured separately for API processing and end-to-end mobile response; sub-50ms may be a benchmark target for a defined server-only path, not a general user promise.
 - **FRD-ENGINE-02**: Zod v4 schema validation via `@locqgeo/api-contracts`.
-- **FRD-ENGINE-03**: 4-Step Anti-Cheat evaluation emitting `REJECTED_ACCURACY`, `REJECTED_VELOCITY`, and `REJECTED_SPOOF` status codes with accumulated `spoof_score`.
+- **FRD-ENGINE-03**: Versioned risk-signal evaluation emitting clear outcomes such as `REJECTED_ACCURACY`, `REJECTED_VELOCITY`, and `REJECTED_SPOOF`, with documented thresholds and false-positive monitoring; signals support review and do not guarantee fraud prevention.
 - **FRD-ENGINE-04**: Decoupled `@locqgeo/payout-worker` service executing queued payouts with primary (Paystack/VTpass), secondary (Flutterwave), and internal wallet fallback cascades.
 - **FRD-ENGINE-05**: Decoupled `@locqgeo/webhook-dispatcher` service dispatching HMAC SHA-256 signed event notifications to enterprise endpoints.
 - **FRD-ENGINE-06**: Decoupled `@locqgeo/analytics-worker` pre-aggregating daily verification trends and active campaign stats for dashboard caching.

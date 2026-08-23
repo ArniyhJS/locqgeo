@@ -2,9 +2,15 @@
 
 ## 1. Summary
 
-There is **no dominant Nigerian or Africa-focused company** offering a full-stack Verified Presence Platform that combines geofence verification, anti-fraud, campaign management, progressive identity, and reward disbursement. LocqGeo is positioned in a whitespace between identity/KYC providers, ad-tech platforms, loyalty tools, and logistics tracking solutions.
+This document is a market hypothesis, not proof of an uncontested category. LocqGeo should initially target Nigerian organizations that need better evidence for recurring field visits, inspections, or agent activity.
 
-Most existing players solve **one piece** of the value chain. LocqGeo’s opportunity is to own the connective layer: **prove a real person was at a real place, then trigger the right business action.**
+The most credible initial positioning is:
+
+> **Location-aware field visit evidence and exception management for distributed Nigerian operations.**
+
+Existing products already cover parts of this problem: workforce management, GPS tracking, survey collection, OOH measurement, identity verification, and payment rails. LocqGeo must win a specific workflow and demonstrate better operational value, rather than assume that combining features creates a defensible category.
+
+See [Product Thesis](../00-product-thesis.md), [Initial ICP and Buyer](../01-icp-and-buyer.md), and [Abuja Field Verification MVP](../02-abuja-field-verification-mvp-prd.md) for the current launch hypothesis.
 
 ---
 
@@ -126,7 +132,7 @@ Most existing players solve **one piece** of the value chain. LocqGeo’s opport
 These companies show what a mature market looks like, but none has a strong Africa-focused, reward-integrated offering.
 
 | Company                              | Category                         | What They Do                                                     | How LocqGeo Differs                                                                                |
-| ------------------------------------ | -------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| ------------------------------------ | -------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | **Radar**                            | Geofencing API                   | Developer-friendly geofencing, trip tracking, location analytics | LocqGeo adds anti-fraud, campaign management, and reward orchestration for non-developer marketers |
 | **GroundTruth**                      | Location-based ads + attribution | Geo-targeted advertising, visitation attribution                 | LocqGeo is more open-platform and reward-integrated; focused on Africa use cases                   |
 | **Bluedot**                          | Location SDK / geofencing        | Accurate geofencing for apps, drive-through, curbside            | LocqGeo adds QR verification, offline PWA support, and reward disbursement                         |
@@ -141,19 +147,19 @@ These companies show what a mature market looks like, but none has a strong Afri
 ## 5. Feature Comparison Matrix
 
 | Capability                       | LocqGeo | Terragon | VerifyMe / YouVerify | Eskimi / Twinpine | Kobo360 | Radar   |
-| -------------------------------- | -------- | -------- | -------------------- | ----------------- | ------- | ------- |
-| Geofence creation                | Yes      | No       | No                   | No                | Limited | Yes     |
-| QR-based verification            | Yes      | No       | No                   | No                | No      | No      |
-| GPS accuracy filtering           | Yes      | No       | No                   | No                | No      | Yes     |
-| Anti-fraud (velocity, duplicate) | Yes      | No       | Partial              | No                | No      | Partial |
-| Campaign builder                 | Yes      | Partial  | No                   | No                | No      | No      |
-| Consumer rewards                 | Yes      | Partial  | No                   | No                | No      | No      |
-| Progressive identity             | Yes      | No       | Partial              | No                | No      | No      |
-| Payout orchestration             | Yes      | No       | No                   | No                | No      | No      |
-| Workforce verification           | Yes      | No       | No                   | No                | Yes     | Partial |
-| OOH attribution                  | Yes      | No       | No                   | No                | No      | Partial |
-| Multi-tenant console             | Yes      | Unknown  | Unknown              | No                | No      | Partial |
-| Africa-first UX                  | Yes      | Yes      | Yes                  | Yes               | Yes     | No      |
+| -------------------------------- | ------- | -------- | -------------------- | ----------------- | ------- | ------- |
+| Geofence creation                | Yes     | No       | No                   | No                | Limited | Yes     |
+| QR-based verification            | Yes     | No       | No                   | No                | No      | No      |
+| GPS accuracy filtering           | Yes     | No       | No                   | No                | No      | Yes     |
+| Anti-fraud (velocity, duplicate) | Yes     | No       | Partial              | No                | No      | Partial |
+| Campaign builder                 | Yes     | Partial  | No                   | No                | No      | No      |
+| Consumer rewards                 | Yes     | Partial  | No                   | No                | No      | No      |
+| Progressive identity             | Yes     | No       | Partial              | No                | No      | No      |
+| Payout orchestration             | Yes     | No       | No                   | No                | No      | No      |
+| Workforce verification           | Yes     | No       | No                   | No                | Yes     | Partial |
+| OOH attribution                  | Yes     | No       | No                   | No                | No      | Partial |
+| Multi-tenant console             | Yes     | Unknown  | Unknown              | No                | No      | Partial |
+| Africa-first UX                  | Yes     | Yes      | Yes                  | Yes               | Yes     | No      |
 
 ---
 
@@ -161,28 +167,27 @@ These companies show what a mature market looks like, but none has a strong Afri
 
 ### How to describe LocqGeo against the market
 
-> “There are companies that verify identity, companies that deliver ads, companies that track trucks, and companies that send rewards. LocqGeo is the layer in the middle: it proves a real person was physically present, then triggers the right action — attribution, reward, or access.”
+> “LocqGeo helps operations teams verify assigned field visits, surface exceptions, and export an audit-supporting record using existing phones and site markers.”
 
 ### Key differentiators
 
-1. **Anti-fraud by design** — device fingerprint, velocity checks, GPS accuracy, duplicate prevention.
-2. **Reward-integrated** — not just verification; it can trigger airtime, data, cash, or voucher rewards.
-3. **Progressive identity** — users stay anonymous until they claim a reward, reducing friction.
-4. **Offline-first consumer apps** — critical for African connectivity conditions.
-5. **Open API + console** — usable by developers and non-technical campaign managers.
-6. **Local reward rails** — built for VTpass, Paystack, telco APIs, and local wallets.
+1. **Operational workflow**: assignments, check-ins, exception review, and exports in one flow.
+2. **Low deployment burden**: works with existing Android phones and site markers for suitable workflows.
+3. **Connectivity tolerance**: captures offline records with explicit pending states and later server validation.
+4. **Configurable risk signals**: location, freshness, duplication, authorization, and device signals support review; they do not prove identity or eliminate fraud.
+5. **Local implementation**: Abuja-based onboarding and support can matter to regional operators.
 
 ---
 
 ## 7. Threats and Risks
 
-| Threat                                         | Likelihood | Mitigation                                                                |
-| ---------------------------------------------- | ---------- | ------------------------------------------------------------------------- |
-| Terragon or a telco adds geofence verification | Medium     | Build anti-fraud IP and land enterprise clients fast                      |
-| Global players like Radar enter Africa         | Medium     | Local reward integrations and offline consumer apps are hard to replicate |
-| Ad platforms add basic QR check-ins            | Medium     | LocqGeo owns the full campaign and payout workflow                       |
-| Payment wallets add reward campaigns           | Low        | They lack geofence verification; partner with them                        |
-| GPS spoofing arms race                         | High       | Continuous investment in spoofing detection and device reputation         |
+| Threat                                         | Likelihood | Mitigation                                                                                               |
+| ---------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------- |
+| Terragon or a telco adds geofence verification | Medium     | Build anti-fraud IP and land enterprise clients fast                                                     |
+| Global players like Radar enter Africa         | Medium     | Local reward integrations and offline consumer apps are hard to replicate                                |
+| Ad platforms add basic QR check-ins            | Medium     | LocqGeo owns the full campaign and payout workflow                                                       |
+| Payment wallets add reward campaigns           | Low        | They lack geofence verification; partner with them                                                       |
+| GPS spoofing and collusion                     | High       | Treat signals as risk indicators, add review and customer evidence controls, and measure false positives |
 
 ---
 
@@ -190,9 +195,9 @@ These companies show what a mature market looks like, but none has a strong Afri
 
 ### Immediate
 
-- Position as the **default verification layer** for Nigerian OOH agencies and billboard owners.
-- Partner with **VTpass / Paystack** for reward disbursement.
-- Run **city-level pilots** with telcos or FMCG brands.
+- Run paid Abuja pilots with one operational segment where the team has warm access.
+- Measure disputed visits, reporting effort, worker friction, false positives, and renewal intent against a customer baseline.
+- Position rewards and OOH campaigns as later applications of the same verification capability, not the initial product.
 
 ### Mid-term
 
@@ -230,7 +235,7 @@ Currently, billboard owners and ad agencies rely on expensive AI cameras (like R
 
 The biggest threat to reward platforms in Africa is organized fraud (e.g., GPS spoofing, script bots).
 
-- **The Advantage:** Make the **4-Step Anti-Cheat Pipeline** the primary selling point to B2B clients. Emphasize the Velocity Filter and Teleportation Anomaly Filter. Guaranteeing brands that 99% of their budget goes to _real humans at real locations_ will decisively win enterprise budgets over generic loyalty apps.
+- **The Advantage:** Make configurable risk signals and exception review part of the B2B value proposition. Demonstrate measured reductions in disputed visits and reporting effort; do not promise that a specific percentage of events came from real humans or that fraud is eliminated.
 
 ### 10.3 Hyper-Optimize for the "Sachet Economy"
 

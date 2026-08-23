@@ -7,7 +7,7 @@ Last Updated: July 2026
 
 **Overall Architectural Rating: 9.4 / 10**
 
-LocqGeo's technical stack is built on modern, high-performance, and cost-effective foundations. The design prioritizes **sub-50ms latency for verification pings**, **contract-driven monorepo type safety**, **fraud resistance**, and **offline resilience in low-connectivity environments**.
+LocqGeo's technical stack is built on modern, cost-conscious foundations. The design prioritizes measurable verification latency, contract-driven monorepo type safety, configurable abuse resistance, and offline resilience in low-connectivity environments. Any latency target must state whether it covers server processing or the full mobile journey.
 
 ```
                        +---------------------------------------+
@@ -45,7 +45,7 @@ LocqGeo's technical stack is built on modern, high-performance, and cost-effecti
 
 4. **Multi-Tier Payout Reliability & Float Escrow**:
    - Enforces pre-funded tenant reward balances (`reward_float_balance`).
-   - Cascading fallback logic (Primary Provider $\rightarrow$ Secondary Flutterwave $\rightarrow$ Internal `user_wallets` credit) guarantees zero dropped rewards during payment gateway downtime.
+   - Cascading fallback logic (Primary Provider $\rightarrow$ Secondary Flutterwave $\rightarrow$ Internal `user_wallets` credit) can reduce payout failures, but cannot guarantee delivery without idempotency, reconciliation, reversal handling, and provider-specific operational controls.
 
 5. **Low-Friction Progressive Web Apps (PWAs)**:
    - PWAs built with Next.js, `idb-keyval`, and Service Workers enable seamless offline queuing for attendance and check-ins in low-connectivity areas without App Store friction.
