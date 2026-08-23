@@ -29,7 +29,7 @@ export default function TeamPage() {
             <tbody className="divide-y divide-gray-800/60">
               <tr>
                 <td className="py-3 font-medium text-white">Aniebiet Ebebe</td>
-                <td className="text-gray-400">aniebiet@spottgeo.com</td>
+                <td className="text-gray-400">aniebiet@locqgeo.com</td>
                 <td>
                   <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 font-semibold border border-blue-500/20">
                     ADMIN

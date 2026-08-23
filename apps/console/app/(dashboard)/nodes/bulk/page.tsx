@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Papa from "papaparse";
-import { BulkGeofenceCsvRowSchema } from "@spottgeo/api-contracts";
+import { BulkGeofenceCsvRowSchema } from "@locqgeo/api-contracts";
 
 interface ParsedRow {
   title: string;
@@ -138,9 +138,10 @@ export default function BulkUploadPage() {
               </h3>
               <button
                 onClick={handleBatchImport}
-                className="glass-button px-5 py-2 rounded-lg text-xs font-semibold text-white"
+                disabled={isSubmitting}
+                className="glass-button px-5 py-2 rounded-lg text-xs font-semibold text-white disabled:opacity-50"
               >
-                Import {rows.length} Geofences to PostGIS
+                {isSubmitting ? "Importing..." : `Import ${rows.length} Geofences to PostGIS`}
               </button>
             </div>
 

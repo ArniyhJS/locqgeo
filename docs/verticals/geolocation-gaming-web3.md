@@ -11,11 +11,11 @@ Location-based game developers (AR games, Web3 "Visit-to-Earn" or "Move-to-Earn"
 - Building custom anti-cheat engines for spatial validation requires specialized GIS engineering.
 - Game studios need a low-latency API to verify real-world movement during gameplay loops.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
-- In-game loot drop spots, portals, or quest nodes are synced with SpottEngine geofences.
-- Players perform location verification calls via the SpottEngine REST API during gameplay.
-- SpottEngine's 4-step anti-cheat filter calculates a spoof score and blocks emulated or spoofed location pings.
+- In-game loot drop spots, portals, or quest nodes are synced with LocqEngine geofences.
+- Players perform location verification calls via the LocqEngine REST API during gameplay.
+- LocqEngine's 4-step anti-cheat filter calculates a spoof score and blocks emulated or spoofed location pings.
 
 ### Key features used
 
@@ -28,7 +28,7 @@ Location-based game developers (AR games, Web3 "Visit-to-Earn" or "Move-to-Earn"
 
 ### Example
 
-A Web3 AR game studio integrates SpottEngine's API to ensure players physically visit sponsored real-world locations (coffee shops, landmarks) before claiming rare in-game NFT items.
+A Web3 AR game studio integrates LocqEngine's API to ensure players physically visit sponsored real-world locations (coffee shops, landmarks) before claiming rare in-game NFT items.
 
 **Additional examples:**
 

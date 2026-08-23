@@ -1,10 +1,10 @@
-# SpottEngine Product Requirements Document (PRD)
+# LocqEngine Product Requirements Document (PRD)
 
 ## 1. Overview
 
-**SpottEngine** is the core API and verification engine of the SpottGeo platform. It receives presence claims from consumer apps (SpottDrop, SpottVerify), validates them against geofences, campaigns, and fraud rules, and records verified events. It also exposes APIs for campaign management, user identity linking, leaderboards, and telemetry.
+**LocqEngine** is the core API and verification engine of the LocqGeo platform. It receives presence claims from consumer apps (LocqDrop, LocqVerify), validates them against geofences, campaigns, and fraud rules, and records verified events. It also exposes APIs for campaign management, user identity linking, leaderboards, and telemetry.
 
-SpottEngine is the **platform layer** that everything else depends on. It must be fast, reliable, fraud-resistant, and easy to integrate.
+LocqEngine is the **platform layer** that everything else depends on. It must be fast, reliable, fraud-resistant, and easy to integrate.
 
 ### 1.1 Product Vision
 
@@ -19,12 +19,12 @@ SpottEngine is the **platform layer** that everything else depends on. It must b
 5. Scale horizontally to support millions of verifications per day.
 6. Maintain a complete, auditable record of every verification attempt.
 
-### 1.3 Users of SpottEngine
+### 1.3 Users of LocqEngine
 
 | User                             | How They Use It                                                         |
 | -------------------------------- | ----------------------------------------------------------------------- |
-| **SpottDrop / SpottVerify PWAs** | Submit verification requests from consumers.                            |
-| **SpottConsole**                 | Configure geofences, campaigns, users, and view analytics.              |
+| **LocqDrop / LocqVerify PWAs** | Submit verification requests from consumers.                            |
+| **LocqConsole**                 | Configure geofences, campaigns, users, and view analytics.              |
 | **External developers**          | Integrate verification into third-party apps.                           |
 | **Enterprise clients**           | Use webhooks and API responses for attribution, payroll, or compliance. |
 | **Payout workers**               | Consume verification events to process rewards.                         |
@@ -35,7 +35,7 @@ SpottEngine is the **platform layer** that everything else depends on. It must b
 
 | Concept          | Definition                                                                            |
 | ---------------- | ------------------------------------------------------------------------------------- |
-| **Tenant**       | A business account using SpottEngine (e.g., an agency, brand, or institution).        |
+| **Tenant**       | A business account using LocqEngine (e.g., an agency, brand, or institution).        |
 | **Geofence**     | A physical boundary defined by latitude, longitude, and radius.                       |
 | **Campaign**     | A set of rules, geofences, dates, budgets, and rewards for a presence initiative.     |
 | **Verification** | An attempt to prove presence at a geofence, resulting in verified or rejected status. |
@@ -182,7 +182,7 @@ The central presence-verification endpoint.
 **Endpoints:**
 
 - `GET /health` — engine health check.
-- `POST /api/v1/console/telemetry` — receive telemetry summaries from SpottConsole.
+- `POST /api/v1/console/telemetry` — receive telemetry summaries from LocqConsole.
 
 ---
 
@@ -201,7 +201,7 @@ The central presence-verification endpoint.
 
 ## 4. Data Model
 
-Key tables already defined in the SpottGeo schema:
+Key tables already defined in the LocqGeo schema:
 
 - `tenants`
 - `geofences`
@@ -381,8 +381,8 @@ Payout statuses:
 
 ## 13. Related Documents
 
-- `docs/product/spottdrop_prd.md`
-- `docs/product/spottverify_prd.md`
-- `docs/product/spottconsole_prd.md`
+- `docs/product/locqdrop_prd.md`
+- `docs/product/locqverify_prd.md`
+- `docs/product/locqconsole_prd.md`
 - `docs/strategy/fraud_detection_roadmap.md`
 - `docs/architecture/nationwide_campaign_architecture.md`

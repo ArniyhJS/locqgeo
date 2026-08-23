@@ -1,6 +1,6 @@
 # Nationwide Gamification Campaign Architecture
 
-This document describes the scaled-up deployment architecture required for SpottGeo to host nationwide gamification events.
+This document describes the scaled-up deployment architecture required for LocqGeo to host nationwide gamification events.
 
 ## Principles
 
@@ -15,7 +15,7 @@ This document describes the scaled-up deployment architecture required for Spott
 ┌──────────────────────────────────────────────────────────────────┐
 │                        Client Layer                              │
 │  ┌────────────┐  ┌─────────────┐  ┌──────────────────┐           │
-│  │ SpottDrop  │  │ SpottVerify │  │  SpottConsole    │           │
+│  │ LocqDrop  │  │ LocqVerify │  │  LocqConsole    │           │
 │  │    PWA     │  │     PWA     │  │   Dashboard      │           │
 │  └─────┬──────┘  └──────┬──────┘  └────────┬─────────┘           │
 │        │                │                  │                     │
@@ -31,7 +31,7 @@ This document describes the scaled-up deployment architecture required for Spott
          ┌───────────────┼───────────────┐
          ▼               ▼               ▼
 ┌────────────────┐ ┌────────────────┐ ┌────────────────┐
-│ SpottEngine    │ │ SpottEngine    │ │ SpottEngine    │
+│ LocqEngine    │ │ LocqEngine    │ │ LocqEngine    │
 │  Instance 1    │ │  Instance 2    │ │  Instance N    │
 │   (Fastify)    │ │   (Fastify)    │ │   (Fastify)    │
 └───────┬────────┘ └───────┬────────┘ └───────┬────────┘
@@ -67,7 +67,7 @@ This document describes the scaled-up deployment architecture required for Spott
 
 ### Client Layer
 
-- **SpottDrop / SpottVerify**: Progressive web apps cached by the CDN.
+- **LocqDrop / LocqVerify**: Progressive web apps cached by the CDN.
 - Capture QR scans, GPS coordinates, and device fingerprints.
 - Queue verifications offline when connectivity is poor and sync later.
 
@@ -78,10 +78,10 @@ This document describes the scaled-up deployment architecture required for Spott
 
 ### Load Balancer
 
-- Distribute traffic across the nearest healthy SpottEngine instances.
+- Distribute traffic across the nearest healthy LocqEngine instances.
 - Apply WAF rules and enforce rate limits at the edge.
 
-### SpottEngine Cluster
+### LocqEngine Cluster
 
 - Stateless Fastify containers that run the verification API.
 - Scale horizontally based on CPU, memory, or request-queue depth.
@@ -117,7 +117,7 @@ This document describes the scaled-up deployment architecture required for Spott
 1. A user scans a QR code at a billboard in Kano.
 2. The PWA captures GPS + `device_id` (+ optional `user_id`).
 3. The request hits the nearest CDN edge and is forwarded to the load balancer.
-4. A SpottEngine instance validates the request:
+4. A LocqEngine instance validates the request:
    - Check the rate limit in Redis.
    - Look up the geofence (read replica).
    - Check campaign eligibility (cached + DB).
@@ -159,4 +159,4 @@ This document describes the scaled-up deployment architecture required for Spott
 ## Notes
 
 - This is a target-state architecture. Start with city/regional pilots, prove unit economics, and add scale layers as traffic grows.
-- The existing SpottEngine, SpottConsole, SpottDrop, and SpottVerify apps already align with this architecture because they are stateless and API-driven.
+- The existing LocqEngine, LocqConsole, LocqDrop, and LocqVerify apps already align with this architecture because they are stateless and API-driven.

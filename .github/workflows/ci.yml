@@ -1,4 +1,4 @@
-name: SpottGeo Monorepo CI
+name: LocqGeo Monorepo CI
 
 on:
   push:

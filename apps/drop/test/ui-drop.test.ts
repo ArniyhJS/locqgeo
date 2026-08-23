@@ -4,7 +4,7 @@ import { StreakHero } from "../components/StreakHero";
 import { SquadQuestCard } from "../components/SquadQuestCard";
 import { MysteryDropModal } from "../components/MysteryDropModal";
 
-describe("SpottDrop UI Components", () => {
+describe("LocqDrop UI Components", () => {
   describe("StreakHero", () => {
     it("exports valid StreakHero React component", () => {
       expect(StreakHero).toBeDefined();

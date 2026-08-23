@@ -12,7 +12,7 @@ Car rental, test-drive, and ride-sharing companies need verified pickup/drop-off
 - Rental disputes over fuel and damage often lack verifiable handover timestamps.
 - EV charging networks need proof of charger use for subsidy claims.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Rental lots, test-drive zones, and drop-off points become geofences.
 - Driver or renter scans at handover to confirm location.

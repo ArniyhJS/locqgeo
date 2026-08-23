@@ -3,7 +3,7 @@ import Fastify, { FastifyInstance } from "fastify";
 
 const mockExecute = vi.fn();
 
-vi.mock("@spottgeo/database", () => ({
+vi.mock("@locqgeo/database", () => ({
   db: {
     execute: (...args: unknown[]) => mockExecute(...args),
   },
@@ -13,7 +13,7 @@ vi.mock("@spottgeo/database", () => ({
 
 import { verifyRoutes } from "./verify.js";
 
-describe("SpottEngine Generic Presence Engine - POST /api/v1/engine/verify", () => {
+describe("LocqEngine Generic Presence Engine - POST /api/v1/engine/verify", () => {
   let app: FastifyInstance;
   const validGeofenceId = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 

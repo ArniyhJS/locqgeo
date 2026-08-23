@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { CreateGeofenceSchema, type CreateGeofenceInput } from "@spottgeo/api-contracts";
-import { db, sql } from "@spottgeo/database";
+import { CreateGeofenceSchema, type CreateGeofenceInput } from "@locqgeo/api-contracts";
+import { db, sql } from "@locqgeo/database";
 
 export async function createGeofenceAction(tenantId: string, rawInput: CreateGeofenceInput) {
   const parseResult = CreateGeofenceSchema.safeParse(rawInput);
@@ -69,7 +69,7 @@ export async function createGeofenceAction(tenantId: string, rawInput: CreateGeo
           : { id: "geofence_demo", title, created_at: new Date() },
     };
   } catch (error) {
-    console.error("[SpottConsole] Failed to create geofence:", error);
+    console.error("[LocqConsole] Failed to create geofence:", error);
     return {
       success: false,
       error: "Database error occurred while creating the geofence.",
@@ -132,7 +132,7 @@ export async function getGeofencesAction(tenantId: string) {
       })),
     };
   } catch (error) {
-    console.error("[SpottConsole] Failed to fetch geofences:", error);
+    console.error("[LocqConsole] Failed to fetch geofences:", error);
     return { success: false, error: "Failed to fetch geofences" };
   }
 }

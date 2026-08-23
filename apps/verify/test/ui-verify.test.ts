@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { RadarScanner } from "../components/RadarScanner";
 import { VerificationFeedbackDrawer } from "../components/VerificationFeedbackDrawer";
-import { VerificationHistory, type VerificationItem } from "../components/VerificationHistory";
+import { VerificationHistory } from "../components/VerificationHistory";
 
-describe("SpottVerify UI Components", () => {
+describe("LocqVerify UI Components", () => {
   it("exports valid RadarScanner React component", () => {
     expect(RadarScanner).toBeDefined();
     expect(typeof RadarScanner).toBe("function");

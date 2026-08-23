@@ -1,5 +1,5 @@
 {
-  "name": "@spottgeo/webhook-dispatcher",
+  "name": "@locqgeo/webhook-dispatcher",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -13,12 +13,12 @@
     "lint": "eslint . --max-warnings=0"
   },
   "dependencies": {
-    "@spottgeo/api-contracts": "workspace:*",
-    "@spottgeo/database": "workspace:*",
+    "@locqgeo/api-contracts": "workspace:*",
+    "@locqgeo/database": "workspace:*",
     "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
-    "@spottgeo/config": "workspace:*",
+    "@locqgeo/config": "workspace:*",
     "@types/node": "^26.1.1",
     "tsx": "^4.23.1",
     "typescript": "^5.9.3",

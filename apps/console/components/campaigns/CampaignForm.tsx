@@ -4,7 +4,7 @@ import { useState, useActionState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createCampaignAction } from "@/app/actions/campaigns";
-import type { CampaignCreateRequest } from "@spottgeo/api-contracts";
+import type { CampaignCreateRequest } from "@locqgeo/api-contracts";
 
 const ACTION_TYPES = ["REWARD", "CHECKIN", "ATTENDANCE", "AUDIT", "ACCESS"] as const;
 const REWARD_TYPES = ["AIRTIME", "DATA", "CASH", "VOUCHER"] as const;

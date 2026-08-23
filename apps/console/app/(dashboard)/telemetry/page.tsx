@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { TelemetrySummaryResponse } from "@spottgeo/api-contracts";
+import type { TelemetrySummaryResponse } from "@locqgeo/api-contracts";
 import { FraudBreakdownChart } from "@/components/analytics/FraudBreakdownChart";
 import { HourlyTrendChart } from "@/components/analytics/HourlyTrendChart";
 import { DEMO_TENANT_ID } from "@/lib/constants";

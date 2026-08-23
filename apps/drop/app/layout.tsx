@@ -3,7 +3,7 @@ import "./globals.css";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "SpottDrop | Proof-of-Location Consumer PWA",
+  title: "LocqDrop | Proof-of-Location Consumer PWA",
   description:
     "Scan physical billboards, verify your geofence location, and claim instant airtime & data rewards.",
   manifest: "/manifest.json",
@@ -30,9 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="h-14 border-b border-gray-800/80 bg-[#10121a]/90 px-5 flex items-center justify-between backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-2.5">
               <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-[#ff6b00] to-[#ffa800] flex items-center justify-center font-black text-xs text-black shadow-lg shadow-[#ff6b00]/30">
-                SD
+                LD
               </div>
-              <span className="font-extrabold text-sm tracking-tight text-white">SpottDrop</span>
+              <span className="font-extrabold text-sm tracking-tight text-white">LocqDrop</span>
             </div>
 
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#ff6b00]/10 text-[#ff6b00] border border-[#ff6b00]/30">

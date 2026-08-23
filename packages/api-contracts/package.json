@@ -1,5 +1,5 @@
 {
-  "name": "@spottgeo/api-contracts",
+  "name": "@locqgeo/api-contracts",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -22,7 +22,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@spottgeo/config": "workspace:*",
+    "@locqgeo/config": "workspace:*",
     "@types/node": "^26.1.1",
     "eslint": "^9.39.5",
     "typescript": "^5.9.3",

@@ -12,7 +12,7 @@ Property platforms need to confirm agents conducted showings, inspections, or ha
 - Property platforms lack data on which listings generate real foot traffic.
 - Multiple agents showing the same property create coordination conflicts.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Properties become geofences.
 - Agents scan at the location; prospective tenants can also verify they attended.

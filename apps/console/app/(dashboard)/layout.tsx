@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { ConsoleSidebar } from "@/components/layout/ConsoleSidebar";
 
 export const metadata: Metadata = {
-  title: "SpottConsole | Enterprise Presence Management Console",
+  title: "LocqConsole | Enterprise Presence Management Console",
   description:
-    "Enterprise SpottGeo campaign builder, telemetry analytics, and PostGIS geofence monitor.",
+    "Enterprise LocqGeo campaign builder, telemetry analytics, and PostGIS geofence monitor.",
 };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <header className="h-16 border-b border-gray-800/80 bg-[#10121a]/60 px-4 md:px-8 flex items-center justify-between backdrop-blur-md shrink-0">
           <div className="flex items-center gap-3">
             <h2 className="font-semibold text-gray-200 text-xs md:text-sm">
-              SpottGeo Enterprise Ops
+              LocqGeo Enterprise Ops
             </h2>
             <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#ff6b00]/10 text-[#ff6b00] border border-[#ff6b00]/30">
               Tenant: Acme Corp B2B

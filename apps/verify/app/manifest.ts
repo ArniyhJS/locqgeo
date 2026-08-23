@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "SpottVerify",
-    short_name: "SpottVerify",
+    name: "LocqVerify",
+    short_name: "LocqVerify",
     description: "Universal proof-of-presence verifier",
     start_url: "/",
     display: "standalone",

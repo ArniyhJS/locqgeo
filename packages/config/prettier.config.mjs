@@ -1,5 +1,5 @@
 /**
- * Shared Prettier config for all SpottGeo packages and apps.
+ * Shared Prettier config for all LocqGeo packages and apps.
  */
 export default {
   semi: true,

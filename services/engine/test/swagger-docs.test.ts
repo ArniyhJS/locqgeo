@@ -7,10 +7,10 @@ describe("OpenAPI Specification Generator & Swagger Docs Endpoint", () => {
   it("generates valid OpenAPI 3.0.3 document structure", () => {
     const spec = generateOpenApiSpecObject();
     expect(spec.openapi).toBe("3.0.3");
-    expect(spec.info.title).toBe("SpottGeo Engine API");
+    expect(spec.info.title).toBe("LocqGeo Engine API");
     expect(spec.info.version).toBe("1.0.0");
     expect(spec.components.securitySchemes.ApiKeyAuth).toBeDefined();
-    expect(spec.components.securitySchemes.ApiKeyAuth.name).toBe("X-Spott-Api-Key");
+    expect(spec.components.securitySchemes.ApiKeyAuth.name).toBe("X-Locq-Api-Key");
     expect(spec.paths["/api/v1/engine/verify"]).toBeDefined();
     expect(spec.paths["/api/v1/webhooks/paystack"]).toBeDefined();
     expect(spec.paths["/api/v1/webhooks/stripe"]).toBeDefined();
@@ -29,6 +29,6 @@ describe("OpenAPI Specification Generator & Swagger Docs Endpoint", () => {
     expect(response.statusCode).toBe(200);
     const json = response.json();
     expect(json.openapi).toBe("3.0.3");
-    expect(json.info.title).toBe("SpottGeo Engine API");
+    expect(json.info.title).toBe("LocqGeo Engine API");
   });
 });

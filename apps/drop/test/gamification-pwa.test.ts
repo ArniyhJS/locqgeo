@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { StreakStatusSchema, CreateSquadSchema } from "@spottgeo/api-contracts";
+import { StreakStatusSchema, CreateSquadSchema } from "@locqgeo/api-contracts";
 import StreaksPage from "../app/(main)/streaks/page";
 import SquadsPage from "../app/(main)/squads/page";
 
-describe("SpottDrop Gamification & Squad PWA Pages", () => {
+describe("LocqDrop Gamification & Squad PWA Pages", () => {
   it("validates streak schema payload for PWA rendering", () => {
     const valid = StreakStatusSchema.safeParse({
       userId: "123e4567-e89b-12d3-a456-426614174000",

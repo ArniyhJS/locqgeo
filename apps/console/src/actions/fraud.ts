@@ -1,10 +1,10 @@
 "use server";
 
-import { UnblockDeviceSchema, type UnblockDeviceInput } from "@spottgeo/api-contracts";
+import { UnblockDeviceSchema, type UnblockDeviceInput } from "@locqgeo/api-contracts";
 
 export type UnblockDeviceActionResult =
   | { success: true; targetDeviceId: string }
-  | { success: false; error: any };
+  | { success: false; error: unknown };
 
 export async function unblockDeviceAction(
   input: UnblockDeviceInput

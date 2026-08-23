@@ -89,7 +89,7 @@ export default function ApiKeysPage() {
             <tbody className="divide-y divide-gray-800/60">
               <tr>
                 <td className="py-3 font-medium text-white">Primary Production App SDK</td>
-                <td className="font-mono text-cyan-400">spott_live_...</td>
+                <td className="font-mono text-cyan-400">locq_live_...</td>
                 <td>
                   <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20">
                     ACTIVE

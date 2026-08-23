@@ -125,10 +125,11 @@ export function BillingClient() {
           message: errorMsg,
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setFeedback({
         type: "error",
-        message: err?.message || "An unexpected error occurred during top-up.",
+        message:
+          err instanceof Error ? err.message : "An unexpected error occurred during top-up.",
       });
     } finally {
       setLoading(false);

@@ -1,4 +1,4 @@
-import { db, sql } from "@spottgeo/database";
+import { db, sql } from "@locqgeo/database";
 
 export interface PayoutRequest {
   claimId: string;
@@ -30,7 +30,7 @@ export class PayoutOrchestrator {
    * 3. If Secondary fails, fallback to crediting user_wallets balance.
    */
   public static async processPayout(request: PayoutRequest): Promise<PayoutResult> {
-    const reference = `SPOTT_${Date.now()}_${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+    const reference = `LOCQ_${Date.now()}_${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
     const currency = request.currency || "NGN";
 
     // Deduct from tenant reward float if tenantId is provided

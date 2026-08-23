@@ -1,8 +1,8 @@
 import { get, set, update } from "idb-keyval";
-import type { LocalVerificationRecord } from "@spottgeo/api-contracts";
+import type { LocalVerificationRecord } from "@locqgeo/api-contracts";
 
-const WALLET_STORAGE_KEY = "spott_wallet_verifications_v1";
-const OFFLINE_QUEUE_KEY = "spott_offline_pings_v1";
+const WALLET_STORAGE_KEY = "locq_wallet_verifications_v1";
+const OFFLINE_QUEUE_KEY = "locq_offline_pings_v1";
 
 export interface PendingOfflinePing {
   id: string;

@@ -1,11 +1,18 @@
-export function formatSseFrame(event: string, data: any): string {
+export function formatSseFrame(event: string, data: unknown): string {
   return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 }
 
-export class TelemetryStreamManager {
-  private clients: Map<string, any> = new Map();
+interface SseClientReply {
+  raw: {
+    writableEnded?: boolean;
+    write: (chunk: string) => boolean | void;
+  };
+}
 
-  addClient(id: string, reply: any) {
+export class TelemetryStreamManager {
+  private clients: Map<string, SseClientReply> = new Map();
+
+  addClient(id: string, reply: SseClientReply) {
     this.clients.set(id, reply);
   }
 
@@ -17,7 +24,7 @@ export class TelemetryStreamManager {
     return this.clients.size;
   }
 
-  broadcastEvent(data: any) {
+  broadcastEvent(data: unknown) {
     const frame = formatSseFrame("telemetry", data);
     for (const [id, reply] of this.clients.entries()) {
       try {

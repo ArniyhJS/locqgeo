@@ -2,7 +2,7 @@ export function generateOpenApiSpecObject() {
   return {
     openapi: "3.0.3",
     info: {
-      title: "SpottGeo Engine API",
+      title: "LocqGeo Engine API",
       version: "1.0.0",
       description: "High-concurrency PostGIS presence verification, anti-cheat AI scoring, and developer webhooks API.",
     },
@@ -14,7 +14,7 @@ export function generateOpenApiSpecObject() {
         ApiKeyAuth: {
           type: "apiKey",
           in: "header",
-          name: "X-Spott-Api-Key",
+          name: "X-Locq-Api-Key",
         },
       },
     },

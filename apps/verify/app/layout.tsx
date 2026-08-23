@@ -3,7 +3,7 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SpottVerify | Proof-of-Presence Verifier",
+  title: "LocqVerify | Proof-of-Presence Verifier",
   description: "Verify your physical presence at geofenced locations and events.",
   manifest: "/manifest.json",
 };
@@ -27,9 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="h-14 border-b border-gray-800/80 bg-[#10121a]/90 px-5 flex items-center justify-between backdrop-blur-md sticky top-0 z-40">
             <div className="flex items-center gap-2.5">
               <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-[#ff6b00] to-[#ffa800] flex items-center justify-center font-black text-xs text-black shadow-lg shadow-[#ff6b00]/30">
-                SV
+                LV
               </div>
-              <span className="font-extrabold text-sm tracking-tight text-white">SpottVerify</span>
+              <span className="font-extrabold text-sm tracking-tight text-white">LocqVerify</span>
             </div>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#ff6b00]/10 text-[#ff6b00] border border-[#ff6b00]/30">
               Proof of Presence

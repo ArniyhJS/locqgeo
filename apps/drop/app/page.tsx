@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSpottScanner } from "@/hooks/useSpottScanner";
+import { useLocqScanner } from "@/hooks/useLocqScanner";
 import { AccuracyBadge } from "@/components/scanner/AccuracyBadge";
 import { RadarMap } from "@/components/radar/RadarMap";
 import { NodeDetailsSheet } from "@/components/radar/NodeDetailsSheet";
@@ -17,7 +17,7 @@ interface NodeItem {
 }
 
 export default function RadarPage() {
-  const { currentLocation, isLocating, gpsError, captureLocation } = useSpottScanner();
+  const { currentLocation, isLocating, gpsError, captureLocation } = useLocqScanner();
   const [selectedNode, setSelectedNode] = useState<NodeItem | null>(null);
 
   const handleScanNode = (geofenceId: string) => {

@@ -12,7 +12,7 @@ Pharma companies send medical reps to clinics but struggle to verify visits. Hom
 - Sampling and promotional inventory are hard to reconcile with actual visits.
 - Compliance teams require location-audited records for regulatory inspections.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Clinics and patient addresses become geofences.
 - Reps or nurses scan on arrival to confirm the visit.

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { LocalVerificationRecord } from "@spottgeo/api-contracts";
+import type { LocalVerificationRecord } from "@locqgeo/api-contracts";
 import { getLocalVerifications } from "@/lib/db-store";
 import { VerificationCard } from "@/components/wallet/VerificationCard";
 

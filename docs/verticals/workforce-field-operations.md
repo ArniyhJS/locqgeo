@@ -12,7 +12,7 @@ Remote staff often need to prove they were at a site. Manual sign-in sheets are 
 - Compliance audits require paper trails that are hard to reconstruct.
 - Route optimization and actual route execution often diverge.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Work sites become geofences.
 - Field workers scan on arrival and departure.

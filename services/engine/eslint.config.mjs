@@ -1,3 +1,3 @@
-import baseConfig from "@spottgeo/config/eslint.config.mjs";
+import baseConfig from "@locqgeo/config/eslint.config.mjs";
 
 export default [...baseConfig];

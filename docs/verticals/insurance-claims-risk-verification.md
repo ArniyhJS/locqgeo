@@ -12,7 +12,7 @@ Insurers need to verify that inspectors, adjusters, or policyholders actually vi
 - Catastrophe-response teams need to coordinate thousands of site visits across wide regions.
 - Claims leakage from inaccurate location data erodes profitability.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Claim locations become geofences.
 - Adjusters scan at the site; the engine records verified presence with timestamp and GPS accuracy.

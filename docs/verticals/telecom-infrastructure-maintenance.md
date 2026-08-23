@@ -12,15 +12,15 @@ Telecommunications infrastructure providers spend millions maintaining cell towe
 - Unscheduled downtime increases when preventative maintenance routines are skipped.
 - Underground fiber line inspectors fake patrol routes along highway corridors.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Tower compound gates and fiber junction boxes are provisioned as geofenced location nodes.
-- Engineers scan location nodes using SpottVerify upon arriving at a site.
-- SpottEngine's velocity filter prevents engineers from logging multiple distant tower visits simultaneously.
+- Engineers scan location nodes using LocqVerify upon arriving at a site.
+- LocqEngine's velocity filter prevents engineers from logging multiple distant tower visits simultaneously.
 
 ### Key features used
 
-- Anti-cheat velocity & teleportation filter, geofence radius enforcement, SpottConsole operational telemetry.
+- Anti-cheat velocity & teleportation filter, geofence radius enforcement, LocqConsole operational telemetry.
 
 ### Revenue model
 
@@ -29,7 +29,7 @@ Telecommunications infrastructure providers spend millions maintaining cell towe
 
 ### Example
 
-A tower infrastructure company uses SpottEngine to confirm that maintenance crews physically spent 30 minutes at a remote base station before approving service vendor invoices.
+A tower infrastructure company uses LocqEngine to confirm that maintenance crews physically spent 30 minutes at a remote base station before approving service vendor invoices.
 
 **Additional examples:**
 

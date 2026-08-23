@@ -12,11 +12,11 @@ Environmental funds, carbon credit buyers, and ESG auditors struggle to verify M
 - Field auditors charge high fees for manual physical site inspections.
 - Lack of cryptographic and GPS-backed audit trails for environmental grants.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Plantation sites and renewable installations are designated as geofenced nodes.
-- Field workers use SpottVerify to record offline-capable, GPS-verified tree planting or maintenance pings.
-- SpottEngine's anti-cheat pipeline prevents spoofed coordinates from claiming credits.
+- Field workers use LocqVerify to record offline-capable, GPS-verified tree planting or maintenance pings.
+- LocqEngine's anti-cheat pipeline prevents spoofed coordinates from claiming credits.
 
 ### Key features used
 

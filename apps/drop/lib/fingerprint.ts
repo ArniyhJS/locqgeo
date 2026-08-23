@@ -1,5 +1,5 @@
 export async function getOrCreateDeviceId(): Promise<string> {
-  const STORAGE_KEY = "spott_device_id_v1";
+  const STORAGE_KEY = "locq_device_id_v1";
   const existingId = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
 
   if (existingId && existingId.length >= 32) {
@@ -19,7 +19,7 @@ export async function getOrCreateDeviceId(): Promise<string> {
       ctx.fillStyle = "#f60";
       ctx.fillRect(125, 1, 62, 20);
       ctx.fillStyle = "#069";
-      ctx.fillText("SpottGeo,PoL#1", 2, 15);
+      ctx.fillText("LocqGeo,PoL#1", 2, 15);
       canvasHash = canvas.toDataURL();
     }
   }

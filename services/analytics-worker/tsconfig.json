@@ -1,5 +1,5 @@
 {
-  "extends": "@spottgeo/config/tsconfig.base.json",
+  "extends": "@locqgeo/config/tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"

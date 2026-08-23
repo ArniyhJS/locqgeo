@@ -1,11 +1,11 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { db, sql } from "@spottgeo/database";
+import { db, sql } from "@locqgeo/database";
 import {
   InitiateLinkSchema,
   UserLinkResponseSchema,
   UserProfileResponseSchema,
   LookupUserSchema,
-} from "@spottgeo/api-contracts";
+} from "@locqgeo/api-contracts";
 
 export async function userRoutes(fastify: FastifyInstance) {
   // POST /api/v1/users/link

@@ -11,11 +11,11 @@ Civil society organizations, electoral commissions, and international observers 
 - Fake observer reports are submitted by individuals who were not physically present at polling units.
 - High volume of concurrent verification attempts during specific election morning hours.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Polling unit locations nationwide are ingested into PostGIS as geofenced nodes.
-- Observers scan QR codes or location nodes upon arrival using SpottVerify.
-- SpottEngine validates location bounds and records a tamper-proof timestamped audit entry.
+- Observers scan QR codes or location nodes upon arrival using LocqVerify.
+- LocqEngine validates location bounds and records a tamper-proof timestamped audit entry.
 
 ### Key features used
 
@@ -27,7 +27,7 @@ Civil society organizations, electoral commissions, and international observers 
 
 ### Example
 
-An election monitoring coalition uses SpottVerify to verify that 10,000 accredited field observers checked in at their assigned polling units across the country by 8:00 AM on election day.
+An election monitoring coalition uses LocqVerify to verify that 10,000 accredited field observers checked in at their assigned polling units across the country by 8:00 AM on election day.
 
 **Additional examples:**
 

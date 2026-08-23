@@ -1,5 +1,5 @@
 {
-  "name": "@spottgeo/console",
+  "name": "@locqgeo/console",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
-    "@spottgeo/api-contracts": "workspace:*",
-    "@spottgeo/database": "workspace:*",
+    "@locqgeo/api-contracts": "workspace:*",
+    "@locqgeo/database": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.26.0",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^16.2.12",
-    "@spottgeo/config": "workspace:*",
+    "@locqgeo/config": "workspace:*",
     "@types/node": "^26.1.1",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^19.2.17",

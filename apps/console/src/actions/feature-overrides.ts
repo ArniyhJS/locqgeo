@@ -1,6 +1,6 @@
 "use server";
 
-import { CreateFeatureOverrideSchema, type CreateFeatureOverrideInput } from "@spottgeo/api-contracts";
+import { CreateFeatureOverrideSchema, type CreateFeatureOverrideInput } from "@locqgeo/api-contracts";
 import { randomUUID } from "crypto";
 
 export async function createFeatureOverrideAction(input: CreateFeatureOverrideInput) {

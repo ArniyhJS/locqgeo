@@ -9,7 +9,7 @@ describe("Webhook Zod Contracts", () => {
   describe("CreateWebhookSubscriptionSchema", () => {
     it("validates correct webhook subscription payload with HTTPS URL", () => {
       const validPayload = {
-        targetUrl: "https://api.merchant.com/spott-webhooks",
+        targetUrl: "https://api.merchant.com/locq-webhooks",
         subscribedEvents: ["verification.created", "reward.completed"],
         ipWhitelist: ["192.168.1.1"],
       };

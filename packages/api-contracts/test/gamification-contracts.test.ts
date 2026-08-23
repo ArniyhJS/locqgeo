@@ -100,7 +100,7 @@ describe("Gamification Zod Contracts", () => {
   describe("ClaimReferralCodeSchema", () => {
     it("validates referral code claim payload", () => {
       const validPayload = {
-        referralCode: "SPOTT2026",
+        referralCode: "LOCQ2026",
       };
       const result = ClaimReferralCodeSchema.safeParse(validPayload);
       expect(result.success).toBe(true);

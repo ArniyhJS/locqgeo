@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import crypto from "node:crypto";
 import {
   verifyPaystackSignature,
   verifyStripeSignature,
@@ -9,7 +10,6 @@ describe("Payment Webhook Ingestion Service", () => {
   it("verifies valid Paystack HMAC SHA-512 signature", () => {
     const secret = "paystack_sec_key_123";
     const body = JSON.stringify({ event: "charge.success", data: {} });
-    const crypto = require("crypto");
     const validSignature = crypto.createHmac("sha512", secret).update(body).digest("hex");
 
     expect(verifyPaystackSignature(body, validSignature, secret)).toBe(true);
@@ -20,7 +20,6 @@ describe("Payment Webhook Ingestion Service", () => {
     const secret = "whsec_stripe_secret_123";
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const payload = JSON.stringify({ type: "invoice.paid" });
-    const crypto = require("crypto");
     const signature = crypto.createHmac("sha256", secret).update(`${timestamp}.${payload}`).digest("hex");
     const header = `t=${timestamp},v1=${signature}`;
 

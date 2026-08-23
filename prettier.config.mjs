@@ -1,1 +1,1 @@
-export { default } from "@spottgeo/config/prettier.config.mjs";
+export { default } from "@locqgeo/config/prettier.config.mjs";

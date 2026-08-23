@@ -12,7 +12,7 @@ Ticketing fraud, proxy attendance, and “ghost” delegates are common. Organiz
 - Large crowds cause slow manual check-in queues.
 - VIP lounges and restricted areas are hard to police without wristband infrastructure.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Venue entrance, session rooms, and sponsor booths become geofences.
 - Attendees scan QR codes for check-in, session credits, or badges.
@@ -30,7 +30,7 @@ Ticketing fraud, proxy attendance, and “ghost” delegates are common. Organiz
 
 ### Example
 
-A tech conference uses SpottVerify to confirm attendees entered each session. CPE credits are issued only after verified attendance, and sponsors see booth visit numbers.
+A tech conference uses LocqVerify to confirm attendees entered each session. CPE credits are issued only after verified attendance, and sponsors see booth visit numbers.
 
 **Additional examples:**
 

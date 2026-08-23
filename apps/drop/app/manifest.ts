@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "SpottDrop Consumer PWA",
-    short_name: "SpottDrop",
+    name: "LocqDrop Consumer PWA",
+    short_name: "LocqDrop",
     description: "Proof-of-Location Rewards & OOH Geo-Campaign PWA",
     start_url: "/",
     display: "standalone",

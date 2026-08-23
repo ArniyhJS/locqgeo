@@ -1,6 +1,6 @@
 {
-  "name": "SpottDrop PWA",
-  "short_name": "SpottDrop",
+  "name": "LocqDrop PWA",
+  "short_name": "LocqDrop",
   "description": "Consumer Lightweight PWA for Geofenced Drops & Rewards",
   "start_url": "/",
   "display": "standalone",

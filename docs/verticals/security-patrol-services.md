@@ -12,7 +12,7 @@ Security firms need proof that guards patrolled designated checkpoints at correc
 - Security contracts often bill for patrols that were skipped.
 - Large campuses and industrial sites are hard to cover consistently.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Patrol checkpoints become geofences.
 - Guards scan NFC/QR tags in sequence.
@@ -29,7 +29,7 @@ Security firms need proof that guards patrolled designated checkpoints at correc
 
 ### Example
 
-A mall’s security team uses SpottVerify to confirm guards checked every floor and parking level every hour.
+A mall’s security team uses LocqVerify to confirm guards checked every floor and parking level every hour.
 
 **Additional examples:**
 

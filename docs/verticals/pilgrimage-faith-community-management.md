@@ -11,15 +11,15 @@ Large religious organizations, mega-churches, and pilgrimage authorities manage 
 - Organizers lack real-time visibility into attendance across multi-acre camping grounds or holy sites.
 - Network congestion during mega-events causes online-only tracking apps to fail completely.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Key zones (audit halls, dormitories, entrance gates, medical centers) are mapped as geofences.
-- Attendees and volunteers check in using SpottVerify or SpottDrop.
+- Attendees and volunteers check in using LocqVerify or LocqDrop.
 - Offline queueing ensures check-in records are saved locally and synced when network bandwidth frees up.
 
 ### Key features used
 
-- High-density offline verification queue, SpottConsole real-time headcount dashboard, campaign points/badges.
+- High-density offline verification queue, LocqConsole real-time headcount dashboard, campaign points/badges.
 
 ### Revenue model
 

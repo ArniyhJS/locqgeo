@@ -55,7 +55,7 @@ describe("Billing Server Actions - topUpWalletAction", () => {
     const input = {
       tenantId: "123e4567-e89b-12d3-a456-426614174000",
       amountNgn: 5000,
-      gateway: "CRYPTO" as any,
+      gateway: "CRYPTO" as unknown as "PAYSTACK",
       reference: "ref_test_123",
     };
 

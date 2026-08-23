@@ -8,12 +8,12 @@ import {
   isBluetoothSupported,
   readNfcPayload,
   readBluetoothBeaconPayload,
-} from "@spottgeo/api-contracts";
+} from "@locqgeo/api-contracts";
 import { useVerifier } from "@/hooks/useVerifier";
 import { CameraView } from "@/components/scanner/CameraView";
 import { RadarScanner } from "@/components/RadarScanner";
 import { VerificationFeedbackDrawer } from "@/components/VerificationFeedbackDrawer";
-import type { PingResponseSuccess, PingResponseError } from "@spottgeo/api-contracts";
+import type { PingResponseSuccess, PingResponseError } from "@locqgeo/api-contracts";
 
 function ScanContent() {
   const searchParams = useSearchParams();
@@ -101,7 +101,7 @@ function ScanContent() {
   const handleBluetoothBeacon = async () => {
     if (isSubmitting) return;
     try {
-      setHardwareMessage("Looking for SpottGeo Bluetooth beacon...");
+      setHardwareMessage("Looking for LocqGeo Bluetooth beacon...");
       const raw = await readBluetoothBeaconPayload();
       await handleDecodedRaw(raw);
     } catch (err: unknown) {

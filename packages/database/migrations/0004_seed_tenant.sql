@@ -1,4 +1,4 @@
--- Seed a demo tenant for the SpottConsole operator dashboard
+-- Seed a demo tenant for the LocqConsole operator dashboard
 INSERT INTO tenants (id, company_name, api_key_hash)
 VALUES (
   'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',

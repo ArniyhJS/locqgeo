@@ -124,10 +124,11 @@ export function FraudClient() {
           message: errorMsg,
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setFeedback({
         type: "error",
-        message: err?.message || "An unexpected error occurred during device unblock.",
+        message:
+          err instanceof Error ? err.message : "An unexpected error occurred during device unblock.",
       });
     } finally {
       setLoading(false);

@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { CampaignCreateRequestSchema, type CampaignCreateRequest } from "@spottgeo/api-contracts";
-import { db, sql } from "@spottgeo/database";
+import { CampaignCreateRequestSchema, type CampaignCreateRequest } from "@locqgeo/api-contracts";
+import { db, sql } from "@locqgeo/database";
 
 export async function getCampaignsAction(tenantId: string) {
   try {
@@ -83,7 +83,7 @@ export async function getCampaignsAction(tenantId: string) {
 
     return { success: true, data };
   } catch (error) {
-    console.error("[SpottConsole] Failed to fetch campaigns:", error);
+    console.error("[LocqConsole] Failed to fetch campaigns:", error);
     return { success: false, error: "Failed to fetch campaigns" };
   }
 }
@@ -169,7 +169,7 @@ export async function getCampaignByIdAction(campaignId: string) {
 
     return { success: true, data };
   } catch (error) {
-    console.error("[SpottConsole] Failed to fetch campaign:", error);
+    console.error("[LocqConsole] Failed to fetch campaign:", error);
     return { success: false, error: "Failed to fetch campaign" };
   }
 }
@@ -209,7 +209,7 @@ export async function getCampaignLeaderboardAction(campaignId: string, limit = 2
       })),
     };
   } catch (error) {
-    console.error("[SpottConsole] Failed to fetch leaderboard:", error);
+    console.error("[LocqConsole] Failed to fetch leaderboard:", error);
     return { success: false, error: "Failed to fetch leaderboard" };
   }
 }
@@ -296,7 +296,7 @@ export async function createCampaignAction(
 
     return { success: true, data: { id: campaignId, title } };
   } catch (error) {
-    console.error("[SpottConsole] Failed to create campaign:", error);
+    console.error("[LocqConsole] Failed to create campaign:", error);
     return { success: false, error: "Database error occurred while creating the campaign." };
   }
 }

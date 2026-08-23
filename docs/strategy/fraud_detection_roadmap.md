@@ -1,8 +1,8 @@
-# Fraud Detection Roadmap — SpottGeo
+# Fraud Detection Roadmap — LocqGeo
 
 ## 1. Goal
 
-Make it significantly cheaper and harder to fake a SpottGeo verification than to complete a real one, while keeping the experience frictionless for honest users.
+Make it significantly cheaper and harder to fake a LocqGeo verification than to complete a real one, while keeping the experience frictionless for honest users.
 
 ## 2. Why Fraud Detection Is the Core Moat
 
@@ -15,13 +15,13 @@ A strong fraud layer protects:
 
 - Client budgets from being drained by fake verifications.
 - Leaderboards and campaigns from manipulation.
-- The integrity of SpottGeo’s verified-presence brand.
+- The integrity of LocqGeo’s verified-presence brand.
 
 ---
 
 ## 3. Fraud Detection Layers
 
-SpottGeo should defend in multiple layers. No single signal is enough.
+LocqGeo should defend in multiple layers. No single signal is enough.
 
 ### Layer 1: Input Validation
 
@@ -178,7 +178,7 @@ CREATE TABLE device_reputation (
   - 31–60: allow but flag for review
   - 61–85: require challenge (e.g. phone OTP, selfie, delayed reward)
   - 86–100: block
-- [ ] Add a manual review queue in SpottConsole.
+- [ ] Add a manual review queue in LocqConsole.
 - [ ] Auto-suspend devices or users crossing thresholds.
 - [ ] Retrain model weekly as new fraud patterns emerge.
 
@@ -207,7 +207,7 @@ CREATE TABLE device_reputation (
 
 - Cross-tenant signals improve detection accuracy measurably.
 - Native SDK detects spoofing apps and mocked locations more reliably than web.
-- SpottGeo publishes a fraud transparency report to clients.
+- LocqGeo publishes a fraud transparency report to clients.
 
 ---
 
@@ -268,7 +268,7 @@ Not every fraud signal should block the user. Graduated responses reduce frictio
 
 ## 9. Conclusion
 
-Fraud detection is not a feature — it is the foundation of trust. SpottGeo should start with simple, deterministic rules, then layer on device intelligence, behavioral models, and predictive scoring. Each phase makes the platform harder to game and more valuable to honest clients.
+Fraud detection is not a feature — it is the foundation of trust. LocqGeo should start with simple, deterministic rules, then layer on device intelligence, behavioral models, and predictive scoring. Each phase makes the platform harder to game and more valuable to honest clients.
 
 The earlier fraud signals are collected, the faster the system learns. Even if advanced ML comes later, every verification attempt today should be stored with as much signal data as possible.
 
@@ -278,4 +278,4 @@ The earlier fraud signals are collected, the faster the system learns. Even if a
 
 - `docs/architecture/nationwide_campaign_architecture.md`
 - `docs/strategy/competitive_landscape.md`
-- `docs/product/spottconsole_prd.md`
+- `docs/product/locqconsole_prd.md`

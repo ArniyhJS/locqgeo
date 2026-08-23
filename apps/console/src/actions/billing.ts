@@ -1,10 +1,10 @@
 "use server";
 
-import { TopUpWalletSchema, type TopUpWalletInput } from "@spottgeo/api-contracts";
+import { TopUpWalletSchema, type TopUpWalletInput } from "@locqgeo/api-contracts";
 
 export type TopUpWalletActionResult =
   | { success: true; transactionId: string }
-  | { success: false; error: any };
+  | { success: false; error: unknown };
 
 export async function topUpWalletAction(input: TopUpWalletInput): Promise<TopUpWalletActionResult> {
   const parsed = TopUpWalletSchema.safeParse(input);

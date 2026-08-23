@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import type { PingResponseSuccess, PingResponseError } from "@spottgeo/api-contracts";
+import type { PingResponseSuccess, PingResponseError } from "@locqgeo/api-contracts";
 
 interface VerificationResultProps {
   data?: PingResponseSuccess["data"];

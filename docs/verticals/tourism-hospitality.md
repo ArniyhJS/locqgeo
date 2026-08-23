@@ -12,7 +12,7 @@ Tourism boards and hotels want to drive exploration and engagement but lack loca
 - Tourists lose paper maps and printed vouchers.
 - Attractions struggle to engage repeat visitors.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Landmarks, hotels, restaurants, and tour stops become geofences.
 - Tourists scan to collect digital stamps, points, or local rewards.

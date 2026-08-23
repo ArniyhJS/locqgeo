@@ -2,12 +2,12 @@
 
 # Default target: show available commands
 help:
-	@echo "SpottGeo Monorepo Development Commands:"
+	@echo "LocqGeo Monorepo Development Commands:"
 	@echo "  make dev                    - Start all workspace packages in development mode"
-	@echo "  make dev-console            - Start SpottConsole B2B Dashboard (:3000)"
-	@echo "  make dev-drop               - Start SpottDrop Consumer PWA (:3001)"
-	@echo "  make dev-verify             - Start SpottVerify Attendance PWA (:3002)"
-	@echo "  make dev-engine             - Start SpottEngine Fastify Core API (:8080)"
+	@echo "  make dev-console            - Start LocqConsole B2B Dashboard (:3000)"
+	@echo "  make dev-drop               - Start LocqDrop Consumer PWA (:3001)"
+	@echo "  make dev-verify             - Start LocqVerify Attendance PWA (:3002)"
+	@echo "  make dev-engine             - Start LocqEngine Fastify Core API (:8080)"
 	@echo "  make dev-payout-worker      - Start Payout Worker background loop"
 	@echo "  make dev-webhook-dispatcher - Start Webhook Dispatcher background loop"
 	@echo "  make dev-analytics-worker   - Start Analytics Aggregator background loop"

@@ -1,25 +1,25 @@
-# SpottGeo Spec-Driven Development (SDD) Specification
+# LocqGeo Spec-Driven Development (SDD) Specification
 
 Document Version: 3.3.0
 Status: APPROVED
 
-> **SpottEngine Core Engine Spec**: See [spottengine_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md) for full v3.3.0 mathematical invariants, DDL schema, and 6-step anti-cheat execution details.
+> **LocqEngine Core Engine Spec**: See [locqengine_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqengine_sdd_spec.md) for full v3.3.0 mathematical invariants, DDL schema, and 6-step anti-cheat execution details.
 
 ## 1. System Overview & Architecture
 
-SpottGeo is a location-based rewards and telemetry platform architected as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**.
+LocqGeo is a location-based rewards and telemetry platform architected as a **Unified TypeScript Monorepo** managed with **pnpm workspaces** and **Turborepo**.
 
 ### Core Components
 
-- **`services/engine`**: Node.js + Fastify core engine processing `POST /api/v1/engine/verify` under 50ms latency (see [spottengine_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md)).
+- **`services/engine`**: Node.js + Fastify core engine processing `POST /api/v1/engine/verify` under 50ms latency (see [locqengine_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqengine_sdd_spec.md)).
 - **`services/payout-worker`**: Standalone background worker executing queued reward payouts with multi-provider fallbacks.
 - **`services/webhook-dispatcher`**: Microservice handling HMAC-signed outbound webhooks to enterprise endpoints.
 - **`services/analytics-worker`**: Background service pre-aggregating telemetry stats and leaderboard rankings.
 - **`packages/database`**: PostgreSQL + PostGIS spatial layer using Drizzle ORM with pre-funded tenant float support.
 - **`packages/api-contracts`**: Shared Zod schemas ensuring zero type drift between backend routes and frontend components.
-- **`apps/console`**: SpottConsole Next.js Enterprise B2B Dashboard (see [spottconsole_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md)).
-- **`apps/drop`**: SpottDrop Next.js Consumer PWA for radar tracking & instant claim payouts (see [spottdrop_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottdrop_sdd_spec.md)).
-- **`apps/verify`**: SpottVerify Next.js Consumer PWA for standalone attendance and check-ins (see [spottverify_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md)).
+- **`apps/console`**: LocqConsole Next.js Enterprise B2B Dashboard (see [locqconsole_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqconsole_sdd_spec.md)).
+- **`apps/drop`**: LocqDrop Next.js Consumer PWA for radar tracking & instant claim payouts (see [locqdrop_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqdrop_sdd_spec.md)).
+- **`apps/verify`**: LocqVerify Next.js Consumer PWA for standalone attendance and check-ins (see [locqverify_sdd_spec.md](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqverify_sdd_spec.md)).
 
 ---
 
@@ -76,11 +76,11 @@ If `balance_ngn - reserved_ngn < reward_amount`, the claim transaction is aborte
 
 ## 5. Related Documents
 
-- [SpottGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_sdd_spec.md)
-- [SpottEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md)
-- [SpottConsole Enterprise Dashboard SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md)
-- [SpottDrop Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottdrop_sdd_spec.md)
-- [SpottVerify Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md)
-- [SpottGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_frd.md)
+- [LocqGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqgeo_sdd_spec.md)
+- [LocqEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqengine_sdd_spec.md)
+- [LocqConsole Enterprise Dashboard SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqconsole_sdd_spec.md)
+- [LocqDrop Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqdrop_sdd_spec.md)
+- [LocqVerify Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqverify_sdd_spec.md)
+- [LocqGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqgeo_frd.md)
 
 

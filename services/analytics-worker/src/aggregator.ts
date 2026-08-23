@@ -1,4 +1,4 @@
-import { db, sql } from "@spottgeo/database";
+import { db, sql } from "@locqgeo/database";
 
 export interface AnalyticsSummary {
   totalVerificationsToday: number;

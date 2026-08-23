@@ -19,7 +19,7 @@ await fastify.register(helmet, { contentSecurityPolicy: false });
 
 // Register Health Check Endpoint
 fastify.get("/health", async () => {
-  return { status: "ok", service: "spottengine-core", timestamp: new Date().toISOString() };
+  return { status: "ok", service: "locqengine-core", timestamp: new Date().toISOString() };
 });
 
 // Register Engine Verification Routes
@@ -49,7 +49,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 const start = async () => {
   try {
     await fastify.listen({ port: PORT, host: HOST });
-    console.log(`SpottEngine core running at http://${HOST}:${PORT}`);
+    console.log(`LocqEngine core running at http://${HOST}:${PORT}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

@@ -1,4 +1,4 @@
-# SpottGeo Technical Architecture Critique & Tradeoffs
+# LocqGeo Technical Architecture Critique & Tradeoffs
 
 Document Version: 1.0.0
 Last Updated: July 2026
@@ -7,7 +7,7 @@ Last Updated: July 2026
 
 **Overall Architectural Rating: 9.4 / 10**
 
-SpottGeo's technical stack is built on modern, high-performance, and cost-effective foundations. The design prioritizes **sub-50ms latency for verification pings**, **contract-driven monorepo type safety**, **fraud resistance**, and **offline resilience in low-connectivity environments**.
+LocqGeo's technical stack is built on modern, high-performance, and cost-effective foundations. The design prioritizes **sub-50ms latency for verification pings**, **contract-driven monorepo type safety**, **fraud resistance**, and **offline resilience in low-connectivity environments**.
 
 ```
                        +---------------------------------------+
@@ -33,7 +33,7 @@ SpottGeo's technical stack is built on modern, high-performance, and cost-effect
 
 1. **Stateless API Core (`Fastify` + `TypeScript 7` + `Zod v4`)**:
    - Fastify provides **4x–5x higher throughput** than traditional Express frameworks, avoiding unnecessary HTTP pipeline overhead during location verification bursts.
-   - Shared `@spottgeo/api-contracts` provides a single source of truth for runtime validation and static TypeScript types across all PWAs and microservices.
+   - Shared `@locqgeo/api-contracts` provides a single source of truth for runtime validation and static TypeScript types across all PWAs and microservices.
 
 2. **Native Geospatial Intelligence (`PostgreSQL` + `PostGIS` + `Drizzle ORM`)**:
    - `GiST` spatial indexing (`ST_DWithin`, `ST_Distance`) enables sub-10ms distance calculations directly in the database without needing costly third-party GIS APIs.

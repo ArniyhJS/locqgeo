@@ -1,6 +1,6 @@
 # Inter-App Communication Architecture
 
-This document details how applications, services, and packages within the **SpottGeo Monorepo** communicate with each other, exchange data, enforce type contracts, and process asynchronous events.
+This document details how applications, services, and packages within the **LocqGeo Monorepo** communicate with each other, exchange data, enforce type contracts, and process asynchronous events.
 
 ---
 
@@ -11,7 +11,7 @@ This document details how applications, services, and packages within the **Spot
 |                                  CLIENT LAYER                                     |
 |                                                                                   |
 |   +-----------------------+   +-----------------------+   +-------------------+   |
-|   |      SpottDrop        |   |      SpottVerify      |   |    SpottConsole   |   |
+|   |      LocqDrop        |   |      LocqVerify      |   |    LocqConsole   |   |
 |   |  Consumer PWA (3001)  |   |  Consumer PWA (3002)  |   |  B2B Admin (3000) |   |
 |   +-----------+-----------+   +-----------+-----------+   +---------+---------+   |
 +---------------|---------------------------|-------------------------|-------------+
@@ -23,13 +23,13 @@ This document details how applications, services, and packages within the **Spot
 |                                CORE API LAYER                                     |
 |                                                                                   |
 |                       +----------------------------------+                        |
-|                       |           SpottEngine            |                        |
+|                       |           LocqEngine            |                        |
 |                       |   Node.js + Fastify API (8080)   |                        |
 |                       +-----------------+----------------+                        |
 +-----------------------------------------|-----------------------------------------+
                                           |
                         Zod Schemas       | Drizzle ORM Queries
-                  (@spottgeo/api-contracts) | (@spottgeo/database)
+                  (@locqgeo/api-contracts) | (@locqgeo/database)
                                           v
 +-----------------------------------------------------------------------------------+
 |                                 DATA & WORKER LAYER                               |
@@ -57,51 +57,51 @@ This document details how applications, services, and packages within the **Spot
 
 ## 📡 Communication Mechanisms
 
-Inter-app communication in SpottGeo uses four distinct patterns depending on latency and coupling requirements:
+Inter-app communication in LocqGeo uses four distinct patterns depending on latency and coupling requirements:
 
 ### 1. HTTP REST APIs (Synchronous Client-to-Engine)
 
 - **Protocols**: HTTP/1.1 (JSON)
-- **Primary Endpoint**: `POST /api/v1/engine/verify` hosted by `SpottEngine` on port 8080.
-- **Participants**: `SpottDrop` (Consumer PWA) and `SpottVerify` (Attendance PWA) invoke `SpottEngine`.
+- **Primary Endpoint**: `POST /api/v1/engine/verify` hosted by `LocqEngine` on port 8080.
+- **Participants**: `LocqDrop` (Consumer PWA) and `LocqVerify` (Attendance PWA) invoke `LocqEngine`.
 - **Purpose**: Real-time verification of physical presence claims, anti-cheat evaluation, and instant decision feedback (sub-50ms latency).
 
 ### 2. Real-Time Telemetry Event Streaming (SSE)
 
 - **Protocols**: Server-Sent Events (`text/event-stream`)
-- **Primary Endpoint**: `GET /api/v1/engine/telemetry/stream` hosted by `SpottEngine`.
-- **Participants**: `SpottEngine` (Broadcaster) $\rightarrow$ `SpottConsole` (`useTelemetryStream` hook).
+- **Primary Endpoint**: `GET /api/v1/engine/telemetry/stream` hosted by `LocqEngine`.
+- **Participants**: `LocqEngine` (Broadcaster) $\rightarrow$ `LocqConsole` (`useTelemetryStream` hook).
 - **Purpose**: Real-time streaming of verification telemetry events (`VERIFIED`, `VERIFIED_FLAGGED`, `REJECTED_SPOOF`) directly into the executive fraud dashboard.
 
 ### 3. Payment Ingestion Webhooks (Paystack & Stripe)
 
 - **Protocols**: Signed Inbound HTTP POST (`/api/v1/webhooks/paystack`, `/api/v1/webhooks/stripe`).
 - **Signature Security**: HMAC SHA-512 (`x-paystack-signature`) and HMAC SHA-256 (`stripe-signature`).
-- **Participants**: Paystack / Stripe Payment Gateways $\rightarrow$ `SpottEngine` $\rightarrow$ `@spottgeo/feature-gate` (Redis cache invalidation).
+- **Participants**: Paystack / Stripe Payment Gateways $\rightarrow$ `LocqEngine` $\rightarrow$ `@locqgeo/feature-gate` (Redis cache invalidation).
 
 ### 2. Database Asynchronous Queues (Decoupled Worker Pattern)
 
 - **Pattern**: Transactional Outbox / Table-as-Queue pattern over PostgreSQL.
-- **Participants**: `SpottEngine` (Producer) $\rightarrow$ PostgreSQL $\rightarrow$ `PayoutWorker`, `WebhookDispatcher`, `AnalyticsWorker` (Consumers).
+- **Participants**: `LocqEngine` (Producer) $\rightarrow$ PostgreSQL $\rightarrow$ `PayoutWorker`, `WebhookDispatcher`, `AnalyticsWorker` (Consumers).
 - **Purpose**:
-  - `SpottEngine` writes verification records to the database with `payout_status = 'QUEUED'` during presence validation.
+  - `LocqEngine` writes verification records to the database with `payout_status = 'QUEUED'` during presence validation.
   - Background workers poll PostgreSQL at fixed intervals (`5000ms` for payouts, `10000ms` for webhooks, `60000ms` for telemetry pre-aggregation), eliminating HTTP coupling or main-thread blockages on user requests.
 
-### 3. Shared TypeScript Data Layer (`@spottgeo/database`)
+### 3. Shared TypeScript Data Layer (`@locqgeo/database`)
 
 - **Library**: Drizzle ORM (`packages/database`).
-- **Participants**: `SpottEngine`, `SpottConsole`, `PayoutWorker`, `WebhookDispatcher`, and `AnalyticsWorker`.
+- **Participants**: `LocqEngine`, `LocqConsole`, `PayoutWorker`, `WebhookDispatcher`, and `AnalyticsWorker`.
 - **Purpose**:
-  - Every server-side application imports a single, centralized database schema and parameterized SQL client from `@spottgeo/database`.
+  - Every server-side application imports a single, centralized database schema and parameterized SQL client from `@locqgeo/database`.
   - Ensures schema consistency across API routes, background workers, and admin actions.
 
-### 4. Shared Contract Schemas (`@spottgeo/api-contracts`)
+### 4. Shared Contract Schemas (`@locqgeo/api-contracts`)
 
 - **Library**: Zod (`packages/api-contracts`).
 - **Participants**: All 10 packages in the monorepo.
 - **Purpose**:
-  - Request/Response payloads, query parameters, and domain interfaces are defined once in `@spottgeo/api-contracts`.
-  - Prevents type drift between Next.js frontends (`SpottConsole`, `SpottDrop`, `SpottVerify`) and Fastify backends (`SpottEngine`).
+  - Request/Response payloads, query parameters, and domain interfaces are defined once in `@locqgeo/api-contracts`.
+  - Prevents type drift between Next.js frontends (`LocqConsole`, `LocqDrop`, `LocqVerify`) and Fastify backends (`LocqEngine`).
 
 ---
 
@@ -112,8 +112,8 @@ Inter-app communication in SpottGeo uses four distinct patterns depending on lat
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Drop as SpottDrop PWA
-    participant Engine as SpottEngine (8080)
+    participant Drop as LocqDrop PWA
+    participant Engine as LocqEngine (8080)
     participant DB as PostgreSQL Database
     participant Worker as Payout Worker
     participant Gateway as Payment Gateway (Paystack/VTpass)
@@ -139,7 +139,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Engine as SpottEngine
+    participant Engine as LocqEngine
     participant DB as PostgreSQL Database
     participant Dispatcher as Webhook Dispatcher
     participant Client as Client Webhook Endpoint
@@ -149,7 +149,7 @@ sequenceDiagram
     loop Every 10 Seconds
         Dispatcher->>DB: SELECT recent verifications ORDER BY created_at DESC
         DB-->>Dispatcher: Verification Records
-        Note over Dispatcher: Compute HMAC SHA-256 Signature (x-spottgeo-signature)
+        Note over Dispatcher: Compute HMAC SHA-256 Signature (x-locqgeo-signature)
         Dispatcher->>Client: POST /webhooks (Payload + Signature Header)
         Client-->>Dispatcher: 200 OK
     end
@@ -164,7 +164,7 @@ sequenceDiagram
     autonumber
     participant Analytics as Analytics Worker
     participant DB as PostgreSQL Database
-    participant Console as SpottConsole Dashboard (3000)
+    participant Console as LocqConsole Dashboard (3000)
 
     loop Every 60 Seconds
         Analytics->>DB: SELECT COUNT(*) FROM verifications WHERE created_at >= CURRENT_DATE
@@ -183,25 +183,25 @@ sequenceDiagram
 
 | Service / App                      | Role                                  | Port            | Transport Protocol                       | Connected Services                                        |
 | :--------------------------------- | :------------------------------------ | :-------------- | :--------------------------------------- | :-------------------------------------------------------- |
-| **`@spottgeo/console`**            | Next.js Enterprise Admin Dashboard    | `3000`          | HTTP / Next.js Server Actions            | PostgreSQL Database, Browser Clients                      |
-| **`@spottgeo/drop`**               | Next.js Consumer Gamification PWA     | `3001`          | HTTP (Fetch Client)                      | `SpottEngine` (`:8080/api/v1/engine/verify`)              |
-| **`@spottgeo/verify`**             | Next.js Standalone Check-In PWA       | `3002`          | HTTP (Fetch Client)                      | `SpottEngine` (`:8080/api/v1/engine/verify`)              |
-| **`@spottgeo/engine`**             | Node.js Fastify Core Verification API | `8080`          | REST API / PostgreSQL Client             | `SpottDrop`, `SpottVerify`, PostgreSQL Database           |
-| **`@spottgeo/payout-worker`**      | Asynchronous Payout Processor         | Background Loop | PostgreSQL Polling / HTTPS External      | PostgreSQL Database, Paystack / VTpass / Flutterwave APIs |
-| **`@spottgeo/webhook-dispatcher`** | HMAC Webhook Dispatcher               | Background Loop | PostgreSQL Polling / HTTP POST           | PostgreSQL Database, External Client Webhook Endpoints    |
-| **`@spottgeo/analytics-worker`**   | Telemetry Aggregator                  | Background Loop | PostgreSQL Polling / SQL Pre-Aggregation | PostgreSQL Database                                       |
+| **`@locqgeo/console`**            | Next.js Enterprise Admin Dashboard    | `3000`          | HTTP / Next.js Server Actions            | PostgreSQL Database, Browser Clients                      |
+| **`@locqgeo/drop`**               | Next.js Consumer Gamification PWA     | `3001`          | HTTP (Fetch Client)                      | `LocqEngine` (`:8080/api/v1/engine/verify`)              |
+| **`@locqgeo/verify`**             | Next.js Standalone Check-In PWA       | `3002`          | HTTP (Fetch Client)                      | `LocqEngine` (`:8080/api/v1/engine/verify`)              |
+| **`@locqgeo/engine`**             | Node.js Fastify Core Verification API | `8080`          | REST API / PostgreSQL Client             | `LocqDrop`, `LocqVerify`, PostgreSQL Database           |
+| **`@locqgeo/payout-worker`**      | Asynchronous Payout Processor         | Background Loop | PostgreSQL Polling / HTTPS External      | PostgreSQL Database, Paystack / VTpass / Flutterwave APIs |
+| **`@locqgeo/webhook-dispatcher`** | HMAC Webhook Dispatcher               | Background Loop | PostgreSQL Polling / HTTP POST           | PostgreSQL Database, External Client Webhook Endpoints    |
+| **`@locqgeo/analytics-worker`**   | Telemetry Aggregator                  | Background Loop | PostgreSQL Polling / SQL Pre-Aggregation | PostgreSQL Database                                       |
 
 ---
 
 ## 🔐 Security & Cryptographic Communication
 
 1. **API Key Authentication**:
-   - SpottConsole generates B2B SDK API keys using `spott_live_<32_random_bytes_hex>`.
+   - LocqConsole generates B2B SDK API keys using `locq_live_<32_random_bytes_hex>`.
    - Keys are stored in the `api_keys` PostgreSQL table strictly as **SHA-256 hashes** (`api_key_hash`).
-   - Clients send `x-api-key: spott_live_...` in HTTP headers when calling `SpottEngine`.
+   - Clients send `x-api-key: locq_live_...` in HTTP headers when calling `LocqEngine`.
 
 2. **Webhook Cryptographic Signatures**:
-   - Outbound webhooks sent by `WebhookDispatcher` include an `X-SpottGeo-Signature` HTTP header.
+   - Outbound webhooks sent by `WebhookDispatcher` include an `X-LocqGeo-Signature` HTTP header.
    - The signature is calculated using HMAC SHA-256 over the JSON body with the client's secret key:
      ```ts
      const signature = crypto.createHmac("sha256", secret).update(payloadString).digest("hex");
@@ -225,10 +225,10 @@ As verification volume scales from thousands to tens of millions of daily pings,
 
 ### Phase 1: Current Architecture (0 – 1,000,000 Daily Pings)
 
-- **API Core**: Stateless `SpottEngine` Fastify API instances scaled horizontally behind a load balancer.
+- **API Core**: Stateless `LocqEngine` Fastify API instances scaled horizontally behind a load balancer.
 - **Worker Queuing**: PostgreSQL Transactional Outbox / Table-as-Queue polling loops (`payout_status = 'QUEUED'`).
 - **Database**: Single primary PostgreSQL instance with PostGIS spatial indexing.
-- **Contracts & Schema**: Monorepo shared Zod contracts (`@spottgeo/api-contracts`) and Drizzle ORM (`@spottgeo/database`).
+- **Contracts & Schema**: Monorepo shared Zod contracts (`@locqgeo/api-contracts`) and Drizzle ORM (`@locqgeo/database`).
 
 ### Phase 2: High-Velocity Scale (1M – 10M Daily Pings)
 
@@ -238,5 +238,5 @@ As verification volume scales from thousands to tens of millions of daily pings,
 
 ### Phase 3: Nationwide Enterprise Scale (10M+ Daily Pings)
 
-- **PostgreSQL Read Replicas**: Separate write-heavy presence verifications (Primary DB) from read-heavy `SpottConsole` telemetry and reporting queries (Read Replicas).
+- **PostgreSQL Read Replicas**: Separate write-heavy presence verifications (Primary DB) from read-heavy `LocqConsole` telemetry and reporting queries (Read Replicas).
 - **Distributed Event Streaming**: Route high-frequency raw `checkin_pings` to an event streaming platform (Apache Kafka / NATS) for real-time stream processing and anti-cheat ML model evaluation.

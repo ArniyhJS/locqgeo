@@ -1,4 +1,4 @@
-import { db, queryClient } from "@spottgeo/database";
+import { db, queryClient } from "@locqgeo/database";
 import type { FastifyPluginAsync } from "fastify";
 
 export const dbPlugin: FastifyPluginAsync = async (fastify) => {

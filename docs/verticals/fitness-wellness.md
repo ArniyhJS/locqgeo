@@ -12,7 +12,7 @@ Gyms and wellness apps struggle to prove members actually visited facilities or 
 - Corporate wellness budgets are wasted on programs with low participation.
 - Personal trainers cannot prove clients attended scheduled outdoor sessions.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Gyms, parks, and route checkpoints become geofences.
 - Members scan or auto-check in at locations to earn points or streaks.

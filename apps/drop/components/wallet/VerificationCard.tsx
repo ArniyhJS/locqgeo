@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { LocalVerificationRecord } from "@spottgeo/api-contracts";
+import type { LocalVerificationRecord } from "@locqgeo/api-contracts";
 import { PayoutStatusPill } from "./PayoutStatusPill";
 
 interface VerificationCardProps {

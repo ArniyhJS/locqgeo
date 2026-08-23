@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
-import { SpottGeoClient } from "../src/index.js";
+import { LocqGeoClient } from "../src/index.js";
 
-describe("SpottGeo Developer SDK Client", () => {
-  it("initializes SpottGeoClient with apiKey and environment", () => {
-    const client = new SpottGeoClient({
-      apiKey: "spott_test_12345",
+describe("LocqGeo Developer SDK Client", () => {
+  it("initializes LocqGeoClient with apiKey and environment", () => {
+    const client = new LocqGeoClient({
+      apiKey: "locq_test_12345",
       environment: "test",
     });
     expect(client).toBeDefined();
@@ -15,9 +15,9 @@ describe("SpottGeo Developer SDK Client", () => {
       json: () => Promise.resolve({ status: "VERIFIED", verification_id: "ver_123" }),
     });
 
-    const client = new SpottGeoClient({
-      apiKey: "spott_live_99999",
-      baseUrl: "https://api.spottgeo.com",
+    const client = new LocqGeoClient({
+      apiKey: "locq_live_99999",
+      baseUrl: "https://api.locqgeo.com",
     });
 
     const res = await client.verifyPresence({
@@ -29,11 +29,11 @@ describe("SpottGeo Developer SDK Client", () => {
 
     expect(res.status).toBe("VERIFIED");
     expect(global.fetch).toHaveBeenCalledWith(
-      "https://api.spottgeo.com/api/v1/engine/verify",
+      "https://api.locqgeo.com/api/v1/engine/verify",
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({
-          "X-Spott-Api-Key": "spott_live_99999",
+          "X-Locq-Api-Key": "locq_live_99999",
         }),
       })
     );

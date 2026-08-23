@@ -15,11 +15,14 @@ export async function paymentWebhookRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: "Invalid Paystack signature" });
     }
 
-    const payload = request.body as any;
+    const payload = (request.body || {}) as {
+      event?: string;
+      data?: { metadata?: { entityType?: string; entityId?: string } };
+    };
     const result = handlePaymentWebhookEvent({
       provider: "paystack",
       event: payload.event || "unknown",
-      entityType: payload.data?.metadata?.entityType || "TENANT",
+      entityType: (payload.data?.metadata?.entityType as "TENANT" | "USER") || "TENANT",
       entityId: payload.data?.metadata?.entityId || "demo-tenant",
     });
 
@@ -35,11 +38,14 @@ export async function paymentWebhookRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: "Invalid Stripe signature" });
     }
 
-    const payload = request.body as any;
+    const payload = (request.body || {}) as {
+      type?: string;
+      data?: { object?: { metadata?: { entityType?: string; entityId?: string } } };
+    };
     const result = handlePaymentWebhookEvent({
       provider: "stripe",
       event: payload.type || "unknown",
-      entityType: payload.data?.object?.metadata?.entityType || "TENANT",
+      entityType: (payload.data?.object?.metadata?.entityType as "TENANT" | "USER") || "TENANT",
       entityId: payload.data?.object?.metadata?.entityId || "demo-tenant",
     });
 

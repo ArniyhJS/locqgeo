@@ -2,11 +2,11 @@ import js from "@eslint/js";
 import ts from "typescript-eslint";
 
 /**
- * Shared ESLint flat config for all SpottGeo TypeScript packages and services.
+ * Shared ESLint flat config for all LocqGeo TypeScript packages and services.
  */
 export default [
   {
-    name: "@spottgeo/config/ignores",
+    name: "@locqgeo/config/ignores",
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
@@ -20,7 +20,7 @@ export default [
   js.configs.recommended,
   ...ts.configs.recommended,
   {
-    name: "@spottgeo/config/rules",
+    name: "@locqgeo/config/rules",
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": [

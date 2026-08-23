@@ -12,7 +12,7 @@ Delivery fraud includes fake drop-off photos, drivers marking orders as delivere
 - Route deviations increase fuel costs and delay SLA compliance.
 - Failed delivery attempts are often disputed, leading to refund leakage.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Delivery addresses become geofences.
 - Driver scan + GPS verification proves the package reached the destination.

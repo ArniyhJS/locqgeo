@@ -12,7 +12,7 @@ Brands spend billions on billboards but cannot prove who saw them. Impression co
 - Duplicate exposures by the same person inflate perceived reach.
 - Small brands cannot afford research agencies to measure billboard effectiveness.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Billboards become interactive geofences.
 - A passer-by scans a QR code; the engine confirms they are within the geofence radius.
@@ -30,7 +30,7 @@ Brands spend billions on billboards but cannot prove who saw them. Impression co
 
 ### Example
 
-A telco runs 50 billboards across Lagos. Users who scan and verify get ₦100 airtime. The telco only pays for verified humans, and SpottGeo takes a per-scan fee.
+A telco runs 50 billboards across Lagos. Users who scan and verify get ₦100 airtime. The telco only pays for verified humans, and LocqGeo takes a per-scan fee.
 
 **Additional examples:**
 

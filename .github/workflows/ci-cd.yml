@@ -1,4 +1,4 @@
-name: SpottGeo Monorepo CI/CD Pipeline
+name: LocqGeo Monorepo CI/CD Pipeline
 
 on:
   push:
@@ -107,10 +107,10 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Prune Workspace for SpottEngine
-        run: npx turbo prune --scope=@spottgeo/engine --docker
+      - name: Prune Workspace for LocqEngine
+        run: npx turbo prune --scope=@locqgeo/engine --docker
 
       - name: Deployment Status Notification
         run: |
-          echo "✅ SpottEngine Fastify API & Microservice Workers ready for production deploy!"
-          echo "✅ SpottConsole, SpottDrop, and SpottVerify PWAs ready for Vercel deploy!"
+          echo "✅ LocqEngine Fastify API & Microservice Workers ready for production deploy!"
+          echo "✅ LocqConsole, LocqDrop, and LocqVerify PWAs ready for Vercel deploy!"

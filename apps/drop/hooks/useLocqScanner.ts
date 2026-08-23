@@ -7,7 +7,7 @@ import type {
   PingResponseSuccess,
   PingResponseError,
   LocalVerificationRecord,
-} from "@spottgeo/api-contracts";
+} from "@locqgeo/api-contracts";
 
 export interface ScannerState {
   isLocating: boolean;
@@ -18,7 +18,7 @@ export interface ScannerState {
   currentLocation: { latitude: number; longitude: number; accuracy: number } | null;
 }
 
-export function useSpottScanner() {
+export function useLocqScanner() {
   const [state, setState] = useState<ScannerState>({
     isLocating: false,
     isSubmitting: false,
@@ -119,7 +119,7 @@ export function useSpottScanner() {
             reward_currency: "NGN",
             verified_at: new Date().toISOString(),
             payout_status: "COMPLETED",
-            redemption_code: `SPT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+            redemption_code: `LCQ-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
           };
           await saveLocalVerification(mockRecord);
 
@@ -168,7 +168,7 @@ export function useSpottScanner() {
           verified_at: new Date().toISOString(),
           payout_status: data.reward?.payout_status ?? "COMPLETED",
           redemption_code: data.reward
-            ? `SPT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+            ? `LCQ-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
             : undefined,
         };
         await saveLocalVerification(localRecord);

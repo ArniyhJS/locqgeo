@@ -12,7 +12,7 @@ Agritech companies and research institutions need to verify that extension worke
 - Crop-insurance claims lack independent verification of farm visits.
 - Cooperatives struggle to track extension coverage across scattered smallholder plots.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Farm plots and research sites become geofences.
 - Field officers scan at each location.

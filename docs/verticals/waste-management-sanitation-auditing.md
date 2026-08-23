@@ -11,11 +11,11 @@ Municipal governments and waste management agencies pay private contractors to c
 - Citizens suffer from uncollected waste despite government funds being disbursed.
 - Manual inspection teams cannot monitor hundreds of collection points daily across major cities.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Waste collection points, transfer stations, and landfill sites are set up as geofences.
 - Truck operators or street sanitation supervisors scan location nodes upon completing collections.
-- SpottEngine validates that collection pings occurred within designated operating hours and location bounds.
+- LocqEngine validates that collection pings occurred within designated operating hours and location bounds.
 
 ### Key features used
 

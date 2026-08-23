@@ -1,8 +1,8 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import crypto from "node:crypto";
-import { PingRequestSchema, type VerificationStatus } from "@spottgeo/api-contracts";
+import { PingRequestSchema, type VerificationStatus } from "@locqgeo/api-contracts";
 import { PayoutOrchestrator } from "../services/payout.js";
-import { db, sql } from "@spottgeo/database";
+import { db, sql } from "@locqgeo/database";
 import { isCampaignEligible, recordCampaignVisit } from "./campaigns.js";
 import { AntiCheatFilter } from "../plugins/anticheat.js";
 

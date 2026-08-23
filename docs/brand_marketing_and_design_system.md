@@ -1,6 +1,6 @@
-# SpottGeo Brand Identity & UI Design System
+# LocqGeo Brand Identity & UI Design System
 
-This specification defines the **Electric Cyber Orange & Obsidian Black** brand identity, marketing philosophy, and UI design system for all customer-facing applications across the **SpottGeo Monorepo** (`SpottConsole`, `SpottDrop`, `SpottVerify`).
+This specification defines the **Electric Cyber Orange & Obsidian Black** brand identity, marketing philosophy, and UI design system for all customer-facing applications across the **LocqGeo Monorepo** (`LocqConsole`, `LocqDrop`, `LocqVerify`).
 
 ---
 
@@ -8,7 +8,7 @@ This specification defines the **Electric Cyber Orange & Obsidian Black** brand 
 
 ### 1. Brand Vision & Positioning
 
-**SpottGeo** is the next-generation spatial infrastructure platform powering real-world presence verification and reward campaigns.
+**LocqGeo** is the next-generation spatial infrastructure platform powering real-world presence verification and reward campaigns.
 
 - **Brand Tagline**: _"Proof of Spatial Presence"_
 - **Core Philosophy**: **Geofence-First Architecture**. Every interaction, verification ping, reward claim, and analytics metric is anchored in verified physical radiuses. Presence is not assumed—it is cryptographically and spatially proven within geofenced boundaries.
@@ -136,11 +136,11 @@ This specification defines the **Electric Cyber Orange & Obsidian Black** brand 
 
 All 3 customer-facing applications adhere to this Cyber Orange & Obsidian Black philosophy:
 
-1. **`SpottConsole` (B2B Admin Control Plane - Port 3000)**:
+1. **`LocqConsole` (B2B Admin Control Plane - Port 3000)**:
    - Obsidian `#0B0C0E` backdrop with Cyber Orange (`#FF6B00`) navigation indicators, KPI stat card highlights, and PostGIS geofence radius visualizations.
 
-2. **`SpottDrop` (Consumer Gamification PWA - Port 3001)**:
+2. **`LocqDrop` (Consumer Gamification PWA - Port 3001)**:
    - Deep Carbon mobile shell with glowing Cyber Orange (`#FF6B00`) QR scanner controls, active geofence radar sweeps, and airtime/data claim action buttons.
 
-3. **`SpottVerify` (Check-In & Attendance PWA - Port 3002)**:
+3. **`LocqVerify` (Check-In & Attendance PWA - Port 3002)**:
    - Clean obsidian layout with Cyber Orange (`#FF6B00`) presence verification triggers and check-in confirmation badges.

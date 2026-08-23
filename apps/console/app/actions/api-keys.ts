@@ -1,8 +1,8 @@
 "use server";
 
 import crypto from "crypto";
-import { CreateApiKeySchema, type CreateApiKeyInput } from "@spottgeo/api-contracts";
-import { db, sql } from "@spottgeo/database";
+import { CreateApiKeySchema, type CreateApiKeyInput } from "@locqgeo/api-contracts";
+import { db, sql } from "@locqgeo/database";
 
 export async function generateApiKeyAction(tenantId: string, rawInput: CreateApiKeyInput) {
   const parseResult = CreateApiKeySchema.safeParse(rawInput);
@@ -12,10 +12,10 @@ export async function generateApiKeyAction(tenantId: string, rawInput: CreateApi
 
   const { key_label } = parseResult.data;
 
-  // 1. Generate Raw Key: spott_live_<32_random_bytes_hex>
+  // 1. Generate Raw Key: locq_live_<32_random_bytes_hex>
   const randomBytes = crypto.randomBytes(24).toString("hex");
-  const rawApiKey = `spott_live_${randomBytes}`;
-  const keyPrefix = "spott_live_";
+  const rawApiKey = `locq_live_${randomBytes}`;
+  const keyPrefix = "locq_live_";
 
   // 2. Compute SHA-256 Hash for DB Storage
   const apiKeyHash = crypto.createHash("sha256").update(rawApiKey).digest("hex");
@@ -33,7 +33,7 @@ export async function generateApiKeyAction(tenantId: string, rawInput: CreateApi
       label: key_label,
     };
   } catch (error) {
-    console.error("[SpottConsole] API key generation failed:", error);
+    console.error("[LocqConsole] API key generation failed:", error);
     return {
       success: true, // Demo fallback if database table not yet populated
       apiKey: rawApiKey,

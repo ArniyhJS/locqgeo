@@ -1,14 +1,14 @@
-# SpottVerify Product Requirements Document (PRD)
+# LocqVerify Product Requirements Document (PRD)
 
 ## 1. Overview
 
-**SpottVerify** is the **Utility Check-in & Credential Verifier** Progressive Web App (PWA) for the SpottGeo platform. It allows users to scan QR codes at physical locations to prove attendance, workforce check-in, CPE credits, site inspections, audit completion, or access authorization — with or without an associated reward campaign.
+**LocqVerify** is the **Utility Check-in & Credential Verifier** Progressive Web App (PWA) for the LocqGeo platform. It allows users to scan QR codes at physical locations to prove attendance, workforce check-in, CPE credits, site inspections, audit completion, or access authorization — with or without an associated reward campaign.
 
-SpottVerify is designed for contexts where **verification itself is the primary value**: high-throughput event attendance, enterprise workforce check-ins, compliance inspections, continuing education (CPE/CEU) credit issuance, and secure access control.
+LocqVerify is designed for contexts where **verification itself is the primary value**: high-throughput event attendance, enterprise workforce check-ins, compliance inspections, continuing education (CPE/CEU) credit issuance, and secure access control.
 
 > **Ecosystem Positioning & Sister App Relationship**  
-> While **SpottDrop** serves as the *Consumer Rewards & Gamification Portal* (billboard drops, ad campaigns, loyalty punch cards, instant cash/airtime payouts), **SpottVerify** is strictly optimized as the *Utility Check-in & Credential Verifier*.  
-> **Cross-PWA Deep-Linking:** If a SpottVerify QR code is scanned inside SpottDrop (or vice-versa), the PWA intelligently parses the payload header/format and offers a seamless deep-link redirect to SpottVerify or processes the underlying `geofence_id` directly without throwing format errors.
+> While **LocqDrop** serves as the *Consumer Rewards & Gamification Portal* (billboard drops, ad campaigns, loyalty punch cards, instant cash/airtime payouts), **LocqVerify** is strictly optimized as the *Utility Check-in & Credential Verifier*.  
+> **Cross-PWA Deep-Linking:** If a LocqVerify QR code is scanned inside LocqDrop (or vice-versa), the PWA intelligently parses the payload header/format and offers a seamless deep-link redirect to LocqVerify or processes the underlying `geofence_id` directly without throwing format errors.
 
 ### 1.1 Product Vision
 
@@ -38,8 +38,8 @@ SpottVerify is designed for contexts where **verification itself is the primary 
 
 ### Journey A: Campaign-Based Verification
 
-1. User sees a campaign poster with a SpottVerify QR code.
-2. Opens SpottVerify or scans with camera.
+1. User sees a campaign poster with a LocqVerify QR code.
+2. Opens LocqVerify or scans with camera.
 3. QR payload contains `geofence_id` and `campaign_id`.
 4. App captures GPS and scans the code.
 5. Engine verifies location, campaign eligibility, and fraud signals.
@@ -53,14 +53,14 @@ SpottVerify is designed for contexts where **verification itself is the primary 
 3. QR payload contains only `geofence_id`.
 4. Engine verifies presence within the event geofence.
 5. App shows a verified check-in badge and timestamp.
-6. Organizer sees the verified attendee in SpottConsole.
+6. Organizer sees the verified attendee in LocqConsole.
 
 ### Journey C: Progressive Identity Linking
 
 1. User scans anonymously for several events.
 2. Organizer requires a verified identity for certificates or CPE credits.
-3. User links phone number / email via SpottVerify.
-4. App sends link request to SpottEngine.
+3. User links phone number / email via LocqVerify.
+4. App sends link request to LocqEngine.
 5. Past anonymous verifications are backfilled to the linked user profile.
 6. Certificates and credentials are now tied to the real user.
 
@@ -181,13 +181,13 @@ SpottVerify is designed for contexts where **verification itself is the primary 
 - **Deep linking**: allow QR scanning from external camera app via URL scheme.
 - **Push notifications**: optional alerts for verification success or identity required.
 - **Accessibility**: simple, high-contrast UI for diverse users.
-- **Offline Sync & Clock Integrity**: Offline check-ins record client `scanned_at` timestamps alongside monotonic clock deltas, validated by SpottEngine against server `received_at` within 24-hour standard (or 15-minute Flash Drop) sync windows.
+- **Offline Sync & Clock Integrity**: Offline check-ins record client `scanned_at` timestamps alongside monotonic clock deltas, validated by LocqEngine against server `received_at` within 24-hour standard (or 15-minute Flash Drop) sync windows.
 
 ---
 
 ## 6. Verification Payloads
 
-SpottVerify supports multiple QR payload formats depending on physical deployment medium (static posters vs. dynamic digital screens):
+LocqVerify supports multiple QR payload formats depending on physical deployment medium (static posters vs. dynamic digital screens):
 
 ### 6.1 Static Poster Payload (Recommended for physical print / campaigns)
 
@@ -215,7 +215,7 @@ Used for dynamic screens, digital signage, TV monitors, or organizer tablets at 
 ```
 
 - **HMAC Signature:** Generated using `HMAC-SHA256(geofence_id + ":" + timestamp + ":" + nonce, tenant_secret)`.
-- **Anti-Replay Expiration Window:** Dynamic payloads carry a strict **60-second expiration window**. If `timestamp` is older than 60 seconds relative to server time upon receipt, SpottEngine rejects the check-in attempt with `REJECTED_EXPIRED_PAYLOAD`.
+- **Anti-Replay Expiration Window:** Dynamic payloads carry a strict **60-second expiration window**. If `timestamp` is older than 60 seconds relative to server time upon receipt, LocqEngine rejects the check-in attempt with `REJECTED_EXPIRED_PAYLOAD`.
 
 ### 6.3 Raw Geofence UUID (For standalone events)
 
@@ -226,7 +226,7 @@ a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
 ### 6.4 URL Payload (For marketing / deep links / cross-PWA routing)
 
 ```text
-https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
+https://verify.locqgeo.app/scan?geofence_id=uuid&campaign_id=uuid
 ```
 
 ---
@@ -288,8 +288,8 @@ https://verify.spottgeo.app/scan?geofence_id=uuid&campaign_id=uuid
 
 ## 10. Related Documents
 
-- `docs/product/spottdrop_prd.md`
-- `docs/product/spottengine_prd.md`
-- `docs/product/spottconsole_prd.md`
+- `docs/product/locqdrop_prd.md`
+- `docs/product/locqengine_prd.md`
+- `docs/product/locqconsole_prd.md`
 - `docs/strategy/fraud_detection_roadmap.md`
 - `docs/verticals/index.md`

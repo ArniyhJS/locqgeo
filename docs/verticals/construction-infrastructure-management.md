@@ -12,11 +12,11 @@ General contractors and infrastructure developers struggle to verify project mil
 - High costs and delays associated with sending senior site engineers for routine physical checks.
 - Audit trails for municipal building compliance lack tamper-proof location data.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Build sites and specific structural zones (foundations, sectors) are converted into active geofences.
 - Site engineers and safety inspectors scan upon arrival to log tamper-proof proof-of-presence before signing off on milestones.
-- SpottEngine's anti-cheat engine prevents GPS spoofing and proxy check-ins for labor teams.
+- LocqEngine's anti-cheat engine prevents GPS spoofing and proxy check-ins for labor teams.
 
 ### Key features used
 

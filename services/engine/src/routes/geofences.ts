@@ -1,11 +1,11 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { db, sql } from "@spottgeo/database";
+import { db, sql } from "@locqgeo/database";
 import {
   CreateGeofenceSchema,
   BulkGeofenceCsvRowSchema,
   type CreateGeofenceInput,
   z,
-} from "@spottgeo/api-contracts";
+} from "@locqgeo/api-contracts";
 
 const BulkImportRequestSchema = z.object({
   tenant_id: z.string().uuid("tenant_id must be a valid UUID v4"),

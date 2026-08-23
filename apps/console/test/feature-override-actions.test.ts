@@ -16,7 +16,7 @@ describe("Feature Override Server Actions", () => {
 
   it("rejects invalid input with validation errors", async () => {
     const res = await createFeatureOverrideAction({
-      entityType: "INVALID" as any,
+      entityType: "INVALID" as unknown as "TENANT",
       entityId: "not-a-uuid",
       featureKey: "",
       granted: true,

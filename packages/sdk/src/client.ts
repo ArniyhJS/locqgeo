@@ -1,4 +1,4 @@
-export interface SpottGeoClientConfig {
+export interface LocqGeoClientConfig {
   apiKey: string;
   environment?: "live" | "test";
   baseUrl?: string;
@@ -12,13 +12,13 @@ export interface VerifyPresenceParams {
   deviceId?: string;
 }
 
-export class SpottGeoClient {
+export class LocqGeoClient {
   private apiKey: string;
   private baseUrl: string;
 
-  constructor(config: SpottGeoClientConfig) {
+  constructor(config: LocqGeoClientConfig) {
     this.apiKey = config.apiKey;
-    this.baseUrl = config.baseUrl || "https://api.spottgeo.com";
+    this.baseUrl = config.baseUrl || "https://api.locqgeo.com";
   }
 
   public async verifyPresence(params: VerifyPresenceParams): Promise<any> {
@@ -26,7 +26,7 @@ export class SpottGeoClient {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Spott-Api-Key": this.apiKey,
+        "X-Locq-Api-Key": this.apiKey,
       },
       body: JSON.stringify(params),
     });

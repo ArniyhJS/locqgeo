@@ -3,14 +3,14 @@
 ```
                         +-----------------------------------+
                         |        Consumer Mobile Users      |
-                        | (SpottDrop & SpottVerify PWAs)    |
+                        | (LocqDrop & LocqVerify PWAs)    |
                         +-----------------+-----------------+
                                           |
                                    HTTP POST /api/v1/engine/verify
                                           |
                                           v
                         +-----------------------------------+
-                        |    SpottEngine Core API           |
+                        |    LocqEngine Core API           |
                         |    (Fastify Service - Port 8080)  |
                         +-------+-------------------+-------+
                                 |                   |
@@ -32,13 +32,13 @@
 +───────────────────────+               +───────────────────────+               +───────────────────────+
             │                                       │                                       │
             v                                       v                                       v
-  Paystack/VTpass/Flutterwave                 Enterprise Webhooks                    SpottConsole Analytics
+  Paystack/VTpass/Flutterwave                 Enterprise Webhooks                    LocqConsole Analytics
 ```
 
 ## Related Architecture Documents
 
-- [Deployment Strategy Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/deployment_strategy.md)
-- [Inter-App Communication Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/inter_app_communication.md)
-- [Technical Stack Critique & Tradeoffs](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/tech_stack_critique_and_tradeoffs.md)
-- [Entity Relationship Diagram (ERD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/erd.md)
-- [Nationwide Campaign Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/architecture/nationwide_campaign_architecture.md)
+- [Deployment Strategy Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/architecture/deployment_strategy.md)
+- [Inter-App Communication Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/architecture/inter_app_communication.md)
+- [Technical Stack Critique & Tradeoffs](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/architecture/tech_stack_critique_and_tradeoffs.md)
+- [Entity Relationship Diagram (ERD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/architecture/erd.md)
+- [Nationwide Campaign Architecture](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/architecture/nationwide_campaign_architecture.md)

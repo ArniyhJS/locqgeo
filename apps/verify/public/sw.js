@@ -1,4 +1,4 @@
-const CACHE_NAME = "spottverify-v1";
+const CACHE_NAME = "locqverify-v1";
 const ASSETS_TO_CACHE = ["/", "/manifest.json"];
 
 self.addEventListener("install", (event) => {

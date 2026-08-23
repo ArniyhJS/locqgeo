@@ -12,11 +12,11 @@ Energy producers, mining operators, and public utilities manage vast, hazardous,
 - Paper audit logs fail to satisfy regulatory compliance bodies during safety incident investigations.
 - Remote locations frequently lack continuous cellular coverage.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Wellheads, transformer substations, solar strings, and mining pits are geofenced as critical asset nodes.
 - Maintenance crews log offline-capable verification pings upon physical arrival at remote machinery.
-- SpottEngine validates velocity, location integrity, and hardware signatures to prevent falsified reports.
+- LocqEngine validates velocity, location integrity, and hardware signatures to prevent falsified reports.
 
 ### Key features used
 

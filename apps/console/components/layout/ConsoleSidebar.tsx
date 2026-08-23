@@ -28,11 +28,11 @@ export function ConsoleSidebar() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-lg bg-gradient-to-tr from-[#ff6b00] to-[#ffa800] flex items-center justify-center font-black text-black shadow-lg shadow-[#ff6b00]/30">
-              S
+              L
             </div>
             <div>
               <h1 className="font-bold text-lg leading-none tracking-tight text-white">
-                SpottConsole
+                LocqConsole
               </h1>
               <span className="text-xs text-[#ff6b00] font-semibold">Proof of Presence</span>
             </div>
@@ -98,7 +98,7 @@ export function ConsoleSidebar() {
           Tenant ID: <span className="font-mono text-gray-400">a0eebc99-9c0b...</span>
         </p>
         <p>
-          SpottEngine: <span className="text-[#ff6b00] font-semibold">Fastify v3.1.0</span>
+          LocqEngine: <span className="text-[#ff6b00] font-semibold">Fastify v3.1.0</span>
         </p>
       </div>
     </div>
@@ -118,9 +118,9 @@ export function ConsoleSidebar() {
           </button>
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-md bg-gradient-to-tr from-[#ff6b00] to-[#ffa800] flex items-center justify-center font-black text-xs text-black">
-              S
+              L
             </div>
-            <span className="font-bold text-sm text-white">SpottConsole</span>
+            <span className="font-bold text-sm text-white">LocqConsole</span>
           </div>
         </div>
 

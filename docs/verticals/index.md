@@ -1,6 +1,6 @@
 # Vertical Use Cases Overview
 
-SpottGeo is a generic Proof-of-Presence platform. A single engine can verify that a person was physically at a location, while the engagement layer turns that verification into business value. This guide maps how different industries can use the system.
+LocqGeo is a generic Proof-of-Presence platform. A single engine can verify that a person was physically at a location, while the engagement layer turns that verification into business value. This guide maps how different industries can use the system.
 
 ---
 

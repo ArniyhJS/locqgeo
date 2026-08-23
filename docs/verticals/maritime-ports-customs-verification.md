@@ -12,7 +12,7 @@ Port authorities, shipping lines, and customs agencies struggle to enforce on-si
 - Paper-based inspection logs delay container clearance and increase port congestion penalties (demurrage).
 - Disconnect between logistics management systems and physical field inspector movements.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Port docks, container yards, and bonded warehouses are mapped as high-precision geofences.
 - Inspectors scan QR codes at specific container stacks or vessel gangways to generate cryptographically signed proof-of-inspection.

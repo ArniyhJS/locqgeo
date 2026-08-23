@@ -1,4 +1,4 @@
-import { VerificationStatus } from "@spottgeo/api-contracts";
+import { VerificationStatus } from "@locqgeo/api-contracts";
 
 export interface AntiCheatResult {
   passed: boolean;

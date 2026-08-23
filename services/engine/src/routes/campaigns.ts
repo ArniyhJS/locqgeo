@@ -1,12 +1,12 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { db, sql } from "@spottgeo/database";
+import { db, sql } from "@locqgeo/database";
 import {
   CampaignCreateRequestSchema,
   CampaignListResponseSchema,
   CampaignDetailResponseSchema,
   CampaignLeaderboardResponseSchema,
   CampaignMeResponseSchema,
-} from "@spottgeo/api-contracts";
+} from "@locqgeo/api-contracts";
 
 const DEFAULT_LEADERBOARD_LIMIT = 50;
 const STREAK_WINDOW_HOURS = 48;

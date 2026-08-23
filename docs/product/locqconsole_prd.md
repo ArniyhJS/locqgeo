@@ -1,13 +1,13 @@
-# SpottConsole Product Requirements Document (PRD)
+# LocqConsole Product Requirements Document (PRD)
 
 ## 1. Overview
 
-**SpottConsole** is the enterprise control plane for the SpottGeo Verified Presence Platform. It allows business operators, campaign managers, finance teams, and developers to configure geofences, launch and monitor campaigns, manage users and rewards, and analyze verification events at scale.
+**LocqConsole** is the enterprise control plane for the LocqGeo Verified Presence Platform. It allows business operators, campaign managers, finance teams, and developers to configure geofences, launch and monitor campaigns, manage users and rewards, and analyze verification events at scale.
 
-SpottConsole sits between:
+LocqConsole sits between:
 
-- **SpottEngine** — the API and verification engine.
-- **SpottDrop / SpottVerify** — consumer-facing PWAs used by end users to scan QR codes and verify presence.
+- **LocqEngine** — the API and verification engine.
+- **LocqDrop / LocqVerify** — consumer-facing PWAs used by end users to scan QR codes and verify presence.
 
 ### 1.1 Product Vision
 
@@ -19,7 +19,7 @@ SpottConsole sits between:
 2. Provide real-time visibility into verification events, fraud, and reward spend.
 3. Support progressive user identity so consumers can stay anonymous until they choose to link an account.
 4. Offer enterprise-grade controls: RBAC, audit logs, API keys, and multi-tenancy.
-5. Serve as the primary SaaS monetization surface for SpottGeo.
+5. Serve as the primary SaaS monetization surface for LocqGeo.
 
 ---
 
@@ -250,7 +250,7 @@ SpottConsole sits between:
 
 ### 3.8 API Keys & Developer integrations
 
-**Purpose:** Allow external developers and systems to integrate with SpottEngine securely, manage event subscriptions, and monitor webhook delivery health.
+**Purpose:** Allow external developers and systems to integrate with LocqEngine securely, manage event subscriptions, and monitor webhook delivery health.
 
 **User Stories:**
 
@@ -393,13 +393,13 @@ SpottConsole sits between:
 
 ## 9. Related Documents
 
-- `docs/product/spottdrop_prd.md`
-- `docs/product/spottengine_prd.md`
-- `docs/product/spottverify_prd.md`
+- `docs/product/locqdrop_prd.md`
+- `docs/product/locqengine_prd.md`
+- `docs/product/locqverify_prd.md`
 - `docs/strategy/fraud_detection_roadmap.md`
 - `docs/architecture/system_architecture.md`
 
 ---
 
-_This PRD should be reviewed quarterly and updated as SpottConsole moves through each roadmap phase._
+_This PRD should be reviewed quarterly and updated as LocqConsole moves through each roadmap phase._
 

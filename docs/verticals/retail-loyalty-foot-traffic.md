@@ -12,7 +12,7 @@ Retailers struggle to convert digital attention into store visits. Traditional l
 - Competitors can set up fake check-ins to manipulate loyalty leaderboards.
 - Promotions often attract bargain hunters who never return.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Stores or malls become geofences.
 - Shoppers scan at entry or at a product zone to earn points, stamps, or instant rewards.

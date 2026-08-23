@@ -1,12 +1,12 @@
-# SpottDrop Product Requirements Document (PRD)
+# LocqDrop Product Requirements Document (PRD)
 
 ## 1. Overview
 
-**SpottDrop** is the consumer **Rewards & Gamification Portal** Progressive Web App (PWA) for the SpottGeo Verified Presence Platform. It powers consumer engagement through advertising campaigns, billboard drops, loyalty punch cards, and instant rewards (airtime, mobile data, cash, or vouchers). Users scan QR codes at physical locations — billboards, retail stores, transit stops, and campaign nodes — to prove their presence and earn rewards.
+**LocqDrop** is the consumer **Rewards & Gamification Portal** Progressive Web App (PWA) for the LocqGeo Verified Presence Platform. It powers consumer engagement through advertising campaigns, billboard drops, loyalty punch cards, and instant rewards (airtime, mobile data, cash, or vouchers). Users scan QR codes at physical locations — billboards, retail stores, transit stops, and campaign nodes — to prove their presence and earn rewards.
 
-SpottDrop serves as the **consumer-facing distribution channel** that makes physical-world marketing and brand engagement measurable and rewardable.
+LocqDrop serves as the **consumer-facing distribution channel** that makes physical-world marketing and brand engagement measurable and rewardable.
 
-> **Ecosystem Positioning:** While **SpottVerify** is strictly dedicated to utility check-ins, workforce verification, and credential attendance, **SpottDrop** focuses exclusively on consumer rewards, gamified loyalty campaigns, ad monetization, and instant payouts.
+> **Ecosystem Positioning:** While **LocqVerify** is strictly dedicated to utility check-ins, workforce verification, and credential attendance, **LocqDrop** focuses exclusively on consumer rewards, gamified loyalty campaigns, ad monetization, and instant payouts.
 
 ### 1.1 Product Vision
 
@@ -35,8 +35,8 @@ SpottDrop serves as the **consumer-facing distribution channel** that makes phys
 
 ### Journey A: First-Time Reward Scan
 
-1. User sees a billboard or store poster with a SpottDrop QR code.
-2. Opens SpottDrop or scans with the phone camera.
+1. User sees a billboard or store poster with a LocqDrop QR code.
+2. Opens LocqDrop or scans with the phone camera.
 3. App requests location permission.
 4. User scans the QR code.
 5. Engine verifies GPS accuracy, distance, and fraud signals.
@@ -177,19 +177,19 @@ SpottDrop serves as the **consumer-facing distribution channel** that makes phys
 - **Secure storage**: device_id stored in a way that is hard to reset intentionally.
 - **Background sync**: use service worker background sync where supported.
 - **Push notifications**: optional, for campaign alerts and reward confirmations.
-- **Offline Streak Preservation**: Offline verifications store client `scanned_at` timestamps alongside monotonic clock deltas. Standard campaign scans synced within 24 hours of `scanned_at` (or within 15 minutes for time-limited Flash Drops) preserve daily loyalty streaks and reward progress once validated by SpottEngine.
-- **Cross-PWA Deep-Link & Payload Handling**: When a user scans a QR payload from SpottVerify within SpottDrop, SpottDrop parses the payload signature. It seamlessly extracts the underlying `geofence_id` to process the scan locally or executes a smooth deep-link redirect to SpottVerify without displaying syntax or execution errors.
+- **Offline Streak Preservation**: Offline verifications store client `scanned_at` timestamps alongside monotonic clock deltas. Standard campaign scans synced within 24 hours of `scanned_at` (or within 15 minutes for time-limited Flash Drops) preserve daily loyalty streaks and reward progress once validated by LocqEngine.
+- **Cross-PWA Deep-Link & Payload Handling**: When a user scans a QR payload from LocqVerify within LocqDrop, LocqDrop parses the payload signature. It seamlessly extracts the underlying `geofence_id` to process the scan locally or executes a smooth deep-link redirect to LocqVerify without displaying syntax or execution errors.
 
 ---
 
 ## 6. Monetization Model
 
-SpottDrop is primarily a **B2B2C product**. Revenue comes from the business side, not user fees.
+LocqDrop is primarily a **B2B2C product**. Revenue comes from the business side, not user fees.
 
 | Revenue Source      | Description                                                   |
 | ------------------- | ------------------------------------------------------------- |
-| **Campaign fees**   | Brands/agencies pay SpottGeo to run reward campaigns.         |
-| **Reward margin**   | SpottGeo may take a percentage of reward spend.               |
+| **Campaign fees**   | Brands/agencies pay LocqGeo to run reward campaigns.         |
+| **Reward margin**   | LocqGeo may take a percentage of reward spend.               |
 | **SaaS seat**       | Console subscriptions paid by advertisers.                    |
 | **Withdrawal fees** | Optional small fee on cash withdrawals (offset payout costs). |
 
@@ -255,8 +255,8 @@ Users should never pay to scan or earn.
 
 ## 10. Related Documents
 
-- `docs/product/spottconsole_prd.md`
-- `docs/product/spottengine_prd.md`
-- `docs/product/spottverify_prd.md`
+- `docs/product/locqconsole_prd.md`
+- `docs/product/locqengine_prd.md`
+- `docs/product/locqverify_prd.md`
 - `docs/strategy/fraud_detection_roadmap.md`
 - `docs/strategy/competitive_landscape.md`

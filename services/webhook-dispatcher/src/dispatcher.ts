@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { db, sql } from "@spottgeo/database";
+import { db, sql } from "@locqgeo/database";
 
 export interface WebhookEventPayload {
   event:

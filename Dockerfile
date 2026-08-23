@@ -1,5 +1,5 @@
 # ==============================================================================
-# Multi-Stage Dockerfile for SpottGeo Unified Monorepo
+# Multi-Stage Dockerfile for LocqGeo Unified Monorepo
 # Built with Node.js 24 (LTS), pnpm 11+, Turborepo, and Alpine Linux
 # ==============================================================================
 
@@ -15,7 +15,7 @@ WORKDIR /app
 RUN pnpm add -g turbo@^2.10.6
 COPY . .
 ARG APP_NAME=engine
-RUN turbo prune --scope=@spottgeo/${APP_NAME} --docker
+RUN turbo prune --scope=@locqgeo/${APP_NAME} --docker
 
 # --- Stage 3: Dependencies & Build ---
 FROM base AS builder
@@ -35,7 +35,7 @@ COPY --from=pruner /app/out/full/ .
 # Build target application/service
 ARG APP_NAME=engine
 ENV NODE_ENV=production
-RUN pnpm run build --filter=@spottgeo/${APP_NAME}
+RUN pnpm run build --filter=@locqgeo/${APP_NAME}
 
 # --- Stage 4: Production Runtime ---
 FROM base AS runner
@@ -43,15 +43,15 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 spottgeo
+RUN adduser --system --uid 1001 locqgeo
 
-COPY --from=builder --chown=spottgeo:nodejs /app .
+COPY --from=builder --chown=locqgeo:nodejs /app .
 
-USER spottgeo
+USER locqgeo
 
 ARG APP_NAME=engine
 ENV TARGET_APP=${APP_NAME}
 
 EXPOSE 8080 3000 3001 3002
 
-CMD ["sh", "-c", "pnpm --filter=@spottgeo/${TARGET_APP} start || pnpm --filter=@spottgeo/${TARGET_APP} dev"]
+CMD ["sh", "-c", "pnpm --filter=@locqgeo/${TARGET_APP} start || pnpm --filter=@locqgeo/${TARGET_APP} dev"]

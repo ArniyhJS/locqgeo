@@ -1,4 +1,4 @@
-# SpottVerify Attendance & Credential PWA — Spec-Driven Development (SDD) Technical Specification
+# LocqVerify Attendance & Credential PWA — Spec-Driven Development (SDD) Technical Specification
 
 Document Version: 3.3.0
 
@@ -14,17 +14,17 @@ Target AI Agents: Cursor, Antigravity, Windsurf, Aider, Claude Code
 
 Every React component, custom hook, service worker, and API client inside `apps/verify` MUST enforce the following immutable client-side invariants:
 
-1. **Trustless Attendance Invariant**: SpottVerify MUST guarantee single-time, non-duplicable attendance verification per session or event. A user or device scanner CANNOT register duplicate check-ins for the same geofence node within an active session window. All verification claims are cryptographically signed and stored in SpottEngine with idempotent transaction locks.
+1. **Trustless Attendance Invariant**: LocqVerify MUST guarantee single-time, non-duplicable attendance verification per session or event. A user or device scanner CANNOT register duplicate check-ins for the same geofence node within an active session window. All verification claims are cryptographically signed and stored in LocqEngine with idempotent transaction locks.
 2. **Sub-1-Second Scanner Latency Invariant**: The camera scan-to-verification feedback loop MUST render feedback in $< 1.0\text{ second}$ on physical mobile devices. Upon QR payload detection, the UI MUST immediately display visual state (green pulsing badge), trigger haptic feedback (`navigator.vibrate([50, 30, 50])`), and play an audio confirmation chime before network round-trip completion to maximize event entrance throughput.
 3. **Offline Queueing & Background Sync Invariant**: In event venues with poor cellular reception or congested Wi-Fi, the scanner MUST store scanned attendance records locally in IndexedDB using `idb-keyval`. Each offline record MUST capture the original scan timestamp (`scanned_at`) and monotonic clock duration delta (`monotonic_delta_ms`). When internet connectivity is restored, a Service Worker background sync process dispatches queued records in batches using exponential backoff while validating clock integrity to prevent timestamp forgery.
-4. **Progressive Identity Backfill Invariant**: By default, attendance scanning is completely anonymous and frictionless, identified only by an ephemeral device fingerprint (`device_id`) or guest session token. When an attendee subsequently chooses to claim a digital badge, CPE/CEU certificate, or link their account via phone number or email, SpottVerify MUST automatically backfill all past anonymous attendance records stored locally to their unified SpottGeo user profile.
-5. **Cross-PWA Handshake & Deep-Link Invariant**: If a user scans a SpottDrop reward QR code or non-attendance payload inside SpottVerify, the app MUST parse the payload, extract the embedded `geofence_id` or campaign parameter, and perform a seamless deep-link handoff to `apps/drop` (`SpottDrop`) without throwing unhandled execution errors or resetting scanner state.
+4. **Progressive Identity Backfill Invariant**: By default, attendance scanning is completely anonymous and frictionless, identified only by an ephemeral device fingerprint (`device_id`) or guest session token. When an attendee subsequently chooses to claim a digital badge, CPE/CEU certificate, or link their account via phone number or email, LocqVerify MUST automatically backfill all past anonymous attendance records stored locally to their unified LocqGeo user profile.
+5. **Cross-PWA Handshake & Deep-Link Invariant**: If a user scans a LocqDrop reward QR code or non-attendance payload inside LocqVerify, the app MUST parse the payload, extract the embedded `geofence_id` or campaign parameter, and perform a seamless deep-link handoff to `apps/drop` (`LocqDrop`) without throwing unhandled execution errors or resetting scanner state.
 
 ---
 
 ## 2. Shared Type Contracts & Client Schemas
 
-Located in `packages/api-contracts/src/verify.schema.ts` and consumed directly by SpottVerify client hooks and API routes:
+Located in `packages/api-contracts/src/verify.schema.ts` and consumed directly by LocqVerify client hooks and API routes:
 
 ```typescript
 import { z } from "zod";
@@ -114,7 +114,7 @@ export function generateDynamicVerifyQrPayload(
 
 ### 3.2 Server Verification & Anti-Replay Validation
 
-When `apps/verify` submits a scan payload to SpottEngine (`POST /api/v1/engine/verify`), SpottEngine validates the signature and sliding time window:
+When `apps/verify` submits a scan payload to LocqEngine (`POST /api/v1/engine/verify`), LocqEngine validates the signature and sliding time window:
 
 1. **Sliding Time Window Validation**:
    $$|\text{current\_time} - \text{timestamp}| > 60\text{ seconds} \implies \text{REJECTED\_EXPIRED\_PAYLOAD}$$
@@ -171,7 +171,7 @@ When `apps/verify` submits a scan payload to SpottEngine (`POST /api/v1/engine/v
             +-----------------------+-----------------------+
             | Monotonic Clock Delta & Payload Extraction    |
             | monotonic_delta_ms = performance.now() - start|
-            | Is payload SpottDrop reward QR?               |
+            | Is payload LocqDrop reward QR?               |
             +-----------------------+-----------------------+
                                     |
                         No          |          Yes (Cross-PWA Handshake)
@@ -181,13 +181,13 @@ When `apps/verify` submits a scan payload to SpottEngine (`POST /api/v1/engine/v
 +-------------------------------+               +-------------------------------+
 | Check Network Connectivity    |               | Deep-Link Handshake to Drop   |
 +-------+---------------+-------+               | window.location.href =        |
-        |               |                       | "https://drop.spottgeo.com/.."|
+        |               |                       | "https://drop.locqgeo.com/.."|
     Online           Offline                    +-------------------------------+
         |               |
         v               v
 +---------------+ +---------------------------------------------------+
 | POST Ping to  | | Save to IndexedDB (idb-keyval) Queue              |
-| SpottEngine   | | - Store scanned_at + monotonic_delta_ms           |
+| LocqEngine   | | - Store scanned_at + monotonic_delta_ms           |
 +-------+-------+ | - Service Worker Background Sync handles dispatch |
         |         |   when online connection resumes                   |
         |         +-------------------------+-------------------------+
@@ -216,15 +216,15 @@ Response Received from Engine
 
 ## 5. System Prompt Directive for AI Agents
 
-> "You are building the SpottVerify attendance and credential PWA inside apps/verify following spottverify_sdd_spec.md. Enforce trustless single check-in invariants and deliver a sub-1-second scan feedback loop with immediate haptic and visual cues. Validate incoming scanner payloads using VerifyScanPayloadSchema from @spottgeo/api-contracts. Verify dynamic HMAC-SHA256 signatures and enforce the 60-second sliding expiration window (REJECTED_EXPIRED_PAYLOAD). Maintain local offline attendance queues in IndexedDB via idb-keyval with monotonic clock delta tracking (monotonic_delta_ms) to preserve event session integrity. Support Organizer Scanner Mode for staff gate scanning with bulk batching. Enable progressive identity backfill so anonymous attendees can claim badges and link their phone/email seamlessly post-event. Handle cross-PWA handshakes gracefully when SpottDrop QR payloads are scanned."
+> "You are building the LocqVerify attendance and credential PWA inside apps/verify following locqverify_sdd_spec.md. Enforce trustless single check-in invariants and deliver a sub-1-second scan feedback loop with immediate haptic and visual cues. Validate incoming scanner payloads using VerifyScanPayloadSchema from @locqgeo/api-contracts. Verify dynamic HMAC-SHA256 signatures and enforce the 60-second sliding expiration window (REJECTED_EXPIRED_PAYLOAD). Maintain local offline attendance queues in IndexedDB via idb-keyval with monotonic clock delta tracking (monotonic_delta_ms) to preserve event session integrity. Support Organizer Scanner Mode for staff gate scanning with bulk batching. Enable progressive identity backfill so anonymous attendees can claim badges and link their phone/email seamlessly post-event. Handle cross-PWA handshakes gracefully when LocqDrop QR payloads are scanned."
 
 ---
 
 ## 6. Related Documents
 
-- [SpottGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_sdd_spec.md)
-- [SpottEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md)
-- [SpottConsole SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md)
-- [SpottDrop SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottdrop_sdd_spec.md)
-- [SpottVerify SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md)
-- [SpottGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_frd.md)
+- [LocqGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqgeo_sdd_spec.md)
+- [LocqEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqengine_sdd_spec.md)
+- [LocqConsole SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqconsole_sdd_spec.md)
+- [LocqDrop SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqdrop_sdd_spec.md)
+- [LocqVerify SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqverify_sdd_spec.md)
+- [LocqGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqgeo_frd.md)

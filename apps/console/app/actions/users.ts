@@ -1,6 +1,6 @@
 "use server";
 
-import { db, sql } from "@spottgeo/database";
+import { db, sql } from "@locqgeo/database";
 
 export async function getUsersAction() {
   try {
@@ -50,7 +50,7 @@ export async function getUsersAction() {
       })),
     };
   } catch (error) {
-    console.error("[SpottConsole] Failed to fetch users:", error);
+    console.error("[LocqConsole] Failed to fetch users:", error);
     return { success: false, error: "Failed to fetch users" };
   }
 }

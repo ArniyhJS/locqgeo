@@ -1,4 +1,4 @@
-# SpottEngine Core Engine — Spec-Driven Development (SDD) Technical Specification
+# LocqEngine Core Engine — Spec-Driven Development (SDD) Technical Specification
 
 Document Version: 3.3.0
 
@@ -126,7 +126,7 @@ export type PingResponseError = z.infer<typeof PingResponseErrorSchema>;
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Table: tenants (SpottConsole Multi-Tenancy Isolation)
+-- Table: tenants (LocqConsole Multi-Tenancy Isolation)
 CREATE TABLE tenants (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     company_name VARCHAR(255) NOT NULL,
@@ -372,7 +372,7 @@ FOR UPDATE;
 
 ## 6. System Prompt Directive for AI Agents
 
-> "You are building the SpottEngine core engine inside services/engine following spottengine_sdd_spec.md. Always validate inputs using PingRequestSchema from @spottgeo/api-contracts. Ensure all SQL queries with PostGIS geometries format point inputs strictly as ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography (note: longitude comes before latitude in PostGIS points). Implement anti-cheat checks in exact sequence: Rate Limiting -> Accuracy -> Timestamp Drift & HMAC -> Duplicate -> Velocity -> Spatial Distance -> Atomic Tenant Float Lock. Write Vitest unit tests verifying that velocity calculations exceeding node-type limits ($30.0\text{ m/s}$ urban / $55.56\text{ m/s}$ highway) trigger HTTP 422 with error code ERR_IMPOSSIBLE_SPEED."
+> "You are building the LocqEngine core engine inside services/engine following locqengine_sdd_spec.md. Always validate inputs using PingRequestSchema from @locqgeo/api-contracts. Ensure all SQL queries with PostGIS geometries format point inputs strictly as ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography (note: longitude comes before latitude in PostGIS points). Implement anti-cheat checks in exact sequence: Rate Limiting -> Accuracy -> Timestamp Drift & HMAC -> Duplicate -> Velocity -> Spatial Distance -> Atomic Tenant Float Lock. Write Vitest unit tests verifying that velocity calculations exceeding node-type limits ($30.0\text{ m/s}$ urban / $55.56\text{ m/s}$ highway) trigger HTTP 422 with error code ERR_IMPOSSIBLE_SPEED."
 
 ---
 
@@ -380,20 +380,20 @@ FOR UPDATE;
 
 | Endpoint | Method | Security | Description |
 |----------|--------|----------|-------------|
-| `/api/v1/webhooks/paystack` | `POST` | HMAC SHA-512 (`x-paystack-signature`) | Ingests Paystack subscription events (`subscription.create`, `charge.success`, `subscription.disable`) and invalidates `@spottgeo/feature-gate` cache |
-| `/api/v1/webhooks/stripe` | `POST` | HMAC SHA-256 (`stripe-signature`) | Ingests Stripe subscription events (`customer.subscription.created`, `invoice.paid`, `customer.subscription.deleted`) and invalidates `@spottgeo/feature-gate` cache |
-| `/api/v1/engine/telemetry/stream` | `GET` | SSE (`text/event-stream`) | Real-time broadcast stream emitting presence verification telemetry frames (`VERIFIED`, `VERIFIED_FLAGGED`, `REJECTED_SPOOF`) to SpottConsole |
-| `/docs/json` | `GET` | None (Public Developer Spec) | Exposes OpenAPI 3.0.3 JSON schema definition for 3rd-party `@spottgeo/sdk` consumers |
+| `/api/v1/webhooks/paystack` | `POST` | HMAC SHA-512 (`x-paystack-signature`) | Ingests Paystack subscription events (`subscription.create`, `charge.success`, `subscription.disable`) and invalidates `@locqgeo/feature-gate` cache |
+| `/api/v1/webhooks/stripe` | `POST` | HMAC SHA-256 (`stripe-signature`) | Ingests Stripe subscription events (`customer.subscription.created`, `invoice.paid`, `customer.subscription.deleted`) and invalidates `@locqgeo/feature-gate` cache |
+| `/api/v1/engine/telemetry/stream` | `GET` | SSE (`text/event-stream`) | Real-time broadcast stream emitting presence verification telemetry frames (`VERIFIED`, `VERIFIED_FLAGGED`, `REJECTED_SPOOF`) to LocqConsole |
+| `/docs/json` | `GET` | None (Public Developer Spec) | Exposes OpenAPI 3.0.3 JSON schema definition for 3rd-party `@locqgeo/sdk` consumers |
 
 ---
 
 ## 8. Related Documents
 
-- [SpottGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_sdd_spec.md)
-- [SpottEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md)
-- [SpottConsole Enterprise Dashboard SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md)
-- [SpottDrop Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottdrop_sdd_spec.md)
-- [SpottVerify Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md)
-- [SpottGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_frd.md)
+- [LocqGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqgeo_sdd_spec.md)
+- [LocqEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqengine_sdd_spec.md)
+- [LocqConsole Enterprise Dashboard SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqconsole_sdd_spec.md)
+- [LocqDrop Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqdrop_sdd_spec.md)
+- [LocqVerify Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqverify_sdd_spec.md)
+- [LocqGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqgeo_frd.md)
 
 

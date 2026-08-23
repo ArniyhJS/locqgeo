@@ -55,7 +55,7 @@ export async function readNfcPayload(timeoutMs = 15000): Promise<string> {
   }
 }
 
-// Default service/characteristic used by SpottGeo BLE beacons to broadcast a payload.
+// Default service/characteristic used by LocqGeo BLE beacons to broadcast a payload.
 const DEFAULT_BEACON_SERVICE_UUID = "0000180a-0000-1000-8000-00805f9b34fb";
 const DEFAULT_BEACON_CHARACTERISTIC_UUID = "00002a29-0000-1000-8000-00805f9b34fb";
 

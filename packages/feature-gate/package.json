@@ -1,5 +1,5 @@
 {
-  "name": "@spottgeo/feature-gate",
+  "name": "@locqgeo/feature-gate",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -18,7 +18,7 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@spottgeo/config": "workspace:*",
+    "@locqgeo/config": "workspace:*",
     "@types/node": "^26.1.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"

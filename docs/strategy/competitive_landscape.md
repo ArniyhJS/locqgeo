@@ -1,10 +1,10 @@
-# Competitive Landscape Analysis — SpottGeo
+# Competitive Landscape Analysis — LocqGeo
 
 ## 1. Summary
 
-There is **no dominant Nigerian or Africa-focused company** offering a full-stack Verified Presence Platform that combines geofence verification, anti-fraud, campaign management, progressive identity, and reward disbursement. SpottGeo is positioned in a whitespace between identity/KYC providers, ad-tech platforms, loyalty tools, and logistics tracking solutions.
+There is **no dominant Nigerian or Africa-focused company** offering a full-stack Verified Presence Platform that combines geofence verification, anti-fraud, campaign management, progressive identity, and reward disbursement. LocqGeo is positioned in a whitespace between identity/KYC providers, ad-tech platforms, loyalty tools, and logistics tracking solutions.
 
-Most existing players solve **one piece** of the value chain. SpottGeo’s opportunity is to own the connective layer: **prove a real person was at a real place, then trigger the right business action.**
+Most existing players solve **one piece** of the value chain. LocqGeo’s opportunity is to own the connective layer: **prove a real person was at a real place, then trigger the right business action.**
 
 ---
 
@@ -27,7 +27,7 @@ Most existing players solve **one piece** of the value chain. SpottGeo’s oppor
                            ▼
                   ┌─────────────────────┐
                   │   VERIFIED PRESENCE │
-                  │       SpottGeo      │
+                  │       LocqGeo      │
                   │   (whitespace)      │
                   └─────────────────────┘
                            │
@@ -51,7 +51,7 @@ Most existing players solve **one piece** of the value chain. SpottGeo’s oppor
 - **Overlap:** Consumer engagement, loyalty, data-driven marketing
 - **Gap:** No public product for geofence-based presence verification or QR/NFC proof-of-visit
 - **Threat level:** Medium — could add location verification, but currently a partner or parallel player
-- **Opportunity:** Integrate SpottGeo verification events into Terragon’s CDP and loyalty workflows
+- **Opportunity:** Integrate LocqGeo verification events into Terragon’s CDP and loyalty workflows
 
 ### 3.2 Eskimi / Twinpine
 
@@ -61,7 +61,7 @@ Most existing players solve **one piece** of the value chain. SpottGeo’s oppor
 - **Overlap:** Location-targeted ad delivery, audience segmentation
 - **Gap:** Focus on ad impressions and clicks, not verifying physical visits or rewarding them
 - **Threat level:** Low — different problem (reach vs. verification)
-- **Opportunity:** Eskimi/Twinpine could become demand-side partners for SpottGeo billboard campaigns
+- **Opportunity:** Eskimi/Twinpine could become demand-side partners for LocqGeo billboard campaigns
 
 ### 3.3 VerifyMe
 
@@ -100,7 +100,7 @@ Most existing players solve **one piece** of the value chain. SpottGeo’s oppor
 - **Overlap:** GPS tracking, field verification
 - **Gap:** B2B logistics only; no consumer presence verification or rewards
 - **Threat level:** Low
-- **Opportunity:** SpottGeo could extend into delivery verification for e-commerce and logistics clients
+- **Opportunity:** LocqGeo could extend into delivery verification for e-commerce and logistics clients
 
 ### 3.7 TradeDepot / Alerzo
 
@@ -125,22 +125,22 @@ Most existing players solve **one piece** of the value chain. SpottGeo’s oppor
 
 These companies show what a mature market looks like, but none has a strong Africa-focused, reward-integrated offering.
 
-| Company                              | Category                         | What They Do                                                     | How SpottGeo Differs                                                                                |
+| Company                              | Category                         | What They Do                                                     | How LocqGeo Differs                                                                                |
 | ------------------------------------ | -------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Radar**                            | Geofencing API                   | Developer-friendly geofencing, trip tracking, location analytics | SpottGeo adds anti-fraud, campaign management, and reward orchestration for non-developer marketers |
-| **GroundTruth**                      | Location-based ads + attribution | Geo-targeted advertising, visitation attribution                 | SpottGeo is more open-platform and reward-integrated; focused on Africa use cases                   |
-| **Bluedot**                          | Location SDK / geofencing        | Accurate geofencing for apps, drive-through, curbside            | SpottGeo adds QR verification, offline PWA support, and reward disbursement                         |
-| **Foursquare**                       | Location intelligence            | POI data, foot-traffic analytics, ad attribution                 | SpottGeo is execution-focused: verify, reward, and prevent fraud, not just measure                  |
-| **PlotProjects**                     | Geofencing SDK                   | Mobile geofencing notifications and analytics                    | SpottGeo adds campaign builder, leaderboards, and payouts                                           |
-| **AdMobilize**                       | OOH analytics                    | Computer vision and analytics for billboards                     | SpottGeo uses consumer scan + GPS, not cameras; cheaper deployment for billboards                   |
-| **Gimbal**                           | Location SDK + beacons           | Proximity engagement, place matching                             | SpottGeo is QR-first and works on low-end devices without SDK integration                           |
-| **Swarm / Foursquare consumer apps** | Social check-in                  | Social location sharing                                          | SpottGeo is B2B / B2B2C infrastructure, not a consumer social network                               |
+| **Radar**                            | Geofencing API                   | Developer-friendly geofencing, trip tracking, location analytics | LocqGeo adds anti-fraud, campaign management, and reward orchestration for non-developer marketers |
+| **GroundTruth**                      | Location-based ads + attribution | Geo-targeted advertising, visitation attribution                 | LocqGeo is more open-platform and reward-integrated; focused on Africa use cases                   |
+| **Bluedot**                          | Location SDK / geofencing        | Accurate geofencing for apps, drive-through, curbside            | LocqGeo adds QR verification, offline PWA support, and reward disbursement                         |
+| **Foursquare**                       | Location intelligence            | POI data, foot-traffic analytics, ad attribution                 | LocqGeo is execution-focused: verify, reward, and prevent fraud, not just measure                  |
+| **PlotProjects**                     | Geofencing SDK                   | Mobile geofencing notifications and analytics                    | LocqGeo adds campaign builder, leaderboards, and payouts                                           |
+| **AdMobilize**                       | OOH analytics                    | Computer vision and analytics for billboards                     | LocqGeo uses consumer scan + GPS, not cameras; cheaper deployment for billboards                   |
+| **Gimbal**                           | Location SDK + beacons           | Proximity engagement, place matching                             | LocqGeo is QR-first and works on low-end devices without SDK integration                           |
+| **Swarm / Foursquare consumer apps** | Social check-in                  | Social location sharing                                          | LocqGeo is B2B / B2B2C infrastructure, not a consumer social network                               |
 
 ---
 
 ## 5. Feature Comparison Matrix
 
-| Capability                       | SpottGeo | Terragon | VerifyMe / YouVerify | Eskimi / Twinpine | Kobo360 | Radar   |
+| Capability                       | LocqGeo | Terragon | VerifyMe / YouVerify | Eskimi / Twinpine | Kobo360 | Radar   |
 | -------------------------------- | -------- | -------- | -------------------- | ----------------- | ------- | ------- |
 | Geofence creation                | Yes      | No       | No                   | No                | Limited | Yes     |
 | QR-based verification            | Yes      | No       | No                   | No                | No      | No      |
@@ -159,9 +159,9 @@ These companies show what a mature market looks like, but none has a strong Afri
 
 ## 6. Competitive Positioning
 
-### How to describe SpottGeo against the market
+### How to describe LocqGeo against the market
 
-> “There are companies that verify identity, companies that deliver ads, companies that track trucks, and companies that send rewards. SpottGeo is the layer in the middle: it proves a real person was physically present, then triggers the right action — attribution, reward, or access.”
+> “There are companies that verify identity, companies that deliver ads, companies that track trucks, and companies that send rewards. LocqGeo is the layer in the middle: it proves a real person was physically present, then triggers the right action — attribution, reward, or access.”
 
 ### Key differentiators
 
@@ -180,7 +180,7 @@ These companies show what a mature market looks like, but none has a strong Afri
 | ---------------------------------------------- | ---------- | ------------------------------------------------------------------------- |
 | Terragon or a telco adds geofence verification | Medium     | Build anti-fraud IP and land enterprise clients fast                      |
 | Global players like Radar enter Africa         | Medium     | Local reward integrations and offline consumer apps are hard to replicate |
-| Ad platforms add basic QR check-ins            | Medium     | SpottGeo owns the full campaign and payout workflow                       |
+| Ad platforms add basic QR check-ins            | Medium     | LocqGeo owns the full campaign and payout workflow                       |
 | Payment wallets add reward campaigns           | Low        | They lack geofence verification; partner with them                        |
 | GPS spoofing arms race                         | High       | Continuous investment in spoofing detection and device reputation         |
 
@@ -210,7 +210,7 @@ These companies show what a mature market looks like, but none has a strong Afri
 
 ## 9. Conclusion
 
-SpottGeo operates in a **wide whitespace** in Nigeria and Africa. No local competitor offers the full stack of geofence verification, campaign management, anti-fraud, progressive identity, and reward disbursement. The closest players are either identity/KYC tools, ad-tech platforms, or logistics trackers — all of which solve adjacent problems rather than the core Verified Presence problem.
+LocqGeo operates in a **wide whitespace** in Nigeria and Africa. No local competitor offers the full stack of geofence verification, campaign management, anti-fraud, progressive identity, and reward disbursement. The closest players are either identity/KYC tools, ad-tech platforms, or logistics trackers — all of which solve adjacent problems rather than the core Verified Presence problem.
 
 The strategic imperative is to **move fast on lighthouse clients** and build **defensible anti-fraud intelligence** before larger global or local players decide to enter the same space.
 
@@ -218,13 +218,13 @@ The strategic imperative is to **move fast on lighthouse clients** and build **d
 
 ## 10. Core Competitive Advantages & Moat Recommendations
 
-To secure and expand SpottGeo's unique position in the market, the platform must build a "moat" around the areas where OOH tracking and digital loyalty currently fail. The following recommendations leverage SpottGeo's strengths:
+To secure and expand LocqGeo's unique position in the market, the platform must build a "moat" around the areas where OOH tracking and digital loyalty currently fail. The following recommendations leverage LocqGeo's strengths:
 
 ### 10.1 Productize "Crowdsourced OOH Verification" for Agencies
 
 Currently, billboard owners and ad agencies rely on expensive AI cameras (like Retinaad) or manual field audits for proof-of-play.
 
-- **The Advantage:** Pitch SpottGeo to advertising agencies as a **"Zero-Hardware Verification"** tool. Brands attach a SpottGeo QR code to their billboards, promising consumers micro-rewards (e.g., ₦100 airtime) to scan it. Consumers get rewarded, and the agency gets cryptographically secure, GPS-verified proof that the billboard is physically standing, visible, and engaging real humans.
+- **The Advantage:** Pitch LocqGeo to advertising agencies as a **"Zero-Hardware Verification"** tool. Brands attach a LocqGeo QR code to their billboards, promising consumers micro-rewards (e.g., ₦100 airtime) to scan it. Consumers get rewarded, and the agency gets cryptographically secure, GPS-verified proof that the billboard is physically standing, visible, and engaging real humans.
 
 ### 10.2 Double Down on Anti-Fraud (The "African Trust Layer")
 
@@ -240,7 +240,7 @@ Nigeria operates heavily on micro-transactions. People value small, instant, and
 
 ### 10.4 Lean into "Offline-First" as a Core Feature
 
-Many prime OOH locations (highways, deep markets, indoor event centers) suffer from spotty mobile networks.
+Many prime OOH locations (highways, deep markets, indoor event centers) suffer from locqy mobile networks.
 
 - **The Advantage:** Ensure the offline queuing mechanism is flawless. Allowing a user or field worker to scan a code without the internet, and having the PWA seamlessly sync and trigger the reward once connectivity is restored, provides a massive edge over web-only platforms that fail in low-connectivity areas.
 
@@ -254,7 +254,7 @@ Intense KYC processes or mandatory BVN requests upfront destroy conversion rates
 
 Go beyond single-scan verifications by productizing multi-location journeys.
 
-- **The Advantage:** Brands seek sustained engagement. By providing campaign templates for "City-Wide Scavenger Hunts" (e.g., scan a code at a mall, a bus stop, and a store to unlock a prize), SpottGeo offers a turnkey, location-aware engagement solution that traditional AdTech platforms cannot match.
+- **The Advantage:** Brands seek sustained engagement. By providing campaign templates for "City-Wide Scavenger Hunts" (e.g., scan a code at a mall, a bus stop, and a store to unlock a prize), LocqGeo offers a turnkey, location-aware engagement solution that traditional AdTech platforms cannot match.
 
 ---
 

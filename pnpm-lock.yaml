@@ -276,7 +276,7 @@ importers:
 
   .:
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:packages/config
       prettier:
@@ -294,10 +294,10 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.82.0(react@19.2.8))
-      '@spottgeo/api-contracts':
+      '@locqgeo/api-contracts':
         specifier: workspace:*
         version: link:../../packages/api-contracts
-      '@spottgeo/database':
+      '@locqgeo/database':
         specifier: workspace:*
         version: link:../../packages/database
       class-variance-authority:
@@ -331,12 +331,12 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
     devDependencies:
+      '@locqgeo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@next/eslint-plugin-next':
         specifier: 16.2.12
         version: 16.2.12
-      '@spottgeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
       '@tailwindcss/postcss':
         specifier: ^4.0.0
         version: 4.3.3
@@ -382,10 +382,10 @@ importers:
 
   apps/drop:
     dependencies:
-      '@spottgeo/api-contracts':
+      '@locqgeo/api-contracts':
         specifier: workspace:*
         version: link:../../packages/api-contracts
-      '@spottgeo/database':
+      '@locqgeo/database':
         specifier: workspace:*
         version: link:../../packages/database
       '@zxing/library':
@@ -419,12 +419,12 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
     devDependencies:
+      '@locqgeo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@next/eslint-plugin-next':
         specifier: 16.2.12
         version: 16.2.12
-      '@spottgeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
       '@tailwindcss/postcss':
         specifier: ^4.0.0
         version: 4.3.3
@@ -470,10 +470,10 @@ importers:
 
   apps/verify:
     dependencies:
-      '@spottgeo/api-contracts':
+      '@locqgeo/api-contracts':
         specifier: workspace:*
         version: link:../../packages/api-contracts
-      '@spottgeo/database':
+      '@locqgeo/database':
         specifier: workspace:*
         version: link:../../packages/database
       '@zxing/library':
@@ -504,12 +504,12 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
     devDependencies:
+      '@locqgeo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@next/eslint-plugin-next':
         specifier: 16.2.12
         version: 16.2.12
-      '@spottgeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
       '@tailwindcss/postcss':
         specifier: ^4.0.0
         version: 4.3.3
@@ -556,7 +556,7 @@ importers:
         specifier: 4.4.3
         version: 4.4.3
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -594,7 +594,7 @@ importers:
         specifier: ^3.4.9
         version: 3.4.9
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -615,7 +615,7 @@ importers:
 
   packages/feature-gate:
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -630,7 +630,7 @@ importers:
 
   packages/sdk:
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -645,17 +645,17 @@ importers:
 
   services/analytics-worker:
     dependencies:
-      '@spottgeo/api-contracts':
+      '@locqgeo/api-contracts':
         specifier: workspace:*
         version: link:../../packages/api-contracts
-      '@spottgeo/database':
+      '@locqgeo/database':
         specifier: workspace:*
         version: link:../../packages/database
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(gel@2.2.0(supports-color@7.2.0))(postgres@3.4.9)
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -682,10 +682,10 @@ importers:
       '@fastify/helmet':
         specifier: ^13.1.0
         version: 13.1.0
-      '@spottgeo/api-contracts':
+      '@locqgeo/api-contracts':
         specifier: workspace:*
         version: link:../../packages/api-contracts
-      '@spottgeo/database':
+      '@locqgeo/database':
         specifier: workspace:*
         version: link:../../packages/database
       drizzle-orm:
@@ -695,7 +695,7 @@ importers:
         specifier: ^5.10.0
         version: 5.10.0
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -716,17 +716,17 @@ importers:
 
   services/payout-worker:
     dependencies:
-      '@spottgeo/api-contracts':
+      '@locqgeo/api-contracts':
         specifier: workspace:*
         version: link:../../packages/api-contracts
-      '@spottgeo/database':
+      '@locqgeo/database':
         specifier: workspace:*
         version: link:../../packages/database
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(gel@2.2.0(supports-color@7.2.0))(postgres@3.4.9)
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -747,17 +747,17 @@ importers:
 
   services/webhook-dispatcher:
     dependencies:
-      '@spottgeo/api-contracts':
+      '@locqgeo/api-contracts':
         specifier: workspace:*
         version: link:../../packages/api-contracts
-      '@spottgeo/database':
+      '@locqgeo/database':
         specifier: workspace:*
         version: link:../../packages/database
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(gel@2.2.0(supports-color@7.2.0))(postgres@3.4.9)
     devDependencies:
-      '@spottgeo/config':
+      '@locqgeo/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -2769,6 +2769,7 @@ packages:
   eslint@9.39.5:
     resolution: {integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'

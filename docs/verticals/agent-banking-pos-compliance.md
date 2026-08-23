@@ -11,11 +11,11 @@ Fintechs, banks, and super-agents deploy agent banking POS networks across subur
 - Field compliance inspectors spend significant time visiting dispersed agent kiosks.
 - High risk of money laundering and illegal financial activity at unverified POS locations.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Registered agent kiosk locations are stored as PostGIS geofences.
-- POS agents conduct periodic mandatory presence verifications using SpottVerify.
-- SpottEngine checks GPS accuracy and distance from the registered business location, flagging out-of-bounds terminals.
+- POS agents conduct periodic mandatory presence verifications using LocqVerify.
+- LocqEngine checks GPS accuracy and distance from the registered business location, flagging out-of-bounds terminals.
 
 ### Key features used
 

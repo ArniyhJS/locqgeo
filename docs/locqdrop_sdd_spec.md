@@ -1,4 +1,4 @@
-# SpottDrop Consumer PWA — Spec-Driven Development (SDD) Technical Specification
+# LocqDrop Consumer PWA — Spec-Driven Development (SDD) Technical Specification
 
 Document Version: 3.3.0
 
@@ -20,19 +20,19 @@ Every React component, custom hook, service worker, and API client inside `apps/
 $$\text{device\_id} = \text{SHA256}(\text{canvas\_hash} \parallel \text{webgl\_vendor} \parallel \text{screen\_res} \parallel \text{user\_agent} \parallel \text{installation\_uuid})$$
 
 3. **Event-Driven Geolocation Polling**: Continuous background GPS polling is strictly prohibited to save battery and network data. GPS sampling MUST ONLY trigger upon explicit user interaction (e.g., clicking "Scan Node" or "Verify Proximity").
-4. **Client-Side Accuracy Filter**: The client app MUST inspect the GPS position accuracy returned by the `navigator.geolocation` API. If $\text{accuracy\_meters} > 50.0\text{m}$, the scanner MUST prompt the user to step into an open area before dispatching a ping to SpottEngine:
+4. **Client-Side Accuracy Filter**: The client app MUST inspect the GPS position accuracy returned by the `navigator.geolocation` API. If $\text{accuracy\_meters} > 50.0\text{m}$, the scanner MUST prompt the user to step into an open area before dispatching a ping to LocqEngine:
 
 $$\text{accuracy\_meters} \le 50.0 \implies \text{Proceed to Ping Dispatch}$$
 
 5. **Offline Claim Queueing & Clock Integrity**: If a user scans a physical node in an area with zero cellular connectivity, the payload MUST be encrypted and stored locally in IndexedDB along with the original scan timestamp (`scanned_at`) and monotonic clock duration delta (`monotonic_delta_ms`). Offline sync MUST observe drop type time windows (15 minutes for Flash Drops, 24 hours for standard drops). A service worker background sync task MUST retry transmission using exponential backoff when connectivity is restored while preserving daily loyalty streak metrics.
-6. **Minimum Withdrawal Thresholds**: To prevent micro-transaction fee drain and guarantee payment processor efficiency, payout redemptions inside SpottDrop MUST enforce minimum withdrawal thresholds: a minimum of $\text{₦}50$ for airtime/mobile data top-ups processed via VTpass, and a minimum of $\text{₦}500$ for direct bank account transfers processed via Paystack. Direct bank transfers MUST present a transparent fee disclosure UI (e.g., standard $\text{₦}10-\text{₦}25$ transfer processing fee) prior to transaction confirmation.
-7. **Cross-PWA Payload Deep-Link Handling**: If a user scans a dynamic HMAC QR code generated for SpottVerify (or accesses a `verify.spottgeo.com` deep link) inside SpottDrop, the PWA MUST gracefully parse the payload, extract the underlying `geofence_id` if valid for consumer reward claims, or execute a smooth deep-link handoff to `apps/verify` (`SpottVerify`) without raising unhandled syntax or runtime execution errors.
+6. **Minimum Withdrawal Thresholds**: To prevent micro-transaction fee drain and guarantee payment processor efficiency, payout redemptions inside LocqDrop MUST enforce minimum withdrawal thresholds: a minimum of $\text{₦}50$ for airtime/mobile data top-ups processed via VTpass, and a minimum of $\text{₦}500$ for direct bank account transfers processed via Paystack. Direct bank transfers MUST present a transparent fee disclosure UI (e.g., standard $\text{₦}10-\text{₦}25$ transfer processing fee) prior to transaction confirmation.
+7. **Cross-PWA Payload Deep-Link Handling**: If a user scans a dynamic HMAC QR code generated for LocqVerify (or accesses a `verify.locqgeo.com` deep link) inside LocqDrop, the PWA MUST gracefully parse the payload, extract the underlying `geofence_id` if valid for consumer reward claims, or execute a smooth deep-link handoff to `apps/verify` (`LocqVerify`) without raising unhandled syntax or runtime execution errors.
 
 ---
 
 ## 2. Shared Type Contracts & Client Schemas
 
-Located in `packages/api-contracts/src/drop.schema.ts` and consumed directly by SpottDrop client hooks and server route handlers:
+Located in `packages/api-contracts/src/drop.schema.ts` and consumed directly by LocqDrop client hooks and server route handlers:
 
 ```typescript
 import { z } from "zod";
@@ -88,7 +88,7 @@ Located in `apps/drop/lib/fingerprint.ts`:
 
 ```typescript
 export async function getOrCreateDeviceId(): Promise<string> {
-  const STORAGE_KEY = "spott_device_id_v1";
+  const STORAGE_KEY = "locq_device_id_v1";
   const existingId = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
 
   if (existingId && existingId.length >= 32) {
@@ -107,7 +107,7 @@ export async function getOrCreateDeviceId(): Promise<string> {
     ctx.fillStyle = "#f60";
     ctx.fillRect(125, 1, 62, 20);
     ctx.fillStyle = "#069";
-    ctx.fillText("SpottGeo,PoL#1", 2, 15);
+    ctx.fillText("LocqGeo,PoL#1", 2, 15);
     canvasHash = canvas.toDataURL();
   }
 
@@ -220,16 +220,16 @@ export async function getOrCreateDeviceId(): Promise<string> {
 
 ## 5. System Prompt Directive for AI Agents
 
-> "You are building the SpottDrop consumer PWA inside apps/drop following spottdrop_sdd_spec.md. Always capture GPS coordinates via HTML5 navigator.geolocation with enableHighAccuracy: true and enforce the $\le 50.0\text{m}$ accuracy filter on the client before calling SpottEngine. Read and write client device identifiers using getOrCreateDeviceId() from @/lib/fingerprint. Validate incoming QR code payloads using QrScanPayloadSchema from @spottgeo/api-contracts. Support dynamic HMAC QR payloads ({ geofence_id, timestamp, nonce, hmac }) and offline sync windows (15 minutes for Flash Drops, 24 hours for standard drops) with client monotonic clock delta tracking (monotonic_delta_ms) to preserve daily loyalty streaks. Enforce minimum withdrawal thresholds (₦50 airtime/data via VTpass, ₦500 Paystack bank transfer with fee disclosure). Ensure all user UI screens load in under 1 second on 3G network connections by deferring Leaflet map rendering until explicitly toggled."
+> "You are building the LocqDrop consumer PWA inside apps/drop following locqdrop_sdd_spec.md. Always capture GPS coordinates via HTML5 navigator.geolocation with enableHighAccuracy: true and enforce the $\le 50.0\text{m}$ accuracy filter on the client before calling LocqEngine. Read and write client device identifiers using getOrCreateDeviceId() from @/lib/fingerprint. Validate incoming QR code payloads using QrScanPayloadSchema from @locqgeo/api-contracts. Support dynamic HMAC QR payloads ({ geofence_id, timestamp, nonce, hmac }) and offline sync windows (15 minutes for Flash Drops, 24 hours for standard drops) with client monotonic clock delta tracking (monotonic_delta_ms) to preserve daily loyalty streaks. Enforce minimum withdrawal thresholds (₦50 airtime/data via VTpass, ₦500 Paystack bank transfer with fee disclosure). Ensure all user UI screens load in under 1 second on 3G network connections by deferring Leaflet map rendering until explicitly toggled."
 
 ---
 
 ## 6. Related Documents
 
-- [SpottGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_sdd_spec.md)
-- [SpottEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottengine_sdd_spec.md)
-- [SpottConsole Enterprise Dashboard SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottconsole_sdd_spec.md)
-- [SpottDrop Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottdrop_sdd_spec.md)
-- [SpottVerify Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottverify_sdd_spec.md)
-- [SpottGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/spottgeo-monorepo/docs/spottgeo_frd.md)
+- [LocqGeo Master SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqgeo_sdd_spec.md)
+- [LocqEngine Core SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqengine_sdd_spec.md)
+- [LocqConsole Enterprise Dashboard SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqconsole_sdd_spec.md)
+- [LocqDrop Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqdrop_sdd_spec.md)
+- [LocqVerify Consumer PWA SDD Specification](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqverify_sdd_spec.md)
+- [LocqGeo Functional Requirements Document (FRD)](file:///home/aniebiet.ebebe@Interswitchng.com/Documents/GitHub/locqgeo-monorepo/docs/locqgeo_frd.md)
 

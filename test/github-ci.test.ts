@@ -8,7 +8,7 @@ describe("GitHub Actions CI Workflow", () => {
     expect(fs.existsSync(ciPath)).toBe(true);
 
     const content = fs.readFileSync(ciPath, "utf-8");
-    expect(content).toContain("name: SpottGeo Monorepo CI");
+    expect(content).toContain("name: LocqGeo Monorepo CI");
     expect(content).toContain("pnpm run check-types");
     expect(content).toContain("pnpm run test");
     expect(content).toContain("actions/setup-node");

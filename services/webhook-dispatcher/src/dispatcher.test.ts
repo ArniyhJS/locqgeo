@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 
 const mockExecute = vi.fn();
 
-vi.mock("@spottgeo/database", () => ({
+vi.mock("@locqgeo/database", () => ({
   db: {
     execute: (...args: unknown[]) => mockExecute(...args),
   },

@@ -12,7 +12,7 @@ Schools and exam bodies need reliable attendance, exam-center verification, and 
 - Campus access badges can be shared or lost.
 - Accreditation bodies require auditable attendance records.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Classrooms, exam halls, and campus gates become geofences.
 - Students scan for attendance; the engine confirms they are physically present.
@@ -29,7 +29,7 @@ Schools and exam bodies need reliable attendance, exam-center verification, and 
 
 ### Example
 
-A university records lecture attendance via SpottVerify. Students earn credit only after verified attendance, and administration sees real-time engagement metrics.
+A university records lecture attendance via LocqVerify. Students earn credit only after verified attendance, and administration sees real-time engagement metrics.
 
 **Additional examples:**
 

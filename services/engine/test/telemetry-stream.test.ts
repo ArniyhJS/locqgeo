@@ -20,7 +20,7 @@ describe("Telemetry Stream Service", () => {
       },
     };
 
-    manager.addClient("client-1", mockReply as any);
+    manager.addClient("client-1", mockReply);
     expect(manager.getClientCount()).toBe(1);
 
     manager.broadcastEvent({ pingId: "p-100", status: "VERIFIED" });
@@ -48,8 +48,8 @@ describe("Telemetry Stream Service", () => {
       },
     };
 
-    manager.addClient("client-ended", mockReplyEnded as any);
-    manager.addClient("client-error", mockReplyError as any);
+    manager.addClient("client-ended", mockReplyEnded);
+    manager.addClient("client-error", mockReplyError);
     expect(manager.getClientCount()).toBe(2);
 
     manager.broadcastEvent({ pingId: "p-101" });

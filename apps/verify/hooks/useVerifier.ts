@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { getOrCreateDeviceId } from "@/lib/fingerprint";
 import { saveLocalVerification } from "@/lib/db-store";
-import type { PingResponseSuccess, PingResponseError } from "@spottgeo/api-contracts";
+import type { PingResponseSuccess, PingResponseError } from "@locqgeo/api-contracts";
 
 const ACTION_TYPES = ["CHECKIN", "REWARD", "ATTENDANCE", "AUDIT", "ACCESS"] as const;
 type ActionType = (typeof ACTION_TYPES)[number];

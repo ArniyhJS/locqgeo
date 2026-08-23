@@ -12,11 +12,11 @@ Non-governmental organizations (NGOs) and international aid agencies face signif
 - Ghost workers claim field outreach hours during vaccination or crisis response campaigns.
 - Manual paper logs lead to errors, delays, and vulnerability to local corruption.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Relief centers, refugee camps, and mobile clinics are designated as verified distribution hubs.
-- Beneficiaries and field workers utilize offline-capable verification (SpottVerify) to confirm physical presence.
-- SpottEngine's payout microservice triggers instant, verified cash disbursements or digital vouchers upon presence confirmation.
+- Beneficiaries and field workers utilize offline-capable verification (LocqVerify) to confirm physical presence.
+- LocqEngine's payout microservice triggers instant, verified cash disbursements or digital vouchers upon presence confirmation.
 
 ### Key features used
 

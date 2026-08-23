@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { TelemetryQuerySchema, type TelemetrySummaryResponse } from "@spottgeo/api-contracts";
-import { db, sql } from "@spottgeo/database";
+import { TelemetryQuerySchema, type TelemetrySummaryResponse } from "@locqgeo/api-contracts";
+import { db, sql } from "@locqgeo/database";
 import { DEMO_TENANT_ID } from "@/lib/constants";
 
 export async function GET(request: Request) {

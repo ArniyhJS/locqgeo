@@ -12,7 +12,7 @@ Government and NGOs run field programs where attendance or distribution needs to
 - Election and civic engagement initiatives struggle to verify turnout.
 - Donors demand transparent proof of program reach.
 
-### How SpottGeo helps
+### How LocqGeo helps
 
 - Distribution points, training venues, and project sites become geofences.
 - Beneficiaries or field officers scan to verify presence.
